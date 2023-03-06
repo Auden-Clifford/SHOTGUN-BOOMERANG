@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework.Input;
 
 namespace ShotgunBoomerang
 {
@@ -24,6 +27,18 @@ namespace ShotgunBoomerang
         public Level(List<Tile> tileMap)
         {
             _tileMap = tileMap;
+        }
+
+        /// <summary>
+        /// Should tell the given spritebatch to display every tile in the level
+        /// </summary>
+        /// <param name="sb">The spritebatch in use</param>
+        public void Draw(SpriteBatch sb)
+        {
+            foreach(Tile tile in _tileMap)
+            {
+                tile.Draw(sb);
+            }
         }
     }
 }
