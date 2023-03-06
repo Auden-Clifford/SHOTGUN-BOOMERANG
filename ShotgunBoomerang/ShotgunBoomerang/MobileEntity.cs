@@ -49,9 +49,14 @@ namespace ShotgunBoomerang
             _position += _velocity;
         }
 
+        /// <summary>
+        /// Will check if the entity is colliding with any tiles then
+        /// resolve those collisions by updating the player's position.
+        /// </summary>
+        /// <exception cref="NotImplementedException">Have not finished this method</exception>
         protected virtual void ResolveCollisions()
         {
-
+            throw new NotImplementedException();
         }
     }
 }
