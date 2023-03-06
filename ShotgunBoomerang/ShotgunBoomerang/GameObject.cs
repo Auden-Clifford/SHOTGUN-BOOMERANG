@@ -16,8 +16,8 @@ namespace ShotgunBoomerang
     internal abstract class GameObject
     {
         // Fields
-        private Texture2D _sprite;
-        private Vector2 _position;
+        protected Texture2D _sprite;
+        protected Vector2 _position;
 
 
         // Properties

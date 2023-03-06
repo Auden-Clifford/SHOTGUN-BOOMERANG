@@ -9,12 +9,15 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ShotgunBoomerang
 {
-    public class Game1 : Game
+    public class GameManager : Game
     {
+        // constant gravity (needs to be accessable to all classes)
+        public static float Gravity = 0.5f;
+
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
 
-        public Game1()
+        public GameManager()
         {
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";

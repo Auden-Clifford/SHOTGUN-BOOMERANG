@@ -11,14 +11,47 @@ namespace ShotgunBoomerang
 {
     internal abstract class MobileEntity : GameObject
     {
+
         // Fields
-        private Vector2 _velocity;
-        private float _health;
-        private float _maxHealth;
-        private float _damage;
+        protected Vector2 _velocity;
+        protected float _health;
+        protected float _maxHealth;
+        protected float _damage;
 
 
         // Properties
-        public float Health { get { return _health; } set { _health = Math.Clamp(value, 0, _maxHealth); } }
+        public float Health 
+        { 
+            get { return _health; } 
+            set { _health = Math.Clamp(value, 0, _maxHealth); } 
+        }
+
+
+        // Methods
+
+        /// <summary>
+        /// method for use in the update loop, contains all logic the object needs to go through in a frame
+        /// </summary>
+        public override void Update()
+        {
+            ApplyPhysics();
+        }
+
+        /// <summary>
+        /// Updates the object's position and velocity based on physics interactions
+        /// </summary>
+        protected virtual void ApplyPhysics()
+        {
+            // apply gravity to velocity
+            _velocity.Y += GameManager.Gravity;
+
+            // apply velocity to position
+            _position += _velocity;
+        }
+
+        protected virtual void ResolveCollisions()
+        {
+
+        }
     }
 }
