@@ -14,6 +14,9 @@ namespace GravityAndCollisionsPE
 		private Texture2D playerTexture;
 		private Texture2D obstacleTexture;
 
+		private float surfaceFriction;
+
+		private float playerAccel;
 		private float playerSpeedX;
 		private Vector2 playerVelocity;
 		private Vector2 jumpVelocity;
@@ -22,6 +25,8 @@ namespace GravityAndCollisionsPE
 
 		private List<Rectangle> obstacleRects;
 		private KeyboardState prevKB;
+
+		private MouseState prevMouse;
 
 		public GameManager()
 		{
@@ -42,6 +47,8 @@ namespace GravityAndCollisionsPE
 			gravity = new Vector2(0, 0.5f);
 
 			playerSpeedX = 5.0f;
+			playerAccel = 1f;
+			surfaceFriction = 0.1f;
 
 			obstacleRects = new List<Rectangle>();
 
@@ -125,8 +132,6 @@ namespace GravityAndCollisionsPE
 			ApplyGravity();
 			ResolveCollisions();
 
-			// Save the old state at the end of the frame
-			prevKB = Keyboard.GetState();
 			base.Update(gameTime);
 		}
 
@@ -136,24 +141,40 @@ namespace GravityAndCollisionsPE
 		private void ProcessInput()
 		{
 			KeyboardState kb = Keyboard.GetState();
+			MouseState ms = Mouse.GetState();
 
 			// check for left and right movement
 			if(kb.IsKeyDown(Keys.A))
 			{
-				playerPosition.X -= playerSpeedX;
+				//playerPosition.X -= playerSpeedX;
+
+				playerVelocity.X -= playerAccel;
+
+               playerVelocity.X = MathHelper.Clamp(playerVelocity.X, -playerSpeedX, playerSpeedX);
 			}
 			if(kb.IsKeyDown(Keys.D))
 			{
-				playerPosition.X += playerSpeedX;
-			}
+				//playerPosition.X += playerSpeedX;
+
+                playerVelocity.X += playerAccel;
+
+                playerVelocity.X = MathHelper.Clamp(playerVelocity.X, -playerSpeedX, playerSpeedX);
+            }
 
 			// check for jumping
-			if(kb.IsKeyDown(Keys.W) && prevKB.IsKeyUp(Keys.W))
+			if(SingleKeyPress(Keys.W))
 			{
 				playerVelocity.Y = jumpVelocity.Y;
 			}
 
+			// check for shotgun jumping
+			if(ms.LeftButton == ButtonState.Pressed && prevMouse.LeftButton == ButtonState.Released)
+			{
+				ShotgunJump();
+			}
+
 			prevKB = kb;
+			prevMouse = ms;
 		}
 
 		/// <summary>
@@ -164,89 +185,106 @@ namespace GravityAndCollisionsPE
 			// Apply gravity to player's velocity
 			playerVelocity += gravity;
 
-			// Apply player's velocity to player's position
-			playerPosition += playerVelocity;
+			// apply friction to player's velocity (opposite of velocity direction)
+			if(playerVelocity.X > 0)
+			{
+                playerVelocity.X -= surfaceFriction;
+            }
+			
+			if(playerVelocity.X < 0)
+			{
+                playerVelocity.X += surfaceFriction;
+            }
+
+            // Apply player's velocity to player's position
+            playerPosition += playerVelocity;
+
+
         }
 
         /// <summary>
         /// Handles player collisions with obstacles
         /// </summary>
         private void ResolveCollisions()
-		{
-			// get the player's hitbox
-			Rectangle playerHitBox = GetPlayerRect();
+        {
+            // get the player's hitbox
+            Rectangle playerHitBox = GetPlayerRect();
 
-			// temporary list for all intersections
-			List<Rectangle> intersectionsList = new List<Rectangle>();
+            // temporary list for all intersections
+            List<Rectangle> intersectionsList = new List<Rectangle>();
 
-			// loop through the list of all rectangles
-			foreach(Rectangle rectangle in obstacleRects)
-			{
-				// if the player is intersecting
-				if (rectangle.Intersects(playerHitBox))
-				{
-					intersectionsList.Add(rectangle);
-				}
-			}
+            // loop through the list of all rectangles
+            foreach (Rectangle rectangle in obstacleRects)
+            {
+                // if the player is intersecting
+                if (rectangle.Intersects(playerHitBox))
+                {
+                    intersectionsList.Add(rectangle);
+                }
+            }
 
-			// loop through and resolve all horizontal intersections
-			foreach(Rectangle rectangle in intersectionsList)
-			{
-				// create a new rectangle from the collision between the player and the rectangle
-				Rectangle intersectRect = Rectangle.Intersect(playerHitBox, rectangle);
+            // loop through and resolve all horizontal intersections
+            foreach (Rectangle rectangle in intersectionsList)
+            {
+                // create a new rectangle from the collision between the player and the rectangle
+                Rectangle intersectRect = Rectangle.Intersect(playerHitBox, rectangle);
 
                 //check for a horizontal collision (intersection is taller than it is wide)
                 if (intersectRect.Width <= intersectRect.Height)
-				{
-					// if the player X is less than (further left than) the rectangle x
-					// move the player left
-                    if(playerPosition.X < intersectRect.X)
-					{
-						playerPosition.X -= intersectRect.Width;
-					}
+                {
+                    // if the player X is less than (further left than) the rectangle x
+                    // move the player left
+                    if (playerPosition.X < intersectRect.X)
+                    {
+                        playerHitBox.X -= intersectRect.Width;
+                    }
                     // otherwise move right
                     else
                     {
-						playerPosition.X += intersectRect.Width;
-					}
+                        playerHitBox.X += intersectRect.Width;
+                    }
 
                 }
+
+                playerPosition.X = playerHitBox.X;
             }
 
             // loop through and resolve all vertical intersections
             foreach (Rectangle rectangle in intersectionsList)
-			{
+            {
 
                 // create a new rectangle from the collision between the player and the rectangle
                 Rectangle intersectRect = Rectangle.Intersect(playerHitBox, rectangle);
 
                 // check for vertical collision (intersection is wider than it is tall)
-                if (intersectRect.Width >= intersectRect.Height)
+                if (intersectRect.Width > intersectRect.Height)
                 {
                     // if the player Y is less than (further up than) the rectangle x
                     // move the player up
                     if (playerPosition.Y < intersectRect.Y)
                     {
-                        playerPosition.Y -= intersectRect.Height;
+                        playerHitBox.Y -= intersectRect.Height;
                     }
                     // otherwise move down
                     else
                     {
-                        playerPosition.Y += intersectRect.Height;
+                        playerHitBox.Y += intersectRect.Height;
                     }
 
                     //the player's Y velocity is set to 0
                     playerVelocity.Y = 0;
                 }
-            }
-		}
 
-		/// <summary>
-		/// Determines if a key was initially pressed this frame
-		/// </summary>
-		/// <param name="key">The key to check</param>
-		/// <returns>True if this is the first frame the key is pressed, false otherwise</returns>
-		private bool SingleKeyPress(Keys key)
+                playerPosition.Y = playerHitBox.Y;
+            }
+        }
+
+        /// <summary>
+        /// Determines if a key was initially pressed this frame
+        /// </summary>
+        /// <param name="key">The key to check</param>
+        /// <returns>True if this is the first frame the key is pressed, false otherwise</returns>
+        private bool SingleKeyPress(Keys key)
 		{
 			return Keyboard.GetState().IsKeyDown(key) && prevKB.IsKeyUp(key);
 		}
@@ -264,6 +302,18 @@ namespace GravityAndCollisionsPE
 				(int)playerPosition.Y,
 				playerTexture.Width,
 				playerTexture.Height);
+		}
+
+		private void ShotgunJump()
+		{
+			// get the difference between the player position and the mouse cursor
+			Vector2 shotgunBlastVel = playerPosition - new Vector2(prevMouse.X, prevMouse.Y);
+
+			// get the unit vector of this difference
+			shotgunBlastVel /= Vector2.Distance(shotgunBlastVel, Vector2.Zero);
+
+			// add a multiple of the unit vecor
+			playerVelocity += 20 * shotgunBlastVel;
 		}
 
 		/// <summary>
