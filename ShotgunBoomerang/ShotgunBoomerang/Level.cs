@@ -13,6 +13,7 @@ namespace ShotgunBoomerang
     {
         // Fields
         private List<Tile> _tileMap;
+        private Point _playerStart;
 
         // Properties
         /// <summary>
@@ -24,9 +25,10 @@ namespace ShotgunBoomerang
         /// Creates a new level with a given tile map
         /// </summary>
         /// <param name="tileMap">The list of tiles the level will have</param>
-        public Level(List<Tile> tileMap)
+        public Level(List<Tile> tileMap, Point playerStart)
         {
             _tileMap = tileMap;
+            _playerStart = playerStart;
         }
 
         /// <summary>
@@ -39,6 +41,22 @@ namespace ShotgunBoomerang
             {
                 tile.Draw(sb);
             }
+        }
+
+        /// <summary>
+        /// Should set the level back to it's original state
+        /// </summary>
+        public void Reset()
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Should load the next level
+        /// </summary>
+        public void NextLevel()
+        {
+            throw new NotImplementedException();
         }
     }
 }
