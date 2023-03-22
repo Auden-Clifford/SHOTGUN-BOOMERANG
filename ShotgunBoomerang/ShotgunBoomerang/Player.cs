@@ -10,16 +10,25 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ShotgunBoomerang
 {
+    /// <summary>
+    /// Determines the different states the player can be in
+    /// </summary>
     public enum PlayerState
     {
-        Facing_Left,
-        Facing_Right,
-        Running_Left,
-        Running_Right,
-        Airborn_Left,
-        Airborn_Right,
-        Sliding_Left,
-        Sliding_Right
+        Idle,
+        Run,
+        Airborne,
+        Slide,
+        Skid
+    }
+
+    /// <summary>
+    /// Determines the directions the player can face
+    /// </summary>
+    public enum Direction
+    {
+        Left,
+        Right
     }
     internal class Player : MobileEntity
     {
@@ -50,9 +59,10 @@ namespace ShotgunBoomerang
             _velocity = new Vector2(0, 0);
             _maxHealth = 100;
             _damage = 60;
+            _acceleration = 3;
             _ammo = 2;
             _isHoldingBoomerang = true;
-            _currentState = PlayerState.Facing_Right;
+            _currentState = PlayerState.Idle;
             _shotgunRadius = 64;
             _shotgunAngle = 45;
         }
@@ -73,38 +83,38 @@ namespace ShotgunBoomerang
         /// </summary>
         public override void Update()
         {
+            // The player is slowed by different amounts depending
+            // on whether they are running, skidding, or in the air
+            float runFriction = 0.8f;
+            float airFriction = 0.7f;
+            float skidFriction = 0.9f;
+
             switch(_currentState)
             {
-                case PlayerState.Facing_Left: 
-                    //
+                case PlayerState.Idle:
+                    // Transition to Airborne when no longer colliding with the ground
+                    // Transition to Run when A or D is pressed
                     break;
 
-                case PlayerState.Facing_Right: 
-                    
+                case PlayerState.Run: 
+                    // Transition to Airborne when no longer colliding with the ground
+                    // Transition to Slide when CTRL is pressed
+                    // Transition to Skid when A or D is no longer pressed
                     break;
 
-                case PlayerState.Running_Left: 
-                    
+                case PlayerState.Airborne: 
+                    // Transition to Idle when there is no horizontal velocity and player collides with ground
+                    // Transition to Run when there is horizontal velocity and player collides with ground
                     break;
 
-                case PlayerState.Running_Right: 
-                    
+                case PlayerState.Slide: 
+                    // Transition to Run when CTRL is released
+                    // Transition to Airborne when no longer colliding with ground
                     break;
 
-                case PlayerState.Airborn_Left: 
-
-                    break;
-
-                case PlayerState.Airborn_Right:
-
-                    break;
-
-                case PlayerState.Sliding_Left:
-
-                    break; 
-                
-                case PlayerState.Sliding_Right:
-
+                case PlayerState.Skid:
+                    // Transition to Idle when there is no horizontal velocity
+                    // Transition to Run if A or D is pressed
                     break;
             }
         }

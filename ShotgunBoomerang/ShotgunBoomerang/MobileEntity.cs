@@ -17,6 +17,7 @@ namespace ShotgunBoomerang
         protected float _health;
         protected float _maxHealth;
         protected float _damage;
+        protected float _acceleration;
 
 
         // Properties
