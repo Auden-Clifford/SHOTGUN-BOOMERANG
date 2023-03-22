@@ -20,12 +20,29 @@ namespace ShotgunBoomerang
 
 
         // Properties
+        /// <summary>
+        /// Get's the entity's health clamped between the max and 0
+        /// </summary>
         public float Health 
         { 
             get { return _health; } 
             set { _health = Math.Clamp(value, 0, _maxHealth); } 
         }
 
+        /// <summary>
+        /// Gets whether this entity is dead
+        /// </summary>
+        public bool IsDead
+        {
+            get 
+            { 
+                if (Health == 0)
+                {
+                    return true;
+                }
+                return false;
+            }
+        }
 
         // Methods
 

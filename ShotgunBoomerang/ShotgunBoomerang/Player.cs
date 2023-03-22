@@ -33,7 +33,6 @@ namespace ShotgunBoomerang
 
 
         // Properties
-
         
         // Constructors
         /// <summary>
@@ -48,7 +47,7 @@ namespace ShotgunBoomerang
             _position = position;
             _health = health;
 
-            _velocity = 0;
+            _velocity = new Vector2(0, 0);
             _maxHealth = 100;
             _damage = 60;
             _ammo = 2;
@@ -74,7 +73,40 @@ namespace ShotgunBoomerang
         /// </summary>
         public override void Update()
         {
-            base.Update();
+            switch(_currentState)
+            {
+                case PlayerState.Facing_Left: 
+                    //
+                    break;
+
+                case PlayerState.Facing_Right: 
+                    
+                    break;
+
+                case PlayerState.Running_Left: 
+                    
+                    break;
+
+                case PlayerState.Running_Right: 
+                    
+                    break;
+
+                case PlayerState.Airborn_Left: 
+
+                    break;
+
+                case PlayerState.Airborn_Right:
+
+                    break;
+
+                case PlayerState.Sliding_Left:
+
+                    break; 
+                
+                case PlayerState.Sliding_Right:
+
+                    break;
+            }
         }
     }
 }
