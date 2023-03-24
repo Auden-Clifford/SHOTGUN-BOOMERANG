@@ -39,11 +39,13 @@ namespace ShotgunBoomerang
         private PlayerState _currentState;
         private float _shotgunRadius;
         private float _shotgunAngle;
+        private bool _isCollidingWithGround;
 
 
         // Properties
         
         // Constructors
+
         /// <summary>
         /// Creates a new player with given texture, position, and health
         /// </summary>
@@ -65,6 +67,7 @@ namespace ShotgunBoomerang
             _currentState = PlayerState.Idle;
             _shotgunRadius = 64;
             _shotgunAngle = 45;
+            _isCollidingWithGround = false;
         }
 
 
@@ -81,7 +84,7 @@ namespace ShotgunBoomerang
         /// <summary>
         /// Contains the logic for updating the player, including FSM and movement
         /// </summary>
-        public override void Update()
+        public void Update(KeyboardState kb, KeyboardState prevKB)
         {
             // The player is slowed by different amounts depending
             // on whether they are running, skidding, or in the air
@@ -93,30 +96,178 @@ namespace ShotgunBoomerang
             {
                 case PlayerState.Idle:
                     // Transition to Airborne when no longer colliding with the ground
+                    if(!_isCollidingWithGround)
+                    {
+                        _currentState = PlayerState.Airborne;
+                    }
+
                     // Transition to Run when A or D is pressed
+                    if(kb.IsKeyDown(Keys.A) || kb.IsKeyDown(Keys.D))
+                    {
+                        _currentState = PlayerState.Run;
+                    }
+
                     break;
 
-                case PlayerState.Run: 
+                case PlayerState.Run:
                     // Transition to Airborne when no longer colliding with the ground
+                    if (!_isCollidingWithGround)
+                    {
+                        _currentState = PlayerState.Airborne;
+                    }
+
                     // Transition to Slide when CTRL is pressed
-                    // Transition to Skid when A or D is no longer pressed
-                    break;
+                    if(kb.IsKeyDown(Keys.LeftControl))
+                    {
+                        _currentState = PlayerState.Slide;
+                    }
+
+                    // Transition to Skid if the key does not match the direction of motion
+                    if((kb.IsKeyUp(Keys.A) && kb.IsKeyUp(Keys.D)) // all keys are released
+                        || (kb.IsKeyDown(Keys.A) && _velocity.X > 0) // A is pressed but the player is moving right
+                        || (kb.IsKeyDown(Keys.D) && _velocity.X < 0)) // D is pressed but the player is moving left
+                    {
+                        _currentState = PlayerState.Skid;
+                    }
+                        break;
 
                 case PlayerState.Airborne: 
-                    // Transition to Idle when there is no horizontal velocity and player collides with ground
-                    // Transition to Run when there is horizontal velocity and player collides with ground
+                    // this state ends once the player hits the ground
+                    if(_isCollidingWithGround)
+                    {
+                        // if the horizontal velocity is 0, transition to idle
+                        if(_velocity.X == 0)
+                        {
+                            _currentState = PlayerState.Idle;
+                        }
+                        // otherwise transition to run
+                        else
+                        {
+                            _currentState = PlayerState.Run;
+                        }
+                    }
                     break;
 
                 case PlayerState.Slide: 
                     // Transition to Run when CTRL is released
+                    if(kb.IsKeyUp(Keys.LeftControl))
+                    {
+                        _currentState = PlayerState.Run;
+                    }
+
                     // Transition to Airborne when no longer colliding with ground
+                    if(!_isCollidingWithGround)
+                    {
+                        _currentState = PlayerState.Airborne;
+                    }
                     break;
 
                 case PlayerState.Skid:
                     // Transition to Idle when there is no horizontal velocity
+                    if(_velocity.X == 0)
+                    {
+                        _currentState = PlayerState.Idle;
+                    }
                     // Transition to Run if A or D is pressed
+                    if(kb.IsKeyDown(Keys.A) || (kb.IsKeyDown(Keys.D)))
+                    {
+                        _currentState = PlayerState.Run;
+                    }
                     break;
             }
+
+            // the player's isCollidingWithGround variable must always
+            // be set to false at the end of Update, it will be detected again in ResolveCollisions
+            _isCollidingWithGround = false;
+        }
+
+        /// <summary>
+        /// Resolves collisions with tiles to that the player 
+        /// collides with them properly and reports whether 
+        /// the player is in contact with the ground
+        /// **IMPORTANT: this method must always come before the player's update method**
+        /// </summary>
+        /// <param name="tileMap">The list of tiles in the currently loaded level</param>
+        public void ResolveCollisions(List<Tile> tileMap)
+        {
+            // get the player's hitbox
+            Rectangle playerHitBox = this.HitBox;
+
+            // temporary list for all intersections
+            List<Rectangle> intersectionsList = new List<Rectangle>();
+
+            // loop through the list of all rectangles
+            foreach (Tile tile in tileMap)
+            {
+                // if the player is intersecting the tile
+                if (tile.HitBox.Intersects(playerHitBox))
+                {
+                    // add it's hitbox to the list
+                    intersectionsList.Add(tile.HitBox);
+                }
+            }
+
+            // loop through and resolve all horizontal intersections
+            foreach (Rectangle rectangle in intersectionsList)
+            {
+                // create a new rectangle from the collision between the player and the rectangle
+                Rectangle intersectRect = Rectangle.Intersect(playerHitBox, rectangle);
+
+                //check for a horizontal collision (intersection is taller than it is wide)
+                if (intersectRect.Width <= intersectRect.Height)
+                {
+                    // if the player X is less than (further left than) the rectangle x
+                    // move the player left
+                    if (this._position.X < intersectRect.X)
+                    {
+                        playerHitBox.X -= intersectRect.Width;
+                    }
+                    // otherwise move right
+                    else
+                    {
+                        playerHitBox.X += intersectRect.Width;
+                    }
+
+                }
+
+
+            }
+
+            this._position.X = playerHitBox.X;
+
+            // loop through and resolve all vertical intersections
+            foreach (Rectangle rectangle in intersectionsList)
+            {
+
+                // create a new rectangle from the collision between the player and the rectangle
+                Rectangle intersectRect = Rectangle.Intersect(playerHitBox, rectangle);
+
+                // check for vertical collision (intersection is wider than it is tall)
+                if (intersectRect.Width > intersectRect.Height)
+                {
+                    // if the player Y is less than (further up than) the rectangle Y
+                    // move the player up
+                    if (this._position.Y < intersectRect.Y)
+                    {
+                        playerHitBox.Y -= intersectRect.Height;
+
+                        // this means the player is in contact with the ground
+                        _isCollidingWithGround = true;
+                    }
+                    // otherwise move down
+                    else
+                    {
+                        playerHitBox.Y += intersectRect.Height;
+                    }
+
+                    //the player's Y velocity is set to 0
+                    this._velocity.Y = 0;
+                }
+
+
+            }
+
+            playerPosition.Y = playerHitBox.Y;
         }
     }
 }
