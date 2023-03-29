@@ -107,6 +107,12 @@ namespace ShotgunBoomerang
                         _velocity.Y -= _jumpForce;
                     }
 
+                    // if the player left clicks, perform a shotgun attack
+                    if(GameManager.ms.LeftButton == ButtonState.Pressed)
+                    {
+                        ShotgunAttack();
+                    }
+
                     // Transition to Airborne when no longer colliding with the ground
                     if(!_isCollidingWithGround)
                     {
@@ -126,6 +132,12 @@ namespace ShotgunBoomerang
                     if (GameManager.kb.IsKeyDown(Keys.Space) || GameManager.kb.IsKeyDown(Keys.W))
                     {
                         _velocity.Y -= _jumpForce;
+                    }
+
+                    // if the player left clicks, perform a shotgun attack
+                    if (GameManager.ms.LeftButton == ButtonState.Pressed)
+                    {
+                        ShotgunAttack();
                     }
 
                     // while A or D are pressed, increase the player's velocity
@@ -164,6 +176,12 @@ namespace ShotgunBoomerang
                         break;
 
                 case PlayerState.Airborne:
+                    // if the player left clicks, perform a shotgun attack
+                    if (GameManager.ms.LeftButton == ButtonState.Pressed)
+                    {
+                        ShotgunAttack();
+                    }
+
                     // appky air friction to velocity
                     _velocity *= airFriction;
 
@@ -190,6 +208,12 @@ namespace ShotgunBoomerang
                         _velocity.Y -= _jumpForce;
                     }
 
+                    // if the player left clicks, perform a shotgun attack
+                    if (GameManager.ms.LeftButton == ButtonState.Pressed)
+                    {
+                        ShotgunAttack();
+                    }
+
                     // Transition to Run when CTRL is released
                     if (GameManager.kb.IsKeyUp(Keys.LeftControl))
                     {
@@ -210,6 +234,12 @@ namespace ShotgunBoomerang
                         _velocity.Y -= _jumpForce;
                     }
 
+                    // if the player left clicks, perform a shotgun attack
+                    if (GameManager.ms.LeftButton == ButtonState.Pressed)
+                    {
+                        ShotgunAttack();
+                    }
+
                     // apply friction to the player's velocity
                     _velocity *= skidFriction;
 
@@ -218,6 +248,7 @@ namespace ShotgunBoomerang
                     {
                         _velocity.X = 0;
                     }
+
                     // Transition to Idle when there is no horizontal velocity
                     if(_velocity.X == 0)
                     {
@@ -342,7 +373,16 @@ namespace ShotgunBoomerang
 
         private void ShotgunAttack()
         {
+            // need the mouse's position to be a Vector2 for math
+            Vector2 mousePos = new Vector2(GameManager.ms.Position.X, GameManager.ms.Position.Y);
 
+            // velocity normal between the mouse and the player's centerpoint
+            Vector2 velocityNormal = Vector2.Normalize(
+                new Vector2(_position.X + _sprite.Width / 2, 
+                _position.Y - _sprite.Height / 2) - mousePos);
+
+            // throw the player back in the opposite direction of the blast
+            _velocity += velocityNormal * (_damage / 3);
         }
     }
 }

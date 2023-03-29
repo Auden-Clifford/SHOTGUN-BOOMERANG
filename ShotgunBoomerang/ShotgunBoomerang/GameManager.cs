@@ -85,12 +85,14 @@ namespace ShotgunBoomerang
                 Exit();
 
             kb = Keyboard.GetState();
+            ms = Mouse.GetState();
 
             // update the player
             player.ResolveCollisions(testLevel.TileMap);
             player.Update();
 
             prevKb = kb;
+            prevMs = ms;
 
             base.Update(gameTime);
         }
