@@ -82,9 +82,12 @@ namespace ShotgunBoomerang
         /// Draws the player with animations based on FSM
         /// </summary>
         /// <param name="sb"></param>
-        public override void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, GraphicsDeviceManager gd)
         {
-            base.Draw(sb);
+            sb.Draw(_sprite,
+                new Vector2(gd.PreferredBackBufferWidth / 2 - _sprite.Width / 2, 
+                gd.PreferredBackBufferHeight / 2 - _sprite.Height / 2), 
+                Color.White);
         }
 
         /// <summary>

@@ -72,8 +72,7 @@ namespace ShotgunBoomerang
 
             // create the test level
             testLevel = new Level(GenerateTestLevel(),
-                new Vector2(testTileSprite.Width,
-                _graphics.PreferredBackBufferHeight - testTileSprite.Height * 5));
+                new Vector2(testTileSprite.Width, -testTileSprite.Width * 3));
 
             // set up the player
             player = new Player(playerSprite, testLevel.PlayerStart, 100);
@@ -105,9 +104,9 @@ namespace ShotgunBoomerang
 
             _spriteBatch.Begin();
 
-            testLevel.Draw(_spriteBatch);
+            testLevel.Draw(_spriteBatch, _graphics, player);
 
-            player.Draw(_spriteBatch);
+            player.Draw(_spriteBatch, _graphics);
 
             // print the window's X and Y
             _spriteBatch.DrawString(arial12, $"Window width: {_graphics.PreferredBackBufferWidth}", new Vector2(10, 10), Color.White);
@@ -141,7 +140,7 @@ namespace ShotgunBoomerang
             {
                 tileMap.Add(new Tile(testTileSprite, 
                     new Vector2(i * testTileSprite.Width, 
-                    _graphics.PreferredBackBufferHeight - testTileSprite.Height)));
+                    0)));
             }
 
             return tileMap;
