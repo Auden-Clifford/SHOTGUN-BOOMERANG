@@ -73,7 +73,7 @@ namespace ShotgunBoomerang
             _shotgunRadius = 64;
             _shotgunAngle = 45;
             _isCollidingWithGround = false;
-            _jumpForce = 16;
+            _jumpForce = 32;
         }
 
 
@@ -82,9 +82,12 @@ namespace ShotgunBoomerang
         /// Draws the player with animations based on FSM
         /// </summary>
         /// <param name="sb"></param>
-        public override void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb)
         {
-            base.Draw(sb);
+            sb.Draw(_sprite,
+                new Vector2(GameManager.graphics.PreferredBackBufferWidth / 2 - _sprite.Width / 2,
+                GameManager.graphics.PreferredBackBufferHeight / 2 - _sprite.Height / 2), 
+                Color.White);
         }
 
         /// <summary>
@@ -101,14 +104,18 @@ namespace ShotgunBoomerang
             switch (_currentState)
             {
                 case PlayerState.Idle:
-                    // if the player presses the spacebar or w jump
-                    if(GameManager.kb.IsKeyDown(Keys.Space) || GameManager.kb.IsKeyDown(Keys.W))
+                    // if the player presses the spacebar or w (only once) jump
+                    if(GameManager.kb.IsKeyDown(Keys.Space) && 
+                        GameManager.prevKb.IsKeyUp(Keys.Space) || 
+                        GameManager.kb.IsKeyDown(Keys.W) && 
+                        GameManager.prevKb.IsKeyUp(Keys.W))
                     {
                         _velocity.Y -= _jumpForce;
                     }
 
-                    // if the player left clicks, perform a shotgun attack
-                    if(GameManager.ms.LeftButton == ButtonState.Pressed)
+                    // if the player left clicks (only once), perform a shotgun attack
+                    if(GameManager.ms.LeftButton == ButtonState.Pressed && 
+                        GameManager.prevMs.LeftButton == ButtonState.Released)
                     {
                         ShotgunAttack();
                     }
@@ -129,13 +136,17 @@ namespace ShotgunBoomerang
 
                 case PlayerState.Run:
                     // if the player presses the spacebar or w jump
-                    if (GameManager.kb.IsKeyDown(Keys.Space) || GameManager.kb.IsKeyDown(Keys.W))
+                    if (GameManager.kb.IsKeyDown(Keys.Space) &&
+                        GameManager.prevKb.IsKeyUp(Keys.Space) ||
+                        GameManager.kb.IsKeyDown(Keys.W) &&
+                        GameManager.prevKb.IsKeyUp(Keys.W))
                     {
                         _velocity.Y -= _jumpForce;
                     }
 
-                    // if the player left clicks, perform a shotgun attack
-                    if (GameManager.ms.LeftButton == ButtonState.Pressed)
+                    // if the player left clicks (only once), perform a shotgun attack
+                    if (GameManager.ms.LeftButton == ButtonState.Pressed &&
+                        GameManager.prevMs.LeftButton == ButtonState.Released)
                     {
                         ShotgunAttack();
                     }
@@ -176,8 +187,9 @@ namespace ShotgunBoomerang
                         break;
 
                 case PlayerState.Airborne:
-                    // if the player left clicks, perform a shotgun attack
-                    if (GameManager.ms.LeftButton == ButtonState.Pressed)
+                    // if the player left clicks (only once), perform a shotgun attack
+                    if (GameManager.ms.LeftButton == ButtonState.Pressed &&
+                        GameManager.prevMs.LeftButton == ButtonState.Released)
                     {
                         ShotgunAttack();
                     }
@@ -202,14 +214,18 @@ namespace ShotgunBoomerang
                     break;
 
                 case PlayerState.Slide:
-                    // if the player presses the spacebar or W, jump
-                    if (GameManager.kb.IsKeyDown(Keys.Space) || GameManager.kb.IsKeyDown(Keys.W))
+                    // if the player presses the spacebar or W (only once), jump
+                    if (GameManager.kb.IsKeyDown(Keys.Space) &&
+                        GameManager.prevKb.IsKeyUp(Keys.Space) ||
+                        GameManager.kb.IsKeyDown(Keys.W) &&
+                        GameManager.prevKb.IsKeyUp(Keys.W))
                     {
                         _velocity.Y -= _jumpForce;
                     }
 
-                    // if the player left clicks, perform a shotgun attack
-                    if (GameManager.ms.LeftButton == ButtonState.Pressed)
+                    // if the player left clicks (only once), perform a shotgun attack
+                    if (GameManager.ms.LeftButton == ButtonState.Pressed &&
+                        GameManager.prevMs.LeftButton == ButtonState.Released)
                     {
                         ShotgunAttack();
                     }
@@ -228,14 +244,18 @@ namespace ShotgunBoomerang
                     break;
 
                 case PlayerState.Skid:
-                    // if the player presses the spacebar or W, jump
-                    if (GameManager.kb.IsKeyDown(Keys.Space) || GameManager.kb.IsKeyDown(Keys.W))
+                    // if the player presses the spacebar or W (only once), jump
+                    if (GameManager.kb.IsKeyDown(Keys.Space) &&
+                        GameManager.prevKb.IsKeyUp(Keys.Space) ||
+                        GameManager.kb.IsKeyDown(Keys.W) &&
+                        GameManager.prevKb.IsKeyUp(Keys.W))
                     {
                         _velocity.Y -= _jumpForce;
                     }
 
-                    // if the player left clicks, perform a shotgun attack
-                    if (GameManager.ms.LeftButton == ButtonState.Pressed)
+                    // if the player left clicks (only once), perform a shotgun attack
+                    if (GameManager.ms.LeftButton == ButtonState.Pressed &&
+                        GameManager.prevMs.LeftButton == ButtonState.Released)
                     {
                         ShotgunAttack();
                     }
@@ -376,13 +396,13 @@ namespace ShotgunBoomerang
             // need the mouse's position to be a Vector2 for math
             Vector2 mousePos = new Vector2(GameManager.ms.Position.X, GameManager.ms.Position.Y);
 
-            // velocity normal between the mouse and the player's centerpoint
+            // velocity normal between the mouse and the player's centerpoint (center of the screen)
             Vector2 velocityNormal = Vector2.Normalize(
-                new Vector2(_position.X + _sprite.Width / 2, 
-                _position.Y - _sprite.Height / 2) - mousePos);
+                new Vector2(GameManager.graphics.PreferredBackBufferWidth / 2,
+               GameManager.graphics.PreferredBackBufferHeight / 2) - mousePos);
 
             // throw the player back in the opposite direction of the blast
-            _velocity += velocityNormal * (_damage / 3);
+            _velocity += velocityNormal * (_damage / 2);
         }
     }
 }

@@ -38,9 +38,11 @@ namespace ShotgunBoomerang
         }
 
         /// <summary>
-        /// Get's the object's position
+        /// Get's or sets the object's position
         /// </summary>
-        public Vector2 Position { get { return _position; } }
+        public virtual Vector2 Position { get { return _position; } set { _position = value; } }
+
+        public Texture2D Sprite { get { return _sprite; } }
 
 
         // Methods

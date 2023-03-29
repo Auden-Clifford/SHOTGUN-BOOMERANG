@@ -30,7 +30,8 @@ namespace ShotgunBoomerang
         public static MouseState ms;
         public static MouseState prevMs;
 
-        private GraphicsDeviceManager _graphics;
+        public static  GraphicsDeviceManager graphics;
+
         private SpriteBatch _spriteBatch;
 
         private Texture2D testTileSprite;
@@ -54,7 +55,7 @@ namespace ShotgunBoomerang
 
         public GameManager()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -86,15 +87,14 @@ namespace ShotgunBoomerang
 
             // set the game to full screen and the resolution to match the 16-bit artstyle
             // this resolution may not be the final one we choose
-            _graphics.PreferredBackBufferWidth = testTileSprite.Width * 16;
-            _graphics.PreferredBackBufferHeight = (int)(_graphics.PreferredBackBufferWidth * (0.5));
+            graphics.PreferredBackBufferWidth = testTileSprite.Width * 16;
+            graphics.PreferredBackBufferHeight = (int)(graphics.PreferredBackBufferWidth * (0.5));
             //_graphics.IsFullScreen= true;
-            _graphics.ApplyChanges();
+            graphics.ApplyChanges();
 
             // create the test level
             testLevel = new Level(GenerateTestLevel(),
-                new Vector2(testTileSprite.Width,
-                _graphics.PreferredBackBufferHeight - testTileSprite.Height * 5));
+                new Vector2(testTileSprite.Width, -testTileSprite.Width * 3));
 
             // set up the player
             player = new Player(playerSprite, testLevel.PlayerStart, 100);
@@ -297,7 +297,7 @@ namespace ShotgunBoomerang
             {
                 tileMap.Add(new Tile(testTileSprite, 
                     new Vector2(i * testTileSprite.Width, 
-                    _graphics.PreferredBackBufferHeight - testTileSprite.Height)));
+                    0)));
             }
 
             return tileMap;
