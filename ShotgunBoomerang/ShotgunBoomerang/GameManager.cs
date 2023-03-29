@@ -21,7 +21,8 @@ namespace ShotgunBoomerang
         public static MouseState ms;
         public static MouseState prevMs;
 
-        private GraphicsDeviceManager _graphics;
+        public static  GraphicsDeviceManager graphics;
+
         private SpriteBatch _spriteBatch;
 
         private Texture2D testTileSprite;
@@ -35,7 +36,7 @@ namespace ShotgunBoomerang
 
         public GameManager()
         {
-            _graphics = new GraphicsDeviceManager(this);
+            graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -65,10 +66,10 @@ namespace ShotgunBoomerang
 
             // set the game to full screen and the resolution to match the 16-bit artstyle
             // this resolution may not be the final one we choose
-            _graphics.PreferredBackBufferWidth = testTileSprite.Width * 16;
-            _graphics.PreferredBackBufferHeight = (int)(_graphics.PreferredBackBufferWidth * (0.5));
+            graphics.PreferredBackBufferWidth = testTileSprite.Width * 16;
+            graphics.PreferredBackBufferHeight = (int)(graphics.PreferredBackBufferWidth * (0.5));
             //_graphics.IsFullScreen= true;
-            _graphics.ApplyChanges();
+            graphics.ApplyChanges();
 
             // create the test level
             testLevel = new Level(GenerateTestLevel(),
@@ -104,13 +105,13 @@ namespace ShotgunBoomerang
 
             _spriteBatch.Begin();
 
-            testLevel.Draw(_spriteBatch, _graphics, player);
+            testLevel.Draw(_spriteBatch, player);
 
-            player.Draw(_spriteBatch, _graphics);
+            player.Draw(_spriteBatch);
 
             // print the window's X and Y
-            _spriteBatch.DrawString(arial12, $"Window width: {_graphics.PreferredBackBufferWidth}", new Vector2(10, 10), Color.White);
-            _spriteBatch.DrawString(arial12, $"Window height: {_graphics.PreferredBackBufferHeight}", new Vector2(10, 30), Color.White);
+            _spriteBatch.DrawString(arial12, $"Window width: {graphics.PreferredBackBufferWidth}", new Vector2(10, 10), Color.White);
+            _spriteBatch.DrawString(arial12, $"Window height: {graphics.PreferredBackBufferHeight}", new Vector2(10, 30), Color.White);
 
             // print the mouse's X and Y
             _spriteBatch.DrawString(arial12, $"Mouse Coordinates: {ms.X}, {ms.Y}", new Vector2(10, 50), Color.White);
