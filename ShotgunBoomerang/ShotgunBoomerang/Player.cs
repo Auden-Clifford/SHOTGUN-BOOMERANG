@@ -40,9 +40,14 @@ namespace ShotgunBoomerang
         private float _shotgunRadius;
         private float _shotgunAngle;
         private bool _isCollidingWithGround;
+        private float _jumpForce;
 
 
         // Properties
+        /// <summary>
+        /// Gets the player's current state
+        /// </summary>
+        public PlayerState CurrentState { get { return _currentState; } }
         
         // Constructors
 
@@ -68,6 +73,7 @@ namespace ShotgunBoomerang
             _shotgunRadius = 64;
             _shotgunAngle = 45;
             _isCollidingWithGround = false;
+            _jumpForce = 16;
         }
 
 
@@ -84,17 +90,23 @@ namespace ShotgunBoomerang
         /// <summary>
         /// Contains the logic for updating the player, including FSM and movement
         /// </summary>
-        public void Update(KeyboardState kb, KeyboardState prevKB)
+        public override void Update()
         {
             // The player is slowed by different amounts depending
             // on whether they are running, skidding, or in the air
             float runFriction = 0.8f;
-            float airFriction = 0.7f;
-            float skidFriction = 0.9f;
+            float airFriction = 0.99f;
+            float skidFriction = 0.7f;
 
-            switch(_currentState)
+            switch (_currentState)
             {
                 case PlayerState.Idle:
+                    // if the player presses the spacebar or w jump
+                    if(GameManager.kb.IsKeyDown(Keys.Space) || GameManager.kb.IsKeyDown(Keys.W))
+                    {
+                        _velocity.Y -= _jumpForce;
+                    }
+
                     // Transition to Airborne when no longer colliding with the ground
                     if(!_isCollidingWithGround)
                     {
@@ -102,7 +114,7 @@ namespace ShotgunBoomerang
                     }
 
                     // Transition to Run when A or D is pressed
-                    if(kb.IsKeyDown(Keys.A) || kb.IsKeyDown(Keys.D))
+                    if(GameManager.kb.IsKeyDown(Keys.A) || GameManager.kb.IsKeyDown(Keys.D))
                     {
                         _currentState = PlayerState.Run;
                     }
@@ -110,6 +122,26 @@ namespace ShotgunBoomerang
                     break;
 
                 case PlayerState.Run:
+                    // if the player presses the spacebar or w jump
+                    if (GameManager.kb.IsKeyDown(Keys.Space) || GameManager.kb.IsKeyDown(Keys.W))
+                    {
+                        _velocity.Y -= _jumpForce;
+                    }
+
+                    // while A or D are pressed, increase the player's velocity
+                    if (GameManager.kb.IsKeyDown(Keys.A))
+                    {
+                        _velocity.X -= _acceleration;
+                    }
+
+                    if (GameManager.kb.IsKeyDown(Keys.D))
+                    {
+                        _velocity.X += _acceleration;
+                    }
+
+                    // apply ground friction
+                    _velocity *= runFriction;
+
                     // Transition to Airborne when no longer colliding with the ground
                     if (!_isCollidingWithGround)
                     {
@@ -117,21 +149,24 @@ namespace ShotgunBoomerang
                     }
 
                     // Transition to Slide when CTRL is pressed
-                    if(kb.IsKeyDown(Keys.LeftControl))
+                    if(GameManager.kb.IsKeyDown(Keys.LeftControl))
                     {
                         _currentState = PlayerState.Slide;
                     }
 
                     // Transition to Skid if the key does not match the direction of motion
-                    if((kb.IsKeyUp(Keys.A) && kb.IsKeyUp(Keys.D)) // all keys are released
-                        || (kb.IsKeyDown(Keys.A) && _velocity.X > 0) // A is pressed but the player is moving right
-                        || (kb.IsKeyDown(Keys.D) && _velocity.X < 0)) // D is pressed but the player is moving left
+                    if((GameManager.kb.IsKeyUp(Keys.A) && GameManager.kb.IsKeyUp(Keys.D)) // all keys are released
+                        || (GameManager.kb.IsKeyDown(Keys.A) && _velocity.X > 0) // A is pressed but the player is moving right
+                        || (GameManager.kb.IsKeyDown(Keys.D) && _velocity.X < 0)) // D is pressed but the player is moving left
                     {
                         _currentState = PlayerState.Skid;
                     }
                         break;
 
-                case PlayerState.Airborne: 
+                case PlayerState.Airborne:
+                    // appky air friction to velocity
+                    _velocity *= airFriction;
+
                     // this state ends once the player hits the ground
                     if(_isCollidingWithGround)
                     {
@@ -148,9 +183,15 @@ namespace ShotgunBoomerang
                     }
                     break;
 
-                case PlayerState.Slide: 
+                case PlayerState.Slide:
+                    // if the player presses the spacebar or W, jump
+                    if (GameManager.kb.IsKeyDown(Keys.Space) || GameManager.kb.IsKeyDown(Keys.W))
+                    {
+                        _velocity.Y -= _jumpForce;
+                    }
+
                     // Transition to Run when CTRL is released
-                    if(kb.IsKeyUp(Keys.LeftControl))
+                    if (GameManager.kb.IsKeyUp(Keys.LeftControl))
                     {
                         _currentState = PlayerState.Run;
                     }
@@ -163,18 +204,33 @@ namespace ShotgunBoomerang
                     break;
 
                 case PlayerState.Skid:
+                    // if the player presses the spacebar or W, jump
+                    if (GameManager.kb.IsKeyDown(Keys.Space) || GameManager.kb.IsKeyDown(Keys.W))
+                    {
+                        _velocity.Y -= _jumpForce;
+                    }
+
+                    // apply friction to the player's velocity
+                    _velocity *= skidFriction;
+
+                    // once the player reaches 0.01 velocity it should become 0
+                    if(MathF.Abs(_velocity.X) < 0.1) 
+                    {
+                        _velocity.X = 0;
+                    }
                     // Transition to Idle when there is no horizontal velocity
                     if(_velocity.X == 0)
                     {
                         _currentState = PlayerState.Idle;
                     }
                     // Transition to Run if A or D is pressed
-                    if(kb.IsKeyDown(Keys.A) || (kb.IsKeyDown(Keys.D)))
+                    if(GameManager.kb.IsKeyDown(Keys.A) || (GameManager.kb.IsKeyDown(Keys.D)))
                     {
                         _currentState = PlayerState.Run;
                     }
                     break;
             }
+            
 
             // the player's isCollidingWithGround variable must always
             // be set to false at the end of Update, it will be detected again in ResolveCollisions
@@ -190,6 +246,9 @@ namespace ShotgunBoomerang
         /// <param name="tileMap">The list of tiles in the currently loaded level</param>
         public void ResolveCollisions(List<Tile> tileMap)
         {
+            //gravity is applied beforehand
+            ApplyPhysics();
+
             // get the player's hitbox
             Rectangle playerHitBox = this.HitBox;
 
@@ -221,11 +280,17 @@ namespace ShotgunBoomerang
                     if (this._position.X < intersectRect.X)
                     {
                         playerHitBox.X -= intersectRect.Width;
+
+                        //the player's X velocity cannot be positive when touching the right wall
+                        this._velocity.X = Math.Clamp(_velocity.X, float.MinValue, 0);
                     }
                     // otherwise move right
                     else
                     {
                         playerHitBox.X += intersectRect.Width;
+
+                        //the player's X velocity cannot be negative when touching the left wall
+                        this._velocity.X = Math.Clamp(_velocity.X, 0, float.MaxValue);
                     }
 
                 }
@@ -253,21 +318,31 @@ namespace ShotgunBoomerang
 
                         // this means the player is in contact with the ground
                         _isCollidingWithGround = true;
+
+                        //the player's Y velocity cannot be negative when touching the ground
+                        this._velocity.Y = Math.Clamp(_velocity.Y, float.MinValue, 0);
                     }
-                    // otherwise move down
+                    // otherwise the player has hit thier head, move down
                     else
                     {
                         playerHitBox.Y += intersectRect.Height;
+
+                        //the player's Y velocity cannot be positive when touching the cieling
+                        this._velocity.Y = Math.Clamp(_velocity.Y, 0, float.MaxValue);
                     }
 
-                    //the player's Y velocity is set to 0
-                    this._velocity.Y = 0;
+                    
                 }
 
 
             }
 
-            playerPosition.Y = playerHitBox.Y;
+            this._position.Y = playerHitBox.Y;
+        }
+
+        private void ShotgunAttack()
+        {
+
         }
     }
 }

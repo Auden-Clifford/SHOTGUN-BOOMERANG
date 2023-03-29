@@ -13,7 +13,7 @@ namespace ShotgunBoomerang
     {
         // Fields
         private List<Tile> _tileMap;
-        private Point _playerStart;
+        private Vector2 _playerStart;
 
         // Properties
         /// <summary>
@@ -22,10 +22,15 @@ namespace ShotgunBoomerang
         public List<Tile> TileMap { get { return _tileMap; } }
 
         /// <summary>
+        /// Get's the level's starting player position.
+        /// </summary>
+        public Vector2 PlayerStart { get { return _playerStart; } }
+
+        /// <summary>
         /// Creates a new level with a given tile map
         /// </summary>
         /// <param name="tileMap">The list of tiles the level will have</param>
-        public Level(List<Tile> tileMap, Point playerStart)
+        public Level(List<Tile> tileMap, Vector2 playerStart)
         {
             _tileMap = tileMap;
             _playerStart = playerStart;

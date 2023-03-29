@@ -37,6 +37,11 @@ namespace ShotgunBoomerang
             } 
         }
 
+        /// <summary>
+        /// Get's the object's position
+        /// </summary>
+        public Vector2 Position { get { return _position; } }
+
 
         // Methods
 
