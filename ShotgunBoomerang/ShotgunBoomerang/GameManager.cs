@@ -212,11 +212,11 @@ namespace ShotgunBoomerang
                 case GameState.MainMenu:
 
                     // (Placeholders) draws the logo and start text. Will probably use a custom logo and different font in the future
-                    _spriteBatch.DrawString(arial36, "SHOTGUNBOOMERANG", new Vector2((_graphics.PreferredBackBufferWidth / 2) - 280,
-                        (_graphics.PreferredBackBufferHeight / 2) - 100), Color.White);
+                    _spriteBatch.DrawString(arial36, "SHOTGUNBOOMERANG", new Vector2((graphics.PreferredBackBufferWidth / 2) - 280,
+                        (graphics.PreferredBackBufferHeight / 2) - 100), Color.White);
 
-                    _spriteBatch.DrawString(arial12, "Press any button to start", new Vector2((_graphics.PreferredBackBufferWidth / 2) - 100,
-                        (_graphics.PreferredBackBufferHeight / 2) - 30), Color.White);
+                    _spriteBatch.DrawString(arial12, "Press any button to start", new Vector2((graphics.PreferredBackBufferWidth / 2) - 100,
+                        (graphics.PreferredBackBufferHeight / 2) - 30), Color.White);
 
                     break;
 
@@ -233,11 +233,11 @@ namespace ShotgunBoomerang
                 case GameState.PauseMenu:
 
                     // Pause & return text
-                    _spriteBatch.DrawString(arial36, "PAUSED", new Vector2((_graphics.PreferredBackBufferWidth / 2) - 100,
-                        (_graphics.PreferredBackBufferHeight / 2) - 100), Color.White);
+                    _spriteBatch.DrawString(arial36, "PAUSED", new Vector2((graphics.PreferredBackBufferWidth / 2) - 100,
+                        (graphics.PreferredBackBufferHeight / 2) - 100), Color.White);
 
-                    _spriteBatch.DrawString(arial12, "Press ESC to return to game", new Vector2((_graphics.PreferredBackBufferWidth / 2) - 104,
-                         (_graphics.PreferredBackBufferHeight / 2) - 40), Color.White);
+                    _spriteBatch.DrawString(arial12, "Press ESC to return to game", new Vector2((graphics.PreferredBackBufferWidth / 2) - 104,
+                         (graphics.PreferredBackBufferHeight / 2) - 40), Color.White);
 
                     // "Buttons"
                     _spriteBatch.Draw(blankRectangleSprite, pauseButtonDebug, Color.White);
@@ -253,15 +253,15 @@ namespace ShotgunBoomerang
                 // Drawing for gameplay
                 case GameState.Gameplay:
 
-                    testLevel.Draw(_spriteBatch);
+                    testLevel.Draw(_spriteBatch, player);
                     player.Draw(_spriteBatch);
 
                     // If debug enabled, print position & speed stats on screen
                     if (debugOn)
                     {
                         // print the window's X and Y
-                        _spriteBatch.DrawString(arial12, $"Window width: {_graphics.PreferredBackBufferWidth}", new Vector2(10, 10), Color.White);
-                        _spriteBatch.DrawString(arial12, $"Window height: {_graphics.PreferredBackBufferHeight}", new Vector2(10, 30), Color.White);
+                        _spriteBatch.DrawString(arial12, $"Window width: {graphics.PreferredBackBufferWidth}", new Vector2(10, 10), Color.White);
+                        _spriteBatch.DrawString(arial12, $"Window height: {graphics.PreferredBackBufferHeight}", new Vector2(10, 30), Color.White);
 
                         // print the mouse's X and Y
                         _spriteBatch.DrawString(arial12, $"Mouse Coordinates: {ms.X}, {ms.Y}", new Vector2(10, 50), Color.White);
