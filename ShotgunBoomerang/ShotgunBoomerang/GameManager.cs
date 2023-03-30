@@ -104,7 +104,6 @@ namespace ShotgunBoomerang
             pauseButtonGodMode = new Rectangle(430, 300, 163, 100);
             pauseButtonQuit = new Rectangle(630, 300, 163, 100);
             levelButtonPlay = new Rectangle(430, 225, 163, 100);
-
         }
 
         /// <summary>
@@ -124,8 +123,9 @@ namespace ShotgunBoomerang
                 // We can move to the LEVEL SELECT, or close the game.
                 case GameState.MainMenu:
 
-                    // "Press any button to continue"
-                    if  (kb != prevKb && kb.IsKeyUp(Keys.Escape))
+                    // "Press any button to continue" (or user can click)
+                    if  ((kb != prevKb && kb.IsKeyUp(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
+                        || (ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed))
                     { gameState = GameState.LevelSelect; }
 
                     // Close the game by pressing escape
@@ -138,12 +138,9 @@ namespace ShotgunBoomerang
                 // We can move back to the MAIN MENU, or move to GAMEPLAY.
                 case GameState.LevelSelect:
 
-                    // This isn't working yet
-                    /*
                     // Return to main menu screen
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
                     { gameState = GameState.MainMenu; }
-                    */
 
                     // Play the demo level
                     if (levelButtonPlay.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
@@ -186,7 +183,6 @@ namespace ShotgunBoomerang
                     break;
             }
 
-
             prevKb = kb;
             prevMs = ms;
 
@@ -223,9 +219,13 @@ namespace ShotgunBoomerang
                 // Drawing for level select (will have more/different options in the future)
                 case GameState.LevelSelect:
 
+                    // "Level Select" text
+                    _spriteBatch.DrawString(arial36, "Select Level", new Vector2((graphics.PreferredBackBufferWidth / 2) - 135,
+                        (graphics.PreferredBackBufferHeight / 2) - 200), Color.White);
+
                     // Right now, we only have one "level."
                     _spriteBatch.Draw(blankRectangleSprite, levelButtonPlay, Color.White);
-                    _spriteBatch.DrawString(arial12, "Play Demo", new Vector2(470, 265), Color.Black);
+                    _spriteBatch.DrawString(arial12, "Demo", new Vector2(490, 265), Color.Black);
 
                     break;
 
