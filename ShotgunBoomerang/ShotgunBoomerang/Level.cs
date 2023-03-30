@@ -66,5 +66,19 @@ namespace ShotgunBoomerang
         {
             throw new NotImplementedException();
         }
+
+        /// <summary>
+        /// Resets the player's position to the starting position
+        /// And sets player velocity to 0
+        /// </summary>
+        /// <param name="player">player to reset</param>
+        public void ResetLevel(Player player)
+        {
+            player.Position = _playerStart;
+            player.Velocity = new Vector2(0, 0);
+            //health reset
+
+            //reset list of enemies and objects
+        }
     }
 }

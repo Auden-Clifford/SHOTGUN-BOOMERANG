@@ -48,7 +48,7 @@ namespace ShotgunBoomerang
         /// <summary>
         /// Get's the entity's velocity
         /// </summary>
-        public Vector2 Velocity { get { return _velocity; } }
+        public Vector2 Velocity { get { return _velocity; } set { _velocity = value; } }
 
         // Methods
 
