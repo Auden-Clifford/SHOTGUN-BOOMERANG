@@ -48,10 +48,10 @@ namespace Boomerang_Demo
         protected override void LoadContent()
         {
             _spriteBatch = new SpriteBatch(GraphicsDevice);
-            playerTexture = Content.Load<Texture2D>("mario");
+            playerTexture = Content.Load<Texture2D>("PlayerTestSprite");
             player = new Rectangle((int)playerPosition.X, (int)playerPosition.Y, playerTexture.Width, playerTexture.Height);
             boomerangTexture = Content.Load<Texture2D>("boomerang");
-            boomerangRect = new Rectangle((int)boomerangPosition.X, (int)boomerangPosition.Y, boomerangTexture.Width, boomerangTexture.Height);
+            boomerangRect = new Rectangle((int)boomerangPosition.X, (int)boomerangPosition.Y, boomerangTexture.Width * 3, boomerangTexture.Height * 3);
             arial12 = Content.Load<SpriteFont>("File");
             
             // TODO: use this.Content to load your game content here
