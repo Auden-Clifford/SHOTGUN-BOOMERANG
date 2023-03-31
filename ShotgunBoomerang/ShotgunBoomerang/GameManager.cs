@@ -164,9 +164,13 @@ namespace ShotgunBoomerang
                     { godModeOn = !godModeOn; } // Enables god mode
 
                     if (pauseButtonQuit.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
-                    { gameState = GameState.MainMenu; } // Quitting to main menu
+                    {
+                        testLevel.ResetLevel(player);
+                        gameState = GameState.MainMenu; } // Quitting to main menu
 
-                    break;
+                    
+
+                        break;
 
                 // We are in GAMEPLAY.
                 // We can PAUSE.
@@ -179,6 +183,12 @@ namespace ShotgunBoomerang
                     // Change to pause state if escape key pressed
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
                     { gameState = GameState.PauseMenu; }
+
+                    //Resets the level to starting state
+                    if (kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R))
+                    {
+                        testLevel.ResetLevel(player);
+                    }
 
                     break;
             }
