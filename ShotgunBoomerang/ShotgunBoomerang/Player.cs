@@ -126,8 +126,8 @@ namespace ShotgunBoomerang
                         _currentState = PlayerState.Airborne;
                     }
 
-                    // Transition to Run when A or D is pressed
-                    if(GameManager.kb.IsKeyDown(Keys.A) || GameManager.kb.IsKeyDown(Keys.D))
+                    // Transition to Run when A or D is pressed or if X velocity is not 0
+                    if(GameManager.kb.IsKeyDown(Keys.A) || GameManager.kb.IsKeyDown(Keys.D) || _velocity.X != 0)
                     {
                         _currentState = PlayerState.Run;
                     }
@@ -274,8 +274,13 @@ namespace ShotgunBoomerang
                     {
                         _currentState = PlayerState.Idle;
                     }
+                    // Transition to Airborne when no longer colliding with ground
+                    if (!_isCollidingWithGround)
+                    {
+                        _currentState = PlayerState.Airborne;
+                    }
                     // Transition to Run if A or D is pressed
-                    if(GameManager.kb.IsKeyDown(Keys.A) || (GameManager.kb.IsKeyDown(Keys.D)))
+                    if (GameManager.kb.IsKeyDown(Keys.A) || (GameManager.kb.IsKeyDown(Keys.D)))
                     {
                         _currentState = PlayerState.Run;
                     }
