@@ -26,10 +26,9 @@ namespace ShotgunBoomerang
         public void Update();
 
         /// <summary>
-        /// Should check if the projectile is colliding with any game objects
+        /// Should Resolve Collisions with Tiles
         /// </summary>
-        /// <returns></returns>
-        public bool CheckCollision();
+        public void ResolveTileCollisions(List<Tile> tilemap);
 
         /// <summary>
         /// Should contain logic for what to do when the projectile hits a player or enemy

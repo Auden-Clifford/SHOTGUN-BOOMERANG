@@ -17,7 +17,7 @@ namespace ShotgunBoomerang
         protected float _health;
         protected float _maxHealth;
         protected float _damage;
-        protected float _acceleration;
+        protected Vector2 _acceleration;
 
 
         // Properties
@@ -76,10 +76,6 @@ namespace ShotgunBoomerang
         /// Will check if the entity is colliding with any tiles then
         /// resolve those collisions by updating the player's position.
         /// </summary>
-        /// <exception cref="NotImplementedException">Have not finished this method</exception>
-        protected virtual void ResolveCollisions()
-        {
-            throw new NotImplementedException();
-        }
+        public abstract void ResolveTileCollisions(List<Tile> tileMap);
     }
 }

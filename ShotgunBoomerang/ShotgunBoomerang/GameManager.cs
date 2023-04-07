@@ -177,7 +177,7 @@ namespace ShotgunBoomerang
                 case GameState.Gameplay:
 
                     // Update the player
-                    player.ResolveCollisions(testLevel.TileMap);
+                    player.ResolveTileCollisions(testLevel.TileMap);
                     player.Update();
 
                     // Change to pause state if escape key pressed

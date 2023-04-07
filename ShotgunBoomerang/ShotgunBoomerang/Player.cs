@@ -66,7 +66,7 @@ namespace ShotgunBoomerang
             _velocity = new Vector2(0, 0);
             _maxHealth = 100;
             _damage = 60;
-            _acceleration = 3;
+            _acceleration = new Vector2(3, 0);
             _ammo = 2;
             _isHoldingBoomerang = true;
             _currentState = PlayerState.Idle;
@@ -154,12 +154,12 @@ namespace ShotgunBoomerang
                     // while A or D are pressed, increase the player's velocity
                     if (GameManager.kb.IsKeyDown(Keys.A))
                     {
-                        _velocity.X -= _acceleration;
+                        _velocity.X -= _acceleration.X;
                     }
 
                     if (GameManager.kb.IsKeyDown(Keys.D))
                     {
-                        _velocity.X += _acceleration;
+                        _velocity.X += _acceleration.X;
                     }
 
                     // apply ground friction
@@ -300,7 +300,7 @@ namespace ShotgunBoomerang
         /// **IMPORTANT: this method must always come before the player's update method**
         /// </summary>
         /// <param name="tileMap">The list of tiles in the currently loaded level</param>
-        public void ResolveCollisions(List<Tile> tileMap)
+        public override void ResolveTileCollisions(List<Tile> tileMap)
         {
             
             //gravity is applied beforehand
