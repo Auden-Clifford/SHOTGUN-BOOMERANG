@@ -55,10 +55,11 @@ namespace ShotgunBoomerang
 
         public GameManager()
         {
+            // Sets width and height to match hardware fullscreen
             graphics = new GraphicsDeviceManager(this);
-            //graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
-            //graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
-            //graphics.ApplyChanges();
+            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            graphics.ApplyChanges();
             //Window.AllowUserResizing = true;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -72,6 +73,10 @@ namespace ShotgunBoomerang
 
             ms = Mouse.GetState();
             prevMs = Mouse.GetState();
+
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
+            graphics.ApplyChanges();
 
             base.Initialize();
         }
@@ -89,13 +94,6 @@ namespace ShotgunBoomerang
             // Load fonts
             arial12 = this.Content.Load<SpriteFont>("Arial12");
             arial36 = this.Content.Load<SpriteFont>("Arial36");
-
-            // set the game to full screen and the resolution to match the 16-bit artstyle
-            // this resolution may not be the final one we choose
-            graphics.PreferredBackBufferWidth = testTileSprite.Width * 16;
-            graphics.PreferredBackBufferHeight = (int)(graphics.PreferredBackBufferWidth * (0.5));
-            //_graphics.IsFullScreen= true;
-            graphics.ApplyChanges();
 
             // create the test level
             testLevel = new Level(GenerateTestLevel(),
@@ -237,7 +235,7 @@ namespace ShotgunBoomerang
                 case GameState.LevelSelect:
 
                     // "Level Select" text
-                    _spriteBatch.DrawString(arial36, "Select Level", new Vector2((graphics.PreferredBackBufferWidth / 2) - 135,
+                    _spriteBatch.DrawString(arial36, "SELECT LEVEL", new Vector2((graphics.PreferredBackBufferWidth / 2) - 135,
                         (graphics.PreferredBackBufferHeight / 2) - 200), Color.White);
 
                     // Right now, we only have one "level."
