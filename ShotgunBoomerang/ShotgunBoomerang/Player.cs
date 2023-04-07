@@ -312,7 +312,8 @@ namespace ShotgunBoomerang
             // temporary list for all intersections
             List<Rectangle> intersectionsList = new List<Rectangle>();
 
-            // loop through the list of all rectangles
+            // loop through the list of all tiles
+            // to find which ones are interseting
             foreach (Tile tile in tileMap)
             {
                 // if the player is intersecting the tile
@@ -338,20 +339,12 @@ namespace ShotgunBoomerang
                 }
 
                 // resolve the largest collision
-                Rectangle intersect = Rectangle.Intersect(playerHitBox, largest);
-            }
-            /*
-
-            // loop through and resolve all horizontal intersections
-            foreach (Rectangle rectangle in intersectionsList)
-            {
-                // create a new rectangle from the collision between the player and the rectangle
-                Rectangle intersectRect = Rectangle.Intersect(playerHitBox, rectangle);
+                Rectangle intersectRect = Rectangle.Intersect(playerHitBox, largest);
 
                 //check for a horizontal collision (intersection is taller than it is wide)
                 if (intersectRect.Width <= intersectRect.Height)
                 {
-                    // if the player X is less than (further left than) the rectangle x
+                    // if the player X is less than (further left than) the intersection's x
                     // move the player left
                     if (this._position.X < intersectRect.X)
                     {
@@ -369,22 +362,10 @@ namespace ShotgunBoomerang
                         this._velocity.X = Math.Clamp(_velocity.X, 0, float.MaxValue);
                     }
 
+                    this._position.X = playerHitBox.X;
                 }
-
-
-            }
-
-            this._position.X = playerHitBox.X;
-
-            // loop through and resolve all vertical intersections
-            foreach (Rectangle rectangle in intersectionsList)
-            {
-
-                // create a new rectangle from the collision between the player and the rectangle
-                Rectangle intersectRect = Rectangle.Intersect(playerHitBox, rectangle);
-
-                // check for vertical collision (intersection is wider than it is tall)
-                if (intersectRect.Width > intersectRect.Height)
+                // otherwise this must be a vertical collision
+                else
                 {
                     // if the player Y is less than (further up than) the rectangle Y
                     // move the player up
@@ -407,14 +388,24 @@ namespace ShotgunBoomerang
                         this._velocity.Y = Math.Clamp(_velocity.Y, 0, float.MaxValue);
                     }
 
-                    
+                    this._position.Y = playerHitBox.Y;
                 }
 
+                // reset the intersections list and check again
+                intersectionsList.Clear();
 
+                // loop through the list of all tiles
+                // to find which ones are interseting
+                foreach (Tile tile in tileMap)
+                {
+                    // if the player is intersecting the tile
+                    if (tile.HitBox.Intersects(playerHitBox))
+                    {
+                        // add it's hitbox to the list
+                        intersectionsList.Add(tile.HitBox);
+                    }
+                }
             }
-
-            this._position.Y = playerHitBox.Y;
-            */
         }
 
         private void ShotgunAttack()
