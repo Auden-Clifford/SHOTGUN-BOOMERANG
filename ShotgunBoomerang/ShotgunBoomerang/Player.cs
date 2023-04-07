@@ -302,6 +302,7 @@ namespace ShotgunBoomerang
         /// <param name="tileMap">The list of tiles in the currently loaded level</param>
         public void ResolveCollisions(List<Tile> tileMap)
         {
+            
             //gravity is applied beforehand
             ApplyPhysics();
 
@@ -321,6 +322,25 @@ namespace ShotgunBoomerang
                     intersectionsList.Add(tile.HitBox);
                 }
             }
+
+            while(intersectionsList.Count > 0)
+            {
+                // variable to store the largest intersection
+                Rectangle largest = new Rectangle();
+
+                // find the largest intersection
+                foreach(Rectangle rectangle in intersectionsList)
+                {
+                    if (rectangle.Width * rectangle.Height >= largest.Width * largest.Height)
+                    {
+                        largest = rectangle;
+                    }
+                }
+
+                // resolve the largest collision
+                Rectangle intersect = Rectangle.Intersect(playerHitBox, largest);
+            }
+            /*
 
             // loop through and resolve all horizontal intersections
             foreach (Rectangle rectangle in intersectionsList)
@@ -394,6 +414,7 @@ namespace ShotgunBoomerang
             }
 
             this._position.Y = playerHitBox.Y;
+            */
         }
 
         private void ShotgunAttack()
@@ -408,6 +429,7 @@ namespace ShotgunBoomerang
 
             // throw the player back in the opposite direction of the blast
             _velocity += velocityNormal * (_damage / 2);
+            
         }
     }
 }
