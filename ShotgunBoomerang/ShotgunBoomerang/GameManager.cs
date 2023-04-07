@@ -30,7 +30,7 @@ namespace ShotgunBoomerang
         public static MouseState ms;
         public static MouseState prevMs;
 
-        public static  GraphicsDeviceManager graphics;
+        public static GraphicsDeviceManager graphics;
 
         private SpriteBatch _spriteBatch;
 
@@ -55,7 +55,12 @@ namespace ShotgunBoomerang
 
         public GameManager()
         {
+            // Sets width and height to match hardware fullscreen
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            graphics.ApplyChanges();
+            //Window.AllowUserResizing = true;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -69,11 +74,16 @@ namespace ShotgunBoomerang
             ms = Mouse.GetState();
             prevMs = Mouse.GetState();
 
+            graphics.PreferredBackBufferWidth = 1920;
+            graphics.PreferredBackBufferHeight = 1080;
+            graphics.ApplyChanges();
+
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load textures
@@ -84,13 +94,6 @@ namespace ShotgunBoomerang
             // Load fonts
             arial12 = this.Content.Load<SpriteFont>("Arial12");
             arial36 = this.Content.Load<SpriteFont>("Arial36");
-
-            // set the game to full screen and the resolution to match the 16-bit artstyle
-            // this resolution may not be the final one we choose
-            graphics.PreferredBackBufferWidth = testTileSprite.Width * 16;
-            graphics.PreferredBackBufferHeight = (int)(graphics.PreferredBackBufferWidth * (0.5));
-            //_graphics.IsFullScreen= true;
-            graphics.ApplyChanges();
 
             // create the test level
             testLevel = new Level(GenerateTestLevel(),
@@ -168,9 +171,7 @@ namespace ShotgunBoomerang
                         testLevel.ResetLevel(player);
                         gameState = GameState.MainMenu; } // Quitting to main menu
 
-                    
-
-                        break;
+                    break;
 
                 // We are in GAMEPLAY.
                 // We can PAUSE.
@@ -211,6 +212,10 @@ namespace ShotgunBoomerang
 
             _spriteBatch.Begin();
 
+            // If debug enabled, print position & speed stats on screen
+            if (debugOn)
+            { DrawDebug(); }
+
             // Drawing differently depending on the gamestates
             switch (gameState)
             {
@@ -230,7 +235,7 @@ namespace ShotgunBoomerang
                 case GameState.LevelSelect:
 
                     // "Level Select" text
-                    _spriteBatch.DrawString(arial36, "Select Level", new Vector2((graphics.PreferredBackBufferWidth / 2) - 135,
+                    _spriteBatch.DrawString(arial36, "SELECT LEVEL", new Vector2((graphics.PreferredBackBufferWidth / 2) - 135,
                         (graphics.PreferredBackBufferHeight / 2) - 200), Color.White);
 
                     // Right now, we only have one "level."
@@ -241,6 +246,9 @@ namespace ShotgunBoomerang
 
                 // Drawing for pause menu
                 case GameState.PauseMenu:
+
+                    testLevel.Draw(_spriteBatch, player);
+                    player.Draw(_spriteBatch);
 
                     // Pause & return text
                     _spriteBatch.DrawString(arial36, "PAUSED", new Vector2((graphics.PreferredBackBufferWidth / 2) - 100,
@@ -265,26 +273,6 @@ namespace ShotgunBoomerang
 
                     testLevel.Draw(_spriteBatch, player);
                     player.Draw(_spriteBatch);
-
-                    // If debug enabled, print position & speed stats on screen
-                    if (debugOn)
-                    {
-                        // print the window's X and Y
-                        _spriteBatch.DrawString(arial12, $"Window width: {graphics.PreferredBackBufferWidth}", new Vector2(10, 10), Color.White);
-                        _spriteBatch.DrawString(arial12, $"Window height: {graphics.PreferredBackBufferHeight}", new Vector2(10, 30), Color.White);
-
-                        // print the mouse's X and Y
-                        _spriteBatch.DrawString(arial12, $"Mouse Coordinates: {ms.X}, {ms.Y}", new Vector2(10, 50), Color.White);
-
-                        // print the player's X and Y
-                        _spriteBatch.DrawString(arial12, $"Player Coordinates: {player.Position.X}, {player.Position.Y}", new Vector2(10, 70), Color.White);
-
-                        // print the player's Velocity
-                        _spriteBatch.DrawString(arial12, $"Player Velocity: {player.Velocity.X}, {player.Velocity.Y}", new Vector2(10, 90), Color.White);
-
-                        // print the player's state
-                        _spriteBatch.DrawString(arial12, $"Player state: {player.CurrentState}", new Vector2(10, 110), Color.White);
-                    }
 
                     break;
             }
@@ -311,6 +299,28 @@ namespace ShotgunBoomerang
             }
 
             return tileMap;
+        }
+
+        /// <summary>
+        /// Draws the debug text. Helper Method!
+        /// </summary>
+        public void DrawDebug()
+        {
+            // print the window's X and Y
+            _spriteBatch.DrawString(arial12, $"Window width: {graphics.PreferredBackBufferWidth}", new Vector2(10, 10), Color.White);
+            _spriteBatch.DrawString(arial12, $"Window height: {graphics.PreferredBackBufferHeight}", new Vector2(10, 30), Color.White);
+
+            // print the mouse's X and Y
+            _spriteBatch.DrawString(arial12, $"Mouse Coordinates: {ms.X}, {ms.Y}", new Vector2(10, 50), Color.White);
+
+            // print the player's X and Y
+            _spriteBatch.DrawString(arial12, $"Player Coordinates: {player.Position.X}, {player.Position.Y}", new Vector2(10, 70), Color.White);
+
+            // print the player's Velocity
+            _spriteBatch.DrawString(arial12, $"Player Velocity: {player.Velocity.X}, {player.Velocity.Y}", new Vector2(10, 90), Color.White);
+
+            // print the player's state
+            _spriteBatch.DrawString(arial12, $"Player state: {player.CurrentState}", new Vector2(10, 110), Color.White);
         }
     }
 }
