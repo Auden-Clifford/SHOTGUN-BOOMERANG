@@ -74,10 +74,6 @@ namespace ShotgunBoomerang
             ms = Mouse.GetState();
             prevMs = Mouse.GetState();
 
-            graphics.PreferredBackBufferWidth = 1920;
-            graphics.PreferredBackBufferHeight = 1080;
-            graphics.ApplyChanges();
-
             base.Initialize();
         }
 
