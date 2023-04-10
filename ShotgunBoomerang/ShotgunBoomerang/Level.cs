@@ -79,6 +79,9 @@ namespace ShotgunBoomerang
             //health reset
 
             //reset list of enemies and objects
+
+            player.Score = 0;
+            player.Kills = 0;
         }
     }
 }

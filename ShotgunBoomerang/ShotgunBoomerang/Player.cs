@@ -42,12 +42,33 @@ namespace ShotgunBoomerang
         private bool _isCollidingWithGround;
         private float _jumpForce;
 
+        private double score;
+        private int kills;
+        private double timer; //this might not be handled here. won't implement until it's clear
+
 
         // Properties
         /// <summary>
         /// Gets the player's current state
         /// </summary>
         public PlayerState CurrentState { get { return _currentState; } }
+
+        /// <summary>
+        /// retrieves/sets the players current score
+        /// </summary>
+        public double Score { 
+            get { return score; }
+            set { score = value; }
+        }
+
+        /// <summary>
+        /// retrieves/sets the players kill count
+        /// </summary>
+        public int Kills
+        {
+            get { return kills; }
+            set { kills = value; }
+        }
         
         // Constructors
 
