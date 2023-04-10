@@ -72,15 +72,32 @@ namespace ShotgunBoomerang
         public Level(List<Tile> tileMap, List<IGameEnemy> enemies, List <IGameProjectile> projectiles, Vector2 playerStart)
         {
             // current and original start off equal
+            // but they will be copies of eachother (not references)
             _startTileMap = tileMap;
-            _currentTileMap = _startTileMap;
+            _currentTileMap = new List<Tile>();
+
+            foreach(Tile tile in _startTileMap)
+            {
+                _currentTileMap.Add(tile);
+            }
 
             _startEnemies = enemies;
-            _currentEnemies = _startEnemies;
+            _currentEnemies = new List<IGameEnemy>();
+
+            foreach (IGameEnemy enemy in _startEnemies)
+            {
+                _currentEnemies.Add(enemy);
+            }
 
             _startProjectiles = projectiles;
-            _currentProjectiles= projectiles;
+            _currentProjectiles = new List<IGameProjectile>();
 
+            
+            foreach(IGameProjectile projectile in _startProjectiles)
+            {
+                _currentProjectiles.Add(projectile);
+            }
+            
             _playerStart = playerStart;
         }
 
@@ -158,11 +175,25 @@ namespace ShotgunBoomerang
             player.Position = _playerStart;
             player.IsHoldingBoomerang = true;
             player.Velocity = new Vector2(0, 0);
+            
+            player.Score = 0;
+            player.Kills = 0;
+
             //health reset
 
             //reset list of enemies and objects
-            _currentEnemies = _startEnemies;
-            _currentProjectiles = _startProjectiles;
+            // by clearing and resetting the current lists to the start lists
+            _currentEnemies.Clear();
+            foreach (IGameEnemy enemy in _startEnemies)
+            {
+                _currentEnemies.Add(enemy);
+            }
+
+            _currentProjectiles.Clear();
+            foreach (IGameProjectile projectile in _startProjectiles)
+            {
+                _currentProjectiles.Add(projectile);
+            }
         }
     }
 }
