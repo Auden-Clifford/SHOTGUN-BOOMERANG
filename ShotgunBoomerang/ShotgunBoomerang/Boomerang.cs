@@ -219,10 +219,8 @@ namespace ShotgunBoomerang
                     // apply physics to the boomerang
                     ApplyPhysics();
 
-                    // if the moomerang reaches the player (centerpoint of the screen) it will transition to the Held state
-                    if(_position == new Vector2(
-                        GameManager.graphics.PreferredBackBufferWidth / 2,
-                        GameManager.graphics.PreferredBackBufferHeight / 2))
+                    // if the boomerang intersects with the player, transition to held state
+                    if(this.CheckCollision(player))
                     {
                         // the boomerang should no longer have acceleration once it is being held
                         _acceleration = Vector2.Zero;

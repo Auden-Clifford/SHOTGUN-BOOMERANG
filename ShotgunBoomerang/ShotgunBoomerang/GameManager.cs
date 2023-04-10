@@ -40,11 +40,13 @@ namespace ShotgunBoomerang
         private Texture2D testTileSprite;
         private Texture2D playerSprite;
         private Texture2D blankRectangleSprite;
+        private Texture2D boomerangSprite;
         private SpriteFont arial12;
         private SpriteFont arial36;
 
         private Level testLevel;
         private Player player;
+        private Boomerang boomerang;
 
         GameState gameState = GameState.MainMenu; // enum for managing gamestate (this is what starts the game on the menu screen)
         private bool debugOn = false; // boolean to toggle debug mode
@@ -89,6 +91,7 @@ namespace ShotgunBoomerang
             testTileSprite = this.Content.Load<Texture2D>("TestTile");
             playerSprite = this.Content.Load<Texture2D>("PlayerTestSprite");
             blankRectangleSprite = this.Content.Load<Texture2D>("blankRectangle");
+            boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
 
             // Load fonts
             arial12 = this.Content.Load<SpriteFont>("Arial12");
@@ -100,6 +103,9 @@ namespace ShotgunBoomerang
 
             // set up the player
             player = new Player(playerSprite, testLevel.PlayerStart, 100);
+
+            //set up the boomerang (same pos as the player)
+            boomerang = new Boomerang(boomerangSprite, testLevel.PlayerStart);
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
             pauseButtonDebug = new Rectangle(230, 300, 163, 100);
@@ -184,6 +190,9 @@ namespace ShotgunBoomerang
                     // Update the player
                     player.ResolveTileCollisions(testLevel.TileMap);
                     player.Update();
+
+                    // update boomerang
+                    boomerang.Update(player);
 
                     // Change to pause state if escape key pressed
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
@@ -277,6 +286,7 @@ namespace ShotgunBoomerang
 
                     testLevel.Draw(_spriteBatch, player);
                     player.Draw(_spriteBatch);
+                    boomerang.Draw(_spriteBatch, player);
 
                     break;
             }
