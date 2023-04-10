@@ -300,7 +300,7 @@ namespace ShotgunBoomerang
         /// **IMPORTANT: this method must always come before the player's update method**
         /// </summary>
         /// <param name="tileMap">The list of tiles in the currently loaded level</param>
-        public override void ResolveTileCollisions(List<Tile> tileMap)
+        public void ResolveTileCollisions(List<Tile> tileMap)
         {
             
             //gravity is applied beforehand

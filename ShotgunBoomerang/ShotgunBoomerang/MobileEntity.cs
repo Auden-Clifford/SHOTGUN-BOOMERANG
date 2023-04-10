@@ -76,6 +76,6 @@ namespace ShotgunBoomerang
         /// Will check if the entity is colliding with any tiles then
         /// resolve those collisions by updating the player's position.
         /// </summary>
-        public abstract void ResolveTileCollisions(List<Tile> tileMap);
+        //public abstract void ResolveTileCollisions(List<Tile> tileMap);
     }
 }
