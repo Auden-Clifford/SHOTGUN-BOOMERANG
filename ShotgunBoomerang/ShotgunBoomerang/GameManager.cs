@@ -192,7 +192,7 @@ namespace ShotgunBoomerang
                 case GameState.Gameplay:
 
                     // Update the player
-                    player.Update(kb, prevKb, ms, prevMs, testLevel.CurrentTileMap, testLevel.CurrentEnemies, testLevel.CurrentProjectiles, player);
+                    player.Update(kb, prevKb, ms, prevMs, testLevel.CurrentTileMap, testLevel.CurrentEnemies, testLevel.CurrentProjectiles, graphics);
 
                     // Update elements of the level
                     testLevel.Update(kb, prevKb, ms, prevMs, player);

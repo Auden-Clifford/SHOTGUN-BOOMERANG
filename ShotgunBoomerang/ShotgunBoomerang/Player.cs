@@ -139,8 +139,8 @@ namespace ShotgunBoomerang
         /// <param name="tileMap">The current level's tiles</param>
         /// <param name="enemies">The current level's enemies</param>
         /// <param name="projectiles">The projectiles currently in play</param>
-        /// <param name="player">The player (redundant self-reference, artifact of inheritance)</param>
-        public override void Update(
+        /// <param name="graphics">Contains info about the screen</param>
+        public void Update(
             KeyboardState kb,
             KeyboardState prevKb,
             MouseState ms,
@@ -148,7 +148,7 @@ namespace ShotgunBoomerang
             List<Tile> tileMap,
             List<IGameEnemy> enemies,
             List<IGameProjectile> projectiles,
-            Player player)
+            GraphicsDeviceManager graphics)
         {
             // The player is slowed by different amounts depending
             // on whether they are running, skidding, or in the air
@@ -175,7 +175,7 @@ namespace ShotgunBoomerang
                     if(ms.LeftButton == ButtonState.Pressed && 
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms);
+                        ShotgunAttack(ms, graphics);
                     }
 
                     // if the player right clicks (only once) and
@@ -184,7 +184,7 @@ namespace ShotgunBoomerang
                         prevMs.RightButton == ButtonState.Released &&
                         _isHoldingBoomerang)
                     {
-                        BoomerangAttack(ms, projectiles);
+                        BoomerangAttack(ms, graphics, projectiles);
                     }
 
                     // Transition to Airborne when no longer colliding with the ground
@@ -215,7 +215,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms);
+                        ShotgunAttack(ms, graphics);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -223,7 +223,7 @@ namespace ShotgunBoomerang
                         prevMs.RightButton == ButtonState.Released &&
                         _isHoldingBoomerang)
                     {
-                        BoomerangAttack(ms, projectiles);
+                        BoomerangAttack(ms, graphics, projectiles);
                     }
 
                     // while A or D are pressed, increase the player's velocity
@@ -266,7 +266,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms);
+                        ShotgunAttack(ms, graphics);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -274,7 +274,7 @@ namespace ShotgunBoomerang
                         prevMs.RightButton == ButtonState.Released &&
                         _isHoldingBoomerang)
                     {
-                        BoomerangAttack(ms, projectiles);
+                        BoomerangAttack(ms, graphics, projectiles);
                     }
 
                     // appky air friction to velocity
@@ -310,7 +310,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms);
+                        ShotgunAttack(ms, graphics);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -318,7 +318,7 @@ namespace ShotgunBoomerang
                         prevMs.RightButton == ButtonState.Released &&
                         _isHoldingBoomerang)
                     {
-                        BoomerangAttack(ms, projectiles);
+                        BoomerangAttack(ms, graphics, projectiles);
                     }
 
                     // Transition to Run when CTRL is released
@@ -348,7 +348,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms);
+                        ShotgunAttack(ms, graphics);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -356,7 +356,7 @@ namespace ShotgunBoomerang
                         prevMs.RightButton == ButtonState.Released &&
                         _isHoldingBoomerang)
                     {
-                        BoomerangAttack(ms, projectiles);
+                        BoomerangAttack(ms, graphics, projectiles);
                     }
 
                     // apply friction to the player's velocity
@@ -507,29 +507,29 @@ namespace ShotgunBoomerang
             }
         }
 
-        private void ShotgunAttack(MouseState ms)
+        private void ShotgunAttack(MouseState ms, GraphicsDeviceManager graphics)
         {
             // need the mouse's position to be a Vector2 for math
             Vector2 mousePos = new Vector2(ms.Position.X, ms.Position.Y);
 
             // velocity normal between the mouse and the player's centerpoint
             Vector2 velocityNormal = Vector2.Normalize(
-                new Vector2(_position.X + _sprite.Width / 2,
-                           _position.Y + _sprite.Height / 2) - mousePos);
+                new Vector2(graphics.PreferredBackBufferWidth / 2,
+                           graphics.PreferredBackBufferHeight / 2) - mousePos);
 
             // throw the player back in the opposite direction of the blast
             _velocity += velocityNormal * (_damage / 2);
             
         }
 
-        private void BoomerangAttack(MouseState ms, List<IGameProjectile> projectiles)
+        private void BoomerangAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameProjectile> projectiles)
         {
             Vector2 mousePos = new Vector2(ms.X, ms.Y);
 
-            // velocity normal between the mouse and the player's centerpoint
+            // velocity normal between the mouse and the center of the screen
             Vector2 velocityNormal = Vector2.Normalize(mousePos -
-                new Vector2(_position.X + _sprite.Width / 2,
-                           _position.Y + _sprite.Height / 2));
+                new Vector2(graphics.PreferredBackBufferWidth / 2,
+                           graphics.PreferredBackBufferHeight / 2));
 
             // add the boomerang to the game at the player's position witht the player's velocity +some
             projectiles.Add(new Boomerang(_boomerangSprite, _position, _velocity + velocityNormal * 30));
