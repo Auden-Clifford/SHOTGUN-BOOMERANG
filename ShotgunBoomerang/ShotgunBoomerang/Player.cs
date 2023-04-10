@@ -317,7 +317,7 @@ namespace ShotgunBoomerang
             foreach (Tile tile in tileMap)
             {
                 // if the player is intersecting the tile
-                if (tile.HitBox.Intersects(playerHitBox))
+                if (tile.CheckCollision(this))
                 {
                     // add it's hitbox to the list
                     intersectionsList.Add(tile.HitBox);

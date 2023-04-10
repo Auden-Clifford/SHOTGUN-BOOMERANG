@@ -30,6 +30,9 @@ namespace ShotgunBoomerang
         public static MouseState ms;
         public static MouseState prevMs;
 
+        // many classes will have to keep track of the currently loaded tiles
+        internal static List<Tile> currentTileMap;
+
         public static GraphicsDeviceManager graphics;
 
         private SpriteBatch _spriteBatch;
@@ -143,7 +146,12 @@ namespace ShotgunBoomerang
 
                     // Play the demo level
                     if (levelButtonPlay.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
-                    { gameState = GameState.Gameplay; }
+                    { 
+                        gameState = GameState.Gameplay;
+
+                        // This field should be set equal to the tilemap of the level being loaded
+                        currentTileMap = testLevel.TileMap;
+                    }
 
                     break;
 
