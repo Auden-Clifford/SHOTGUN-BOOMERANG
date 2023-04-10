@@ -121,22 +121,15 @@ namespace ShotgunBoomerang
             }
             */
 
-            foreach (IGameEnemy enemy in _currentEnemies)
+            for (int i = _currentEnemies.Count - 1; i >= 0; i--)
             {
-                enemy.Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player);
+                _currentEnemies[i].Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player);
             }
 
             for(int i = _currentProjectiles.Count- 1; i >= 0; i--)
             {
                 _currentProjectiles[i].Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player);
             }
-
-            /*
-            foreach (IGameProjectile projectile in _currentProjectiles)
-            {
-                
-            }
-            */
         }
 
         /// <summary>
