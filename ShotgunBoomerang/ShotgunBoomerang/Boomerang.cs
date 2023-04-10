@@ -24,6 +24,9 @@ namespace ShotgunBoomerang
         // fields
         private BoomerangState _currentState;
 
+        // Properties
+        public BoomerangState CurrentState { get { return _currentState; } }
+
         // Constructor
         /// <summary>
         /// Creates a new boomerang with a given texture and position
@@ -178,9 +181,9 @@ namespace ShotgunBoomerang
                         Vector2 mousePos = new Vector2(GameManager.ms.X, GameManager.ms.Y);
 
                         // velocity normal between the mouse and the player's centerpoint (center of the screen)
-                        Vector2 velocityNormal = Vector2.Normalize(
+                        Vector2 velocityNormal = Vector2.Normalize(mousePos -
                             new Vector2(GameManager.graphics.PreferredBackBufferWidth / 2,
-                           GameManager.graphics.PreferredBackBufferHeight / 2) - mousePos);
+                           GameManager.graphics.PreferredBackBufferHeight / 2));
 
                         // add some velocity when the boomerang is leaving the player's hand
                         _velocity += velocityNormal * _damage;
@@ -210,9 +213,9 @@ namespace ShotgunBoomerang
                     // it experiences constant acceleration towards the player
 
                     // velocity normal between the boomerang and the player's centerpoint (center of the screen)
-                    Vector2 playerBoomerangNormal = Vector2.Normalize( player.Position -
+                    Vector2 playerBoomerangNormal = Vector2.Normalize(
                             new Vector2(GameManager.graphics.PreferredBackBufferWidth / 2,
-                           GameManager.graphics.PreferredBackBufferHeight / 2));
+                           GameManager.graphics.PreferredBackBufferHeight / 2) - _position);
 
                     _acceleration = playerBoomerangNormal;
 

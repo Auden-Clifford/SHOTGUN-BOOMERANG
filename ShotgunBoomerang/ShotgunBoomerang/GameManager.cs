@@ -202,6 +202,8 @@ namespace ShotgunBoomerang
                     if (kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R))
                     {
                         testLevel.ResetLevel(player);
+                        // reset boomerang position as well (temporary solution)
+                        boomerang.Position = player.Position;
                     }
 
                     break;
@@ -335,6 +337,15 @@ namespace ShotgunBoomerang
 
             // print the player's state
             _spriteBatch.DrawString(arial12, $"Player state: {player.CurrentState}", new Vector2(10, 110), Color.White);
+
+            // print the boomerang's X and Y
+            _spriteBatch.DrawString(arial12, $"Boomerang Coordinates: {boomerang.Position.X}, {boomerang.Position.Y}", new Vector2(10, 130), Color.White);
+
+            // print the boomerang's velocity
+            _spriteBatch.DrawString(arial12, $"Boomerang Velocity: {boomerang.Velocity.X}, {boomerang.Velocity.Y}", new Vector2(10, 150), Color.White);
+
+            // print the boomerang's state
+            _spriteBatch.DrawString(arial12, $"Boomerang state: {boomerang.CurrentState}", new Vector2(10, 170), Color.White);
         }
     }
 }
