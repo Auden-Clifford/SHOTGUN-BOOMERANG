@@ -54,8 +54,27 @@ namespace ShotgunBoomerang
 
         /// <summary>
         /// method for use in the update loop, contains all logic the object needs to go through in a frame
+        /// as well as any parameters from the game manager that might be needed for this logic. 
+        /// Update will be the entry point for all data from Game manager to the other classes
+        /// -- The base update for all MobileEntity objects simply applies gravity and velocity
         /// </summary>
-        public override void Update()
+        /// <param name="kb">The keyboard state this frame</param>
+        /// <param name="prevKb"> The keyboard state last frame</param>
+        /// <param name="ms">The mouse state this frame</param>
+        /// <param name="prevMs">The mouse state last frame</param>
+        /// <param name="tileMap">The current level's tiles</param>
+        /// <param name="enemies">The current level's enemies</param>
+        /// <param name="projectiles">The projectiles currently in play</param>
+        /// <param name="player">The player</param>
+        public override void Update(
+            KeyboardState kb, 
+            KeyboardState prevKb, 
+            MouseState ms, 
+            MouseState prevMs, 
+            List<Tile> tileMap,
+            List<IGameEnemy> enemies,
+            List<IGameProjectile> projectiles,
+            Player player)
         {
             ApplyPhysics();
         }
@@ -76,6 +95,6 @@ namespace ShotgunBoomerang
         /// Will check if the entity is colliding with any tiles then
         /// resolve those collisions by updating the player's position.
         /// </summary>
-        //public abstract void ResolveTileCollisions(List<Tile> tileMap);
+        protected abstract void ResolveTileCollisions(List<Tile> tileMap);
     }
 }

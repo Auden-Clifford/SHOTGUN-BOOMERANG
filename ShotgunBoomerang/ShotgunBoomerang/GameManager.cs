@@ -24,17 +24,20 @@ namespace ShotgunBoomerang
         public static float Gravity = 1f;
 
         // many classes will need access to the mouse and keyboard
-        public static KeyboardState kb;
-        public static KeyboardState prevKb;
+        private KeyboardState kb;
+        private KeyboardState prevKb;
 
-        public static MouseState ms;
-        public static MouseState prevMs;
+        private MouseState ms;
+        private MouseState prevMs;
 
         // many classes will have to keep track of the currently loaded tiles
-        internal static List<Tile> currentTileMap;
+        private List<Tile> currentTileMap;
+        private List<IGameEnemy> currentEnemies;
+        private List<IGameProjectile> currentProjectiles;
 
-        public static GraphicsDeviceManager graphics;
+        private Vector2 screenOffset;
 
+        private static GraphicsDeviceManager graphics;
         private SpriteBatch _spriteBatch;
 
         private Texture2D testTileSprite;
@@ -188,11 +191,10 @@ namespace ShotgunBoomerang
                 case GameState.Gameplay:
 
                     // Update the player
-                    player.ResolveTileCollisions(testLevel.TileMap);
-                    player.Update();
+                    player.Update(kb, prevKb, ms, prevMs, currentTileMap, currentEnemies, currentProjectiles, player);
 
                     // update boomerang
-                    boomerang.Update(player);
+                    boomerang.Update(kb, prevKb, ms, prevMs, currentTileMap, currentEnemies, currentProjectiles, player);
 
                     // Change to pause state if escape key pressed
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
@@ -209,8 +211,15 @@ namespace ShotgunBoomerang
                     break;
             }
 
+            // update logic items
             prevKb = kb;
             prevMs = ms;
+
+            screenOffset = player.Position -
+                new Vector2(graphics.PreferredBackBufferWidth / 2 
+                - player.Sprite.Width / 2,
+                graphics.PreferredBackBufferHeight / 2 
+                - player.Sprite.Height / 2);
 
             base.Update(gameTime);
         }
@@ -262,8 +271,8 @@ namespace ShotgunBoomerang
                 // Drawing for pause menu
                 case GameState.PauseMenu:
 
-                    testLevel.Draw(_spriteBatch, player);
-                    player.Draw(_spriteBatch);
+                    testLevel.Draw(_spriteBatch, screenOffset);
+                    player.Draw(_spriteBatch, graphics);
 
                     // Pause & return text
                     _spriteBatch.DrawString(arial36, "PAUSED", new Vector2((graphics.PreferredBackBufferWidth / 2) - 100,
@@ -286,9 +295,9 @@ namespace ShotgunBoomerang
                 // Drawing for gameplay
                 case GameState.Gameplay:
 
-                    testLevel.Draw(_spriteBatch, player);
-                    player.Draw(_spriteBatch);
-                    boomerang.Draw(_spriteBatch, player);
+                    testLevel.Draw(_spriteBatch, screenOffset);
+                    player.Draw(_spriteBatch, graphics);
+                    boomerang.Draw(_spriteBatch, screenOffset);
 
                     break;
             }

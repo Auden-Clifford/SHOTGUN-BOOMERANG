@@ -51,11 +51,8 @@ namespace ShotgunBoomerang
         /// Should allow the boomerang to bounce off walls
         /// </summary>
         /// <param name="tileMap">The current level's tiles</param>
-        public void ResolveTileCollisions()
+        protected override void ResolveTileCollisions(List<Tile> tileMap)
         {
-            // take the tilemap currently in use
-            List<Tile> tileMap = GameManager.currentTileMap;
-
             //gravity is applied beforehand
             ApplyPhysics();
 
@@ -152,20 +149,27 @@ namespace ShotgunBoomerang
             }
         }
 
-        public void Draw(SpriteBatch sb, Player player)
+        
+        public override void Draw(SpriteBatch sb, Vector2 screenOffset)
         {
-            // draw the boomerang on the screen offset by the screen's world offset
-            sb.Draw(_sprite, _position - player.Position +
-                new Vector2(GameManager.graphics.PreferredBackBufferWidth / 2 - player.Sprite.Width / 2,
-                GameManager.graphics.PreferredBackBufferHeight / 2 - player.Sprite.Height / 2), Color.White);
+            base.Draw(sb, screenOffset);
         }
+        
 
         public void hit()
         {
             throw new NotImplementedException();
         }
 
-        public void Update(Player player)
+        public override void Update(
+            KeyboardState kb,
+            KeyboardState prevKb,
+            MouseState ms,
+            MouseState prevMs,
+            List<Tile> tileMap,
+            List<IGameEnemy> enemies,
+            List<IGameProjectile> projectiles,
+            Player player)
         {
             switch(_currentState)
             {
@@ -175,15 +179,15 @@ namespace ShotgunBoomerang
                     _position = player.Position;
 
                     // a transition to the Flying state will happen if the player right clicks once
-                    if(GameManager.ms.RightButton == ButtonState.Pressed && 
-                        GameManager.prevMs.RightButton == ButtonState.Released)
+                    if(ms.RightButton == ButtonState.Pressed && 
+                        prevMs.RightButton == ButtonState.Released)
                     {
-                        Vector2 mousePos = new Vector2(GameManager.ms.X, GameManager.ms.Y);
+                        Vector2 mousePos = new Vector2(ms.X, ms.Y);
 
-                        // velocity normal between the mouse and the player's centerpoint (center of the screen)
+                        // velocity normal between the mouse and the player's centerpoint
                         Vector2 velocityNormal = Vector2.Normalize(mousePos -
-                            new Vector2(GameManager.graphics.PreferredBackBufferWidth / 2,
-                           GameManager.graphics.PreferredBackBufferHeight / 2));
+                            new Vector2(player.Position.X + player.Sprite.Width / 2,
+                           player.Position.Y + player.Sprite.Height / 2));
 
                         // add some velocity when the boomerang is leaving the player's hand
                         _velocity += velocityNormal * _damage;
@@ -199,7 +203,7 @@ namespace ShotgunBoomerang
                     _velocity *= airFriction;
 
                     // The boomerang can bounce off walls while flying
-                    ResolveTileCollisions();
+                    ResolveTileCollisions(tileMap);
 
                     // The boomerang will return to the player once it has reached a low enough speed
                     if(Math.Abs(_velocity.Length()) <= 0.1f)
@@ -212,10 +216,10 @@ namespace ShotgunBoomerang
                     // while the boomerang is returning, it does not experience friction or collide with walls
                     // it experiences constant acceleration towards the player
 
-                    // velocity normal between the boomerang and the player's centerpoint (center of the screen)
+                    // velocity normal between the boomerang and the player's centerpoint
                     Vector2 playerBoomerangNormal = Vector2.Normalize(
-                            new Vector2(GameManager.graphics.PreferredBackBufferWidth / 2,
-                           GameManager.graphics.PreferredBackBufferHeight / 2) - _position);
+                            new Vector2(player.Position.X + player.Sprite.Width / 2,
+                           player.Position.Y + player.Sprite.Height / 2) - _position);
 
                     _acceleration = playerBoomerangNormal;
 

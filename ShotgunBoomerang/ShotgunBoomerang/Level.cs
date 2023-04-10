@@ -40,14 +40,11 @@ namespace ShotgunBoomerang
         /// Should tell the given spritebatch to display every tile in the level
         /// </summary>
         /// <param name="sb">The spritebatch in use</param>
-        public void Draw(SpriteBatch sb, Player player)
+        public void Draw(SpriteBatch sb, Vector2 screenOffset)
         {
             foreach(Tile tile in _tileMap)
             {
-                sb.Draw(tile.Sprite,
-                tile.Position - player.Position +
-                new Vector2(GameManager.graphics.PreferredBackBufferWidth / 2 - player.Sprite.Width / 2,
-                GameManager.graphics.PreferredBackBufferHeight / 2 - player.Sprite.Height / 2), Color.White);
+                tile.Draw(sb, screenOffset);
             }
         }
 
