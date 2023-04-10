@@ -13,8 +13,7 @@ namespace ShotgunBoomerang
     public enum BoomerangState
     {
         Flying,
-        Returning,
-        Held
+        Returning
     }
     /// <summary>
     /// A projectile thrown by the player which bounces off walls and returns to the player's hand
@@ -33,18 +32,18 @@ namespace ShotgunBoomerang
         /// </summary>
         /// <param name="sprite">The boomerang's texture</param>
         /// <param name="position">The boomerang's position</param>
-        public Boomerang(Texture2D sprite, Vector2 position)
+        public Boomerang(Texture2D sprite, Vector2 position, Vector2 velocity)
         {
             _sprite = sprite;
             _position = position;
+            _velocity = velocity;
 
-            _currentState = BoomerangState.Held;
+            _currentState = BoomerangState.Flying;
 
             _acceleration = Vector2.Zero;
             _damage = 30;
             _health = 0;
             _maxHealth = 0;
-            _velocity = Vector2.Zero;
         }
 
         /// <summary>
@@ -173,6 +172,7 @@ namespace ShotgunBoomerang
         {
             switch(_currentState)
             {
+                /*
                 case BoomerangState.Held:
                     // while the boomerang is being held, it's position and velocity are the same as the player
                     _velocity = player.Velocity;
@@ -195,7 +195,7 @@ namespace ShotgunBoomerang
                         _currentState = BoomerangState.Flying;
                     }
                     break;
-
+                */
                 case BoomerangState.Flying:
                     // the boomerang will experience a slowing due to friction while in the air
                     float airFriction = 0.99f;
@@ -206,7 +206,7 @@ namespace ShotgunBoomerang
                     ResolveTileCollisions(tileMap);
 
                     // The boomerang will return to the player once it has reached a low enough speed
-                    if(Math.Abs(_velocity.Length()) <= 0.1f)
+                    if(Math.Abs(_velocity.Length()) <= 20)
                     {
                         _currentState = BoomerangState.Returning;
                     }
@@ -229,10 +229,10 @@ namespace ShotgunBoomerang
                     // if the boomerang intersects with the player, transition to held state
                     if(this.CheckCollision(player))
                     {
-                        // the boomerang should no longer have acceleration once it is being held
-                        _acceleration = Vector2.Zero;
-
-                        _currentState = BoomerangState.Held;
+                        // the tell the player that the boomerang has returned
+                        player.IsHoldingBoomerang = true;
+                        // the boomerang should remove itself from the game when it hits the player
+                        projectiles.Remove(this);
                     }
                     break;
             }
@@ -242,6 +242,11 @@ namespace ShotgunBoomerang
         {
             _velocity += _acceleration;
             _position += _velocity;
+        }
+
+        void IGameProjectile.ResolveTileCollisions(List<Tile> tilemap)
+        {
+            throw new NotImplementedException();
         }
     }
 }

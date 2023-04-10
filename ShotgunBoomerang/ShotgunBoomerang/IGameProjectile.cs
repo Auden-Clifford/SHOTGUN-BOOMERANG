@@ -47,7 +47,7 @@ namespace ShotgunBoomerang
         /// <summary>
         /// Should Resolve Collisions with Tiles
         /// </summary>
-        //public void ResolveTileCollisions(List<Tile> tilemap);
+        protected void ResolveTileCollisions(List<Tile> tilemap);
 
         /// <summary>
         /// Should contain logic for what to do when the projectile hits a player or enemy

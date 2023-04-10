@@ -31,9 +31,9 @@ namespace ShotgunBoomerang
         private MouseState prevMs;
 
         // many classes will have to keep track of the currently loaded tiles
-        private List<Tile> currentTileMap;
-        private List<IGameEnemy> currentEnemies;
-        private List<IGameProjectile> currentProjectiles;
+        //private List<Tile> currentTileMap;
+        //private List<IGameEnemy> currentEnemies;
+        //private List<IGameProjectile> currentProjectiles;
 
         private Vector2 screenOffset;
 
@@ -49,7 +49,6 @@ namespace ShotgunBoomerang
 
         private Level testLevel;
         private Player player;
-        private Boomerang boomerang;
 
         GameState gameState = GameState.MainMenu; // enum for managing gamestate (this is what starts the game on the menu screen)
         private bool debugOn = false; // boolean to toggle debug mode
@@ -101,14 +100,15 @@ namespace ShotgunBoomerang
             arial36 = this.Content.Load<SpriteFont>("Arial36");
 
             // create the test level
-            testLevel = new Level(GenerateTestLevel(),
-                new Vector2(testTileSprite.Width, -testTileSprite.Width * 3));
+            testLevel = new Level(
+                GenerateTestLevel(),
+                new List<IGameEnemy>(),
+                new List<IGameProjectile>(),
+                new Vector2(testTileSprite.Width, 
+                -testTileSprite.Width * 3));
 
             // set up the player
-            player = new Player(playerSprite, testLevel.PlayerStart, 100);
-
-            //set up the boomerang (same pos as the player)
-            boomerang = new Boomerang(boomerangSprite, testLevel.PlayerStart);
+            player = new Player(playerSprite, boomerangSprite, testLevel.PlayerStart, 100);
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
             pauseButtonDebug = new Rectangle(230, 300, 163, 100);
@@ -157,9 +157,6 @@ namespace ShotgunBoomerang
                     if (levelButtonPlay.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     { 
                         gameState = GameState.Gameplay;
-
-                        // This field should be set equal to the tilemap of the level being loaded
-                        currentTileMap = testLevel.TileMap;
                     }
 
                     break;
@@ -191,10 +188,10 @@ namespace ShotgunBoomerang
                 case GameState.Gameplay:
 
                     // Update the player
-                    player.Update(kb, prevKb, ms, prevMs, currentTileMap, currentEnemies, currentProjectiles, player);
+                    player.Update(kb, prevKb, ms, prevMs, testLevel.CurrentTileMap, testLevel.CurrentEnemies, testLevel.CurrentProjectiles, player);
 
-                    // update boomerang
-                    boomerang.Update(kb, prevKb, ms, prevMs, currentTileMap, currentEnemies, currentProjectiles, player);
+                    // Update elements of the level
+                    testLevel.Update(kb, prevKb, ms, prevMs, player);
 
                     // Change to pause state if escape key pressed
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
@@ -204,8 +201,6 @@ namespace ShotgunBoomerang
                     if (kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R))
                     {
                         testLevel.ResetLevel(player);
-                        // reset boomerang position as well (temporary solution)
-                        boomerang.Position = player.Position;
                     }
 
                     break;
@@ -297,7 +292,6 @@ namespace ShotgunBoomerang
 
                     testLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics);
-                    boomerang.Draw(_spriteBatch, screenOffset);
 
                     break;
             }
@@ -347,6 +341,7 @@ namespace ShotgunBoomerang
             // print the player's state
             _spriteBatch.DrawString(arial12, $"Player state: {player.CurrentState}", new Vector2(10, 110), Color.White);
 
+            /*
             // print the boomerang's X and Y
             _spriteBatch.DrawString(arial12, $"Boomerang Coordinates: {boomerang.Position.X}, {boomerang.Position.Y}", new Vector2(10, 130), Color.White);
 
@@ -355,6 +350,7 @@ namespace ShotgunBoomerang
 
             // print the boomerang's state
             _spriteBatch.DrawString(arial12, $"Boomerang state: {boomerang.CurrentState}", new Vector2(10, 170), Color.White);
+            */
         }
     }
 }
