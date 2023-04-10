@@ -34,6 +34,7 @@ namespace ShotgunBoomerang
     {
         // Fields
 
+        private Texture2D _boomerangSprite;
         private int _ammo;
         private bool _isHoldingBoomerang;
         private PlayerState _currentState;
@@ -42,12 +43,40 @@ namespace ShotgunBoomerang
         private bool _isCollidingWithGround;
         private float _jumpForce;
 
+        private double score;
+        private int kills;
+        private double timer; //this might not be handled here. won't implement until it's clear
+
 
         // Properties
+
         /// <summary>
         /// Gets the player's current state
         /// </summary>
         public PlayerState CurrentState { get { return _currentState; } }
+
+        /// <summary>
+        /// Gets or sets whether the player is holding the boomerang
+        /// </summary>
+        public bool IsHoldingBoomerang { get { return _isHoldingBoomerang; } set { _isHoldingBoomerang= value; } }
+
+
+        /// <summary>
+        /// retrieves/sets the players current score
+        /// </summary>
+        public double Score { 
+            get { return score; }
+            set { score = value; }
+        }
+
+        /// <summary>
+        /// retrieves/sets the players kill count
+        /// </summary>
+        public int Kills
+        {
+            get { return kills; }
+            set { kills = value; }
+        }
         
         // Constructors
 
@@ -55,18 +84,20 @@ namespace ShotgunBoomerang
         /// Creates a new player with given texture, position, and health
         /// </summary>
         /// <param name="sprite">The player's texture/spritesheet</param>
+        /// /// <param name="sprite">The boomerang's texture/spritesheet</param>
         /// <param name="position">The player's starting position</param>
         /// <param name="health">The player's starting health</param>
-        public Player(Texture2D sprite, Vector2 position, float health)
+        public Player(Texture2D sprite, Texture2D boomerangSprite, Vector2 position, float health)
         {
             _sprite = sprite;
+            _boomerangSprite = boomerangSprite;
             _position = position;
             _health = health;
 
             _velocity = new Vector2(0, 0);
             _maxHealth = 100;
             _damage = 60;
-            _acceleration = 3;
+            _acceleration = new Vector2(3, 0);
             _ammo = 2;
             _isHoldingBoomerang = true;
             _currentState = PlayerState.Idle;
@@ -82,18 +113,42 @@ namespace ShotgunBoomerang
         /// Draws the player with animations based on FSM
         /// </summary>
         /// <param name="sb"></param>
-        public void Draw(SpriteBatch sb)
+        public void Draw(SpriteBatch sb, GraphicsDeviceManager graphics)
         {
-            sb.Draw(_sprite,
-                new Vector2(GameManager.graphics.PreferredBackBufferWidth / 2 - _sprite.Width / 2,
-                GameManager.graphics.PreferredBackBufferHeight / 2 - _sprite.Height / 2), 
+            sb.Draw(
+                _sprite,
+                new Vector2(
+                    graphics.PreferredBackBufferWidth / 2 
+                    - _sprite.Width / 2,
+                    graphics.PreferredBackBufferHeight / 2 
+                    - _sprite.Height / 2), 
                 Color.White);
         }
 
         /// <summary>
-        /// Contains the logic for updating the player, including FSM and movement
+        /// Base method for use in the update loop, should contain all logic the object needs to go through 
+        /// in a frame as well as any parameters from the game manager that might be needed for this logic. 
+        /// Update will be the entry point for all data from Game manager to the other classes
+        /// -- The player's update should allow the user to control the player using the keyboard and mouse. 
+        /// The character has several different states that change depending on user input.
         /// </summary>
-        public override void Update()
+        /// <param name="kb">The keyboard state this frame</param>
+        /// <param name="prevKb"> The keyboard state last frame</param>
+        /// <param name="ms">The mouse state this frame</param>
+        /// <param name="prevMs">The mouse state last frame</param>
+        /// <param name="tileMap">The current level's tiles</param>
+        /// <param name="enemies">The current level's enemies</param>
+        /// <param name="projectiles">The projectiles currently in play</param>
+        /// <param name="graphics">Contains info about the screen</param>
+        public void Update(
+            KeyboardState kb,
+            KeyboardState prevKb,
+            MouseState ms,
+            MouseState prevMs,
+            List<Tile> tileMap,
+            List<IGameEnemy> enemies,
+            List<IGameProjectile> projectiles,
+            GraphicsDeviceManager graphics)
         {
             // The player is slowed by different amounts depending
             // on whether they are running, skidding, or in the air
@@ -101,33 +156,45 @@ namespace ShotgunBoomerang
             float airFriction = 0.99f;
             float skidFriction = 0.7f;
 
+            // resolve tile collisions before anything else
+            ResolveTileCollisions(tileMap);
+
             switch (_currentState)
             {
                 case PlayerState.Idle:
                     // if the player presses the spacebar or w (only once) jump
-                    if(GameManager.kb.IsKeyDown(Keys.Space) && 
-                        GameManager.prevKb.IsKeyUp(Keys.Space) || 
-                        GameManager.kb.IsKeyDown(Keys.W) && 
-                        GameManager.prevKb.IsKeyUp(Keys.W))
+                    if(kb.IsKeyDown(Keys.Space) && 
+                        prevKb.IsKeyUp(Keys.Space) || 
+                        kb.IsKeyDown(Keys.W) && 
+                        prevKb.IsKeyUp(Keys.W))
                     {
                         _velocity.Y -= _jumpForce;
                     }
 
                     // if the player left clicks (only once), perform a shotgun attack
-                    if(GameManager.ms.LeftButton == ButtonState.Pressed && 
-                        GameManager.prevMs.LeftButton == ButtonState.Released)
+                    if(ms.LeftButton == ButtonState.Pressed && 
+                        prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack();
+                        ShotgunAttack(ms, graphics);
+                    }
+
+                    // if the player right clicks (only once) and
+                    // the boomerang is held, perform a boomerang attack
+                    if (ms.RightButton == ButtonState.Pressed &&
+                        prevMs.RightButton == ButtonState.Released &&
+                        _isHoldingBoomerang)
+                    {
+                        BoomerangAttack(ms, graphics, projectiles);
                     }
 
                     // Transition to Airborne when no longer colliding with the ground
-                    if(!_isCollidingWithGround)
+                    if (!_isCollidingWithGround)
                     {
                         _currentState = PlayerState.Airborne;
                     }
 
-                    // Transition to Run when A or D is pressed
-                    if(GameManager.kb.IsKeyDown(Keys.A) || GameManager.kb.IsKeyDown(Keys.D))
+                    // Transition to Run when A or D is pressed or if X velocity is not 0
+                    if(kb.IsKeyDown(Keys.A) || kb.IsKeyDown(Keys.D) || _velocity.X != 0)
                     {
                         _currentState = PlayerState.Run;
                     }
@@ -136,30 +203,38 @@ namespace ShotgunBoomerang
 
                 case PlayerState.Run:
                     // if the player presses the spacebar or w jump
-                    if (GameManager.kb.IsKeyDown(Keys.Space) &&
-                        GameManager.prevKb.IsKeyUp(Keys.Space) ||
-                        GameManager.kb.IsKeyDown(Keys.W) &&
-                        GameManager.prevKb.IsKeyUp(Keys.W))
+                    if (kb.IsKeyDown(Keys.Space) &&
+                        prevKb.IsKeyUp(Keys.Space) ||
+                        kb.IsKeyDown(Keys.W) &&
+                        prevKb.IsKeyUp(Keys.W))
                     {
                         _velocity.Y -= _jumpForce;
                     }
 
                     // if the player left clicks (only once), perform a shotgun attack
-                    if (GameManager.ms.LeftButton == ButtonState.Pressed &&
-                        GameManager.prevMs.LeftButton == ButtonState.Released)
+                    if (ms.LeftButton == ButtonState.Pressed &&
+                        prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack();
+                        ShotgunAttack(ms, graphics);
+                    }
+
+                    // if the player right clicks (only once), perform a boomerang attack
+                    if (ms.RightButton == ButtonState.Pressed &&
+                        prevMs.RightButton == ButtonState.Released &&
+                        _isHoldingBoomerang)
+                    {
+                        BoomerangAttack(ms, graphics, projectiles);
                     }
 
                     // while A or D are pressed, increase the player's velocity
-                    if (GameManager.kb.IsKeyDown(Keys.A))
+                    if (kb.IsKeyDown(Keys.A))
                     {
-                        _velocity.X -= _acceleration;
+                        _velocity.X -= _acceleration.X;
                     }
 
-                    if (GameManager.kb.IsKeyDown(Keys.D))
+                    if (kb.IsKeyDown(Keys.D))
                     {
-                        _velocity.X += _acceleration;
+                        _velocity.X += _acceleration.X;
                     }
 
                     // apply ground friction
@@ -172,15 +247,15 @@ namespace ShotgunBoomerang
                     }
 
                     // Transition to Slide when CTRL is pressed
-                    if(GameManager.kb.IsKeyDown(Keys.LeftControl))
+                    if(kb.IsKeyDown(Keys.LeftControl))
                     {
                         _currentState = PlayerState.Slide;
                     }
 
                     // Transition to Skid if the key does not match the direction of motion
-                    if((GameManager.kb.IsKeyUp(Keys.A) && GameManager.kb.IsKeyUp(Keys.D)) // all keys are released
-                        || (GameManager.kb.IsKeyDown(Keys.A) && _velocity.X > 0) // A is pressed but the player is moving right
-                        || (GameManager.kb.IsKeyDown(Keys.D) && _velocity.X < 0)) // D is pressed but the player is moving left
+                    if((kb.IsKeyUp(Keys.A) && kb.IsKeyUp(Keys.D)) // all keys are released
+                        || (kb.IsKeyDown(Keys.A) && _velocity.X > 0) // A is pressed but the player is moving right
+                        || (kb.IsKeyDown(Keys.D) && _velocity.X < 0)) // D is pressed but the player is moving left
                     {
                         _currentState = PlayerState.Skid;
                     }
@@ -188,10 +263,18 @@ namespace ShotgunBoomerang
 
                 case PlayerState.Airborne:
                     // if the player left clicks (only once), perform a shotgun attack
-                    if (GameManager.ms.LeftButton == ButtonState.Pressed &&
-                        GameManager.prevMs.LeftButton == ButtonState.Released)
+                    if (ms.LeftButton == ButtonState.Pressed &&
+                        prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack();
+                        ShotgunAttack(ms, graphics);
+                    }
+
+                    // if the player right clicks (only once), perform a boomerang attack
+                    if (ms.RightButton == ButtonState.Pressed &&
+                        prevMs.RightButton == ButtonState.Released &&
+                        _isHoldingBoomerang)
+                    {
+                        BoomerangAttack(ms, graphics, projectiles);
                     }
 
                     // appky air friction to velocity
@@ -215,23 +298,31 @@ namespace ShotgunBoomerang
 
                 case PlayerState.Slide:
                     // if the player presses the spacebar or W (only once), jump
-                    if (GameManager.kb.IsKeyDown(Keys.Space) &&
-                        GameManager.prevKb.IsKeyUp(Keys.Space) ||
-                        GameManager.kb.IsKeyDown(Keys.W) &&
-                        GameManager.prevKb.IsKeyUp(Keys.W))
+                    if (kb.IsKeyDown(Keys.Space) &&
+                        prevKb.IsKeyUp(Keys.Space) ||
+                        kb.IsKeyDown(Keys.W) &&
+                        prevKb.IsKeyUp(Keys.W))
                     {
                         _velocity.Y -= _jumpForce;
                     }
 
                     // if the player left clicks (only once), perform a shotgun attack
-                    if (GameManager.ms.LeftButton == ButtonState.Pressed &&
-                        GameManager.prevMs.LeftButton == ButtonState.Released)
+                    if (ms.LeftButton == ButtonState.Pressed &&
+                        prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack();
+                        ShotgunAttack(ms, graphics);
+                    }
+
+                    // if the player right clicks (only once), perform a boomerang attack
+                    if (ms.RightButton == ButtonState.Pressed &&
+                        prevMs.RightButton == ButtonState.Released &&
+                        _isHoldingBoomerang)
+                    {
+                        BoomerangAttack(ms, graphics, projectiles);
                     }
 
                     // Transition to Run when CTRL is released
-                    if (GameManager.kb.IsKeyUp(Keys.LeftControl))
+                    if (kb.IsKeyUp(Keys.LeftControl))
                     {
                         _currentState = PlayerState.Run;
                     }
@@ -245,19 +336,27 @@ namespace ShotgunBoomerang
 
                 case PlayerState.Skid:
                     // if the player presses the spacebar or W (only once), jump
-                    if (GameManager.kb.IsKeyDown(Keys.Space) &&
-                        GameManager.prevKb.IsKeyUp(Keys.Space) ||
-                        GameManager.kb.IsKeyDown(Keys.W) &&
-                        GameManager.prevKb.IsKeyUp(Keys.W))
+                    if (kb.IsKeyDown(Keys.Space) &&
+                        prevKb.IsKeyUp(Keys.Space) ||
+                        kb.IsKeyDown(Keys.W) &&
+                        prevKb.IsKeyUp(Keys.W))
                     {
                         _velocity.Y -= _jumpForce;
                     }
 
                     // if the player left clicks (only once), perform a shotgun attack
-                    if (GameManager.ms.LeftButton == ButtonState.Pressed &&
-                        GameManager.prevMs.LeftButton == ButtonState.Released)
+                    if (ms.LeftButton == ButtonState.Pressed &&
+                        prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack();
+                        ShotgunAttack(ms, graphics);
+                    }
+
+                    // if the player right clicks (only once), perform a boomerang attack
+                    if (ms.RightButton == ButtonState.Pressed &&
+                        prevMs.RightButton == ButtonState.Released &&
+                        _isHoldingBoomerang)
+                    {
+                        BoomerangAttack(ms, graphics, projectiles);
                     }
 
                     // apply friction to the player's velocity
@@ -274,8 +373,13 @@ namespace ShotgunBoomerang
                     {
                         _currentState = PlayerState.Idle;
                     }
+                    // Transition to Airborne when no longer colliding with ground
+                    if (!_isCollidingWithGround)
+                    {
+                        _currentState = PlayerState.Airborne;
+                    }
                     // Transition to Run if A or D is pressed
-                    if(GameManager.kb.IsKeyDown(Keys.A) || (GameManager.kb.IsKeyDown(Keys.D)))
+                    if (kb.IsKeyDown(Keys.A) || (kb.IsKeyDown(Keys.D)))
                     {
                         _currentState = PlayerState.Run;
                     }
@@ -292,11 +396,12 @@ namespace ShotgunBoomerang
         /// Resolves collisions with tiles to that the player 
         /// collides with them properly and reports whether 
         /// the player is in contact with the ground
-        /// **IMPORTANT: this method must always come before the player's update method**
+        /// **IMPORTANT: this method must always come at the beginning of the player's update method**
         /// </summary>
         /// <param name="tileMap">The list of tiles in the currently loaded level</param>
-        public void ResolveCollisions(List<Tile> tileMap)
+        protected override void ResolveTileCollisions(List<Tile> tileMap)
         {
+            
             //gravity is applied beforehand
             ApplyPhysics();
 
@@ -306,27 +411,39 @@ namespace ShotgunBoomerang
             // temporary list for all intersections
             List<Rectangle> intersectionsList = new List<Rectangle>();
 
-            // loop through the list of all rectangles
+            // loop through the list of all tiles
+            // to find which ones are interseting
             foreach (Tile tile in tileMap)
             {
                 // if the player is intersecting the tile
-                if (tile.HitBox.Intersects(playerHitBox))
+                if (tile.CheckCollision(this))
                 {
                     // add it's hitbox to the list
                     intersectionsList.Add(tile.HitBox);
                 }
             }
 
-            // loop through and resolve all horizontal intersections
-            foreach (Rectangle rectangle in intersectionsList)
+            while(intersectionsList.Count > 0)
             {
-                // create a new rectangle from the collision between the player and the rectangle
-                Rectangle intersectRect = Rectangle.Intersect(playerHitBox, rectangle);
+                // variable to store the largest intersection
+                Rectangle largest = new Rectangle();
+
+                // find the largest intersection
+                foreach(Rectangle rectangle in intersectionsList)
+                {
+                    if (rectangle.Width * rectangle.Height >= largest.Width * largest.Height)
+                    {
+                        largest = rectangle;
+                    }
+                }
+
+                // resolve the largest collision
+                Rectangle intersectRect = Rectangle.Intersect(playerHitBox, largest);
 
                 //check for a horizontal collision (intersection is taller than it is wide)
                 if (intersectRect.Width <= intersectRect.Height)
                 {
-                    // if the player X is less than (further left than) the rectangle x
+                    // if the player X is less than (further left than) the intersection's x
                     // move the player left
                     if (this._position.X < intersectRect.X)
                     {
@@ -344,22 +461,10 @@ namespace ShotgunBoomerang
                         this._velocity.X = Math.Clamp(_velocity.X, 0, float.MaxValue);
                     }
 
+                    this._position.X = playerHitBox.X;
                 }
-
-
-            }
-
-            this._position.X = playerHitBox.X;
-
-            // loop through and resolve all vertical intersections
-            foreach (Rectangle rectangle in intersectionsList)
-            {
-
-                // create a new rectangle from the collision between the player and the rectangle
-                Rectangle intersectRect = Rectangle.Intersect(playerHitBox, rectangle);
-
-                // check for vertical collision (intersection is wider than it is tall)
-                if (intersectRect.Width > intersectRect.Height)
+                // otherwise this must be a vertical collision
+                else
                 {
                     // if the player Y is less than (further up than) the rectangle Y
                     // move the player up
@@ -382,27 +487,55 @@ namespace ShotgunBoomerang
                         this._velocity.Y = Math.Clamp(_velocity.Y, 0, float.MaxValue);
                     }
 
-                    
+                    this._position.Y = playerHitBox.Y;
                 }
 
+                // reset the intersections list and check again
+                intersectionsList.Clear();
 
+                // loop through the list of all tiles
+                // to find which ones are interseting
+                foreach (Tile tile in tileMap)
+                {
+                    // if the player is intersecting the tile
+                    if (tile.HitBox.Intersects(playerHitBox))
+                    {
+                        // add it's hitbox to the list
+                        intersectionsList.Add(tile.HitBox);
+                    }
+                }
             }
-
-            this._position.Y = playerHitBox.Y;
         }
 
-        private void ShotgunAttack()
+        private void ShotgunAttack(MouseState ms, GraphicsDeviceManager graphics)
         {
             // need the mouse's position to be a Vector2 for math
-            Vector2 mousePos = new Vector2(GameManager.ms.Position.X, GameManager.ms.Position.Y);
+            Vector2 mousePos = new Vector2(ms.Position.X, ms.Position.Y);
 
-            // velocity normal between the mouse and the player's centerpoint (center of the screen)
+            // velocity normal between the mouse and the player's centerpoint
             Vector2 velocityNormal = Vector2.Normalize(
-                new Vector2(GameManager.graphics.PreferredBackBufferWidth / 2,
-               GameManager.graphics.PreferredBackBufferHeight / 2) - mousePos);
+                new Vector2(graphics.PreferredBackBufferWidth / 2,
+                           graphics.PreferredBackBufferHeight / 2) - mousePos);
 
             // throw the player back in the opposite direction of the blast
             _velocity += velocityNormal * (_damage / 2);
+            
+        }
+
+        private void BoomerangAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameProjectile> projectiles)
+        {
+            Vector2 mousePos = new Vector2(ms.X, ms.Y);
+
+            // velocity normal between the mouse and the center of the screen
+            Vector2 velocityNormal = Vector2.Normalize(mousePos -
+                new Vector2(graphics.PreferredBackBufferWidth / 2,
+                           graphics.PreferredBackBufferHeight / 2));
+
+            // add the boomerang to the game at the player's position witht the player's velocity +some
+            projectiles.Add(new Boomerang(_boomerangSprite, _position, _velocity + velocityNormal * 30));
+
+            // player is no longer holding the boomerang
+            _isHoldingBoomerang = false;
         }
     }
 }

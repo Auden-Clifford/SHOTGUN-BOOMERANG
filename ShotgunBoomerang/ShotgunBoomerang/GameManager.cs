@@ -24,19 +24,27 @@ namespace ShotgunBoomerang
         public static float Gravity = 1f;
 
         // many classes will need access to the mouse and keyboard
-        public static KeyboardState kb;
-        public static KeyboardState prevKb;
+        private KeyboardState kb;
+        private KeyboardState prevKb;
 
-        public static MouseState ms;
-        public static MouseState prevMs;
+        private MouseState ms;
+        private MouseState prevMs;
 
-        public static  GraphicsDeviceManager graphics;
+        // many classes will have to keep track of the currently loaded tiles
+        //private List<Tile> currentTileMap;
+        //private List<IGameEnemy> currentEnemies;
+        //private List<IGameProjectile> currentProjectiles;
 
+        private Vector2 screenOffset;
+
+        private static GraphicsDeviceManager graphics;
         private SpriteBatch _spriteBatch;
 
+        private Texture2D menuBackground;
         private Texture2D testTileSprite;
         private Texture2D playerSprite;
         private Texture2D blankRectangleSprite;
+        private Texture2D boomerangSprite;
         private SpriteFont arial12;
         private SpriteFont arial36;
 
@@ -45,17 +53,26 @@ namespace ShotgunBoomerang
 
         GameState gameState = GameState.MainMenu; // enum for managing gamestate (this is what starts the game on the menu screen)
         private bool debugOn = false; // boolean to toggle debug mode
-        private bool godModeOn = false; // boolean to toggle god mode (doesn't do anything YET!)
 
         // Pause & Start menu objects
+        private string pauseText;
         private Rectangle pauseButtonDebug;
-        private Rectangle pauseButtonGodMode;
         private Rectangle pauseButtonQuit;
-        private Rectangle levelButtonPlay; // only one "level" right now so only one button
+
+        private string levelText;
+        private Rectangle buttonPlayDemo;
+        private Rectangle buttonPlayOne;
+        private Rectangle buttonPlayTwo;
+        private Rectangle buttonPlayThree;
 
         public GameManager()
         {
+            // Sets width and height to match hardware fullscreen
             graphics = new GraphicsDeviceManager(this);
+            graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
+            graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
+            graphics.ApplyChanges();
+            //Window.AllowUserResizing = true;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -74,36 +91,39 @@ namespace ShotgunBoomerang
 
         protected override void LoadContent()
         {
+
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load textures
+            menuBackground = this.Content.Load<Texture2D>("pixeldesertback");
             testTileSprite = this.Content.Load<Texture2D>("TestTile");
             playerSprite = this.Content.Load<Texture2D>("PlayerTestSprite");
             blankRectangleSprite = this.Content.Load<Texture2D>("blankRectangle");
+            boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
 
             // Load fonts
             arial12 = this.Content.Load<SpriteFont>("Arial12");
             arial36 = this.Content.Load<SpriteFont>("Arial36");
 
-            // set the game to full screen and the resolution to match the 16-bit artstyle
-            // this resolution may not be the final one we choose
-            graphics.PreferredBackBufferWidth = testTileSprite.Width * 16;
-            graphics.PreferredBackBufferHeight = (int)(graphics.PreferredBackBufferWidth * (0.5));
-            //_graphics.IsFullScreen= true;
-            graphics.ApplyChanges();
-
             // create the test level
-            testLevel = new Level(GenerateTestLevel(),
-                new Vector2(testTileSprite.Width, -testTileSprite.Width * 3));
+            testLevel = new Level(
+                GenerateTestLevel(),
+                new List<IGameEnemy>(),
+                new List<IGameProjectile>(),
+                new Vector2(testTileSprite.Width, 
+                -testTileSprite.Width * 3));
 
             // set up the player
-            player = new Player(playerSprite, testLevel.PlayerStart, 100);
+            player = new Player(playerSprite, boomerangSprite, testLevel.PlayerStart, 100);
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
             pauseButtonDebug = new Rectangle(230, 300, 163, 100);
-            pauseButtonGodMode = new Rectangle(430, 300, 163, 100);
             pauseButtonQuit = new Rectangle(630, 300, 163, 100);
-            levelButtonPlay = new Rectangle(430, 225, 163, 100);
+
+            buttonPlayDemo = new Rectangle(430, 300, 163, 50);
+            buttonPlayOne = new Rectangle(430, 400, 163, 100);
+            buttonPlayTwo = new Rectangle(430, 550, 163, 100);
+            buttonPlayThree = new Rectangle(430, 700, 163, 100);
         }
 
         /// <summary>
@@ -143,7 +163,7 @@ namespace ShotgunBoomerang
                     { gameState = GameState.MainMenu; }
 
                     // Play the demo level
-                    if (levelButtonPlay.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
+                    if (buttonPlayDemo.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     { gameState = GameState.Gameplay; }
 
                     break;
@@ -160,25 +180,22 @@ namespace ShotgunBoomerang
                     if (pauseButtonDebug.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     { debugOn = !debugOn; } // Enables debug
 
-                    if (pauseButtonGodMode.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
-                    { godModeOn = !godModeOn; } // Enables god mode
-
                     if (pauseButtonQuit.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
                         testLevel.ResetLevel(player);
                         gameState = GameState.MainMenu; } // Quitting to main menu
 
-                    
-
-                        break;
+                    break;
 
                 // We are in GAMEPLAY.
                 // We can PAUSE.
                 case GameState.Gameplay:
 
                     // Update the player
-                    player.ResolveCollisions(testLevel.TileMap);
-                    player.Update();
+                    player.Update(kb, prevKb, ms, prevMs, testLevel.CurrentTileMap, testLevel.CurrentEnemies, testLevel.CurrentProjectiles, graphics);
+
+                    // Update elements of the level
+                    testLevel.Update(kb, prevKb, ms, prevMs, player);
 
                     // Change to pause state if escape key pressed
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
@@ -193,8 +210,15 @@ namespace ShotgunBoomerang
                     break;
             }
 
+            // update logic items
             prevKb = kb;
             prevMs = ms;
+
+            screenOffset = player.Position -
+                new Vector2(graphics.PreferredBackBufferWidth / 2 
+                - player.Sprite.Width / 2,
+                graphics.PreferredBackBufferHeight / 2 
+                - player.Sprite.Height / 2);
 
             base.Update(gameTime);
         }
@@ -211,80 +235,80 @@ namespace ShotgunBoomerang
 
             _spriteBatch.Begin();
 
+            // If debug enabled, print position & speed stats on screen
+            if (debugOn)
+            { DrawDebug(); }
+
             // Drawing differently depending on the gamestates
             switch (gameState)
             {
                 // Drawing for main menu
                 case GameState.MainMenu:
 
+                    // Background
+                    _spriteBatch.Draw(menuBackground, new Rectangle(0, 0,
+                        graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+
                     // (Placeholders) draws the logo and start text. Will probably use a custom logo and different font in the future
                     _spriteBatch.DrawString(arial36, "SHOTGUNBOOMERANG", new Vector2((graphics.PreferredBackBufferWidth / 2) - 280,
-                        (graphics.PreferredBackBufferHeight / 2) - 100), Color.White);
+                        (graphics.PreferredBackBufferHeight / 2) - 100), Color.Black);
 
                     _spriteBatch.DrawString(arial12, "Press any button to start", new Vector2((graphics.PreferredBackBufferWidth / 2) - 100,
-                        (graphics.PreferredBackBufferHeight / 2) - 30), Color.White);
+                        (graphics.PreferredBackBufferHeight / 2) - 30), Color.Black);
 
                     break;
 
-                // Drawing for level select (will have more/different options in the future)
+                // Drawing for level select
                 case GameState.LevelSelect:
 
-                    // "Level Select" text
-                    _spriteBatch.DrawString(arial36, "Select Level", new Vector2((graphics.PreferredBackBufferWidth / 2) - 135,
-                        (graphics.PreferredBackBufferHeight / 2) - 200), Color.White);
+                    // Background
+                    _spriteBatch.Draw(menuBackground, new Rectangle(0, 0,
+                        graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
-                    // Right now, we only have one "level."
-                    _spriteBatch.Draw(blankRectangleSprite, levelButtonPlay, Color.White);
-                    _spriteBatch.DrawString(arial12, "Demo", new Vector2(490, 265), Color.Black);
+                    // "Level Select" text
+                    _spriteBatch.DrawString(arial36, "- SELECT LEVEL -", new Vector2((graphics.PreferredBackBufferWidth / 2) - 190,
+                        (graphics.PreferredBackBufferHeight / 2) - 450), Color.Black);
+
+                    // Level Buttons
+                    DrawButton(_spriteBatch, ms, buttonPlayDemo, "Demo");
+                    DrawButton(_spriteBatch, ms, buttonPlayOne, "Stage One");
+                    DrawButton(_spriteBatch, ms, buttonPlayTwo, "Stage Two");
+                    DrawButton(_spriteBatch, ms, buttonPlayThree, "Stage Three");
 
                     break;
 
                 // Drawing for pause menu
                 case GameState.PauseMenu:
 
+                    testLevel.Draw(_spriteBatch, screenOffset);
+                    player.Draw(_spriteBatch, graphics);
+
                     // Pause & return text
-                    _spriteBatch.DrawString(arial36, "PAUSED", new Vector2((graphics.PreferredBackBufferWidth / 2) - 100,
-                        (graphics.PreferredBackBufferHeight / 2) - 100), Color.White);
+                    _spriteBatch.DrawString(arial36, "- PAUSED -", new Vector2((graphics.PreferredBackBufferWidth / 2) - 120,
+                        (graphics.PreferredBackBufferHeight / 2) - 450), Color.Black);
 
-                    _spriteBatch.DrawString(arial12, "Press ESC to return to game", new Vector2((graphics.PreferredBackBufferWidth / 2) - 104,
-                         (graphics.PreferredBackBufferHeight / 2) - 40), Color.White);
+                    // Buttons
+                    DrawButton(_spriteBatch, ms, pauseButtonDebug, "Debug: " + debugOn);
+                    DrawButton(_spriteBatch, ms, pauseButtonQuit, "Quit to Menu");
 
-                    // "Buttons"
-                    _spriteBatch.Draw(blankRectangleSprite, pauseButtonDebug, Color.White);
-                    _spriteBatch.Draw(blankRectangleSprite, pauseButtonGodMode, Color.White);
-                    _spriteBatch.Draw(blankRectangleSprite, pauseButtonQuit, Color.White);
+                    // Text at the bottom that changes depending on hover
+                    if (pauseButtonDebug.Contains(ms.Position))
+                    { pauseText = "Enable debug text (position, velocity, etc.)"; }
+                    else if (pauseButtonQuit.Contains(ms.Position))
+                    { pauseText = "Quit to the main menu";  }
+                    else
+                    { pauseText = "Press ESC to return to game"; }
 
-                    _spriteBatch.DrawString(arial12, "Debug: " + debugOn, new Vector2(265, 340), Color.Black);
-                    _spriteBatch.DrawString(arial12, "God Mode: " + godModeOn, new Vector2(453, 340), Color.Black);
-                    _spriteBatch.DrawString(arial12, "Quit to Menu", new Vector2(665, 340), Color.Black);
+                    _spriteBatch.DrawString(arial12, pauseText, new Vector2(graphics.PreferredBackBufferWidth / 2 -
+                        arial12.MeasureString(pauseText).X /2, graphics.PreferredBackBufferHeight - 150), Color.Black);
 
                     break;
 
                 // Drawing for gameplay
                 case GameState.Gameplay:
 
-                    testLevel.Draw(_spriteBatch, player);
-                    player.Draw(_spriteBatch);
-
-                    // If debug enabled, print position & speed stats on screen
-                    if (debugOn)
-                    {
-                        // print the window's X and Y
-                        _spriteBatch.DrawString(arial12, $"Window width: {graphics.PreferredBackBufferWidth}", new Vector2(10, 10), Color.White);
-                        _spriteBatch.DrawString(arial12, $"Window height: {graphics.PreferredBackBufferHeight}", new Vector2(10, 30), Color.White);
-
-                        // print the mouse's X and Y
-                        _spriteBatch.DrawString(arial12, $"Mouse Coordinates: {ms.X}, {ms.Y}", new Vector2(10, 50), Color.White);
-
-                        // print the player's X and Y
-                        _spriteBatch.DrawString(arial12, $"Player Coordinates: {player.Position.X}, {player.Position.Y}", new Vector2(10, 70), Color.White);
-
-                        // print the player's Velocity
-                        _spriteBatch.DrawString(arial12, $"Player Velocity: {player.Velocity.X}, {player.Velocity.Y}", new Vector2(10, 90), Color.White);
-
-                        // print the player's state
-                        _spriteBatch.DrawString(arial12, $"Player state: {player.CurrentState}", new Vector2(10, 110), Color.White);
-                    }
+                    testLevel.Draw(_spriteBatch, screenOffset);
+                    player.Draw(_spriteBatch, graphics);
 
                     break;
             }
@@ -311,6 +335,69 @@ namespace ShotgunBoomerang
             }
 
             return tileMap;
+        }
+
+        /// <summary>
+        /// Draws the debug text. Helper Method!
+        /// </summary>
+        public void DrawDebug()
+        {
+            // print the window's X and Y
+            _spriteBatch.DrawString(arial12, $"Window width: {graphics.PreferredBackBufferWidth}", new Vector2(10, 10), Color.White);
+            _spriteBatch.DrawString(arial12, $"Window height: {graphics.PreferredBackBufferHeight}", new Vector2(10, 30), Color.White);
+
+            // print the mouse's X and Y
+            _spriteBatch.DrawString(arial12, $"Mouse Coordinates: {ms.X}, {ms.Y}", new Vector2(10, 50), Color.White);
+
+            // print the player's X and Y
+            _spriteBatch.DrawString(arial12, $"Player Coordinates: {player.Position.X}, {player.Position.Y}", new Vector2(10, 70), Color.White);
+
+            // print the player's Velocity
+            _spriteBatch.DrawString(arial12, $"Player Velocity: {player.Velocity.X}, {player.Velocity.Y}", new Vector2(10, 90), Color.White);
+
+            // print the player's state
+            _spriteBatch.DrawString(arial12, $"Player state: {player.CurrentState}", new Vector2(10, 110), Color.White);
+
+            /*
+            // print the boomerang's X and Y
+            _spriteBatch.DrawString(arial12, $"Boomerang Coordinates: {boomerang.Position.X}, {boomerang.Position.Y}", new Vector2(10, 130), Color.White);
+
+            // print the boomerang's velocity
+            _spriteBatch.DrawString(arial12, $"Boomerang Velocity: {boomerang.Velocity.X}, {boomerang.Velocity.Y}", new Vector2(10, 150), Color.White);
+
+            // print the boomerang's state
+            _spriteBatch.DrawString(arial12, $"Boomerang state: {boomerang.CurrentState}", new Vector2(10, 170), Color.White);
+            */
+        }
+
+        /// <summary>
+        /// Draws a button and its text. Helper Method!
+        /// </summary>
+        /// <param name="sb">Spritebatch</param>
+        /// <param name="ms">Mouse state</param>
+        /// <param name="rect">Rectangle</param>
+        /// <param name="text">Text in the button</param>
+        public void DrawButton(SpriteBatch sb, MouseState ms, Rectangle rect, string text)
+        {
+            // Button color changes with hover & on click!
+            Color buttonColor = Color.White;
+            if (ms.LeftButton == ButtonState.Pressed && rect.Contains(ms.Position))
+            {
+                buttonColor = Color.Gray;
+            }
+            else if (rect.Contains(ms.Position))
+            {
+                buttonColor = Color.DarkGray;
+            }
+            else
+            {
+                buttonColor = Color.White;
+            }
+
+            // Positions button & text within button (scales dependent on text size)
+            _spriteBatch.Draw(blankRectangleSprite, rect, buttonColor);
+            _spriteBatch.DrawString(arial12, text, new Vector2(rect.X + rect.Width / 2 - arial12.MeasureString(text).X / 2,
+                rect.Y + rect.Height / 2 - arial12.MeasureString(text).Y / 2), Color.Black);
         }
     }
 }
