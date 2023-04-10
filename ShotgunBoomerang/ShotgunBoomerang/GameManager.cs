@@ -237,7 +237,7 @@ namespace ShotgunBoomerang
 
                     break;
 
-                // Drawing for level select (will have more/different options in the future)
+                // Drawing for level select
                 case GameState.LevelSelect:
 
                     // Background
@@ -249,17 +249,10 @@ namespace ShotgunBoomerang
                         (graphics.PreferredBackBufferHeight / 2) - 450), Color.Black);
 
                     // Level Buttons
-                    _spriteBatch.Draw(blankRectangleSprite, buttonPlayDemo, Color.White);
-                    _spriteBatch.DrawString(arial12, "Demo", new Vector2(490, 315), Color.Black);
-
-                    _spriteBatch.Draw(blankRectangleSprite, buttonPlayOne, Color.White);
-                    _spriteBatch.DrawString(arial12, "Stage 1", new Vector2(485, 440), Color.Black);
-
-                    _spriteBatch.Draw(blankRectangleSprite, buttonPlayTwo, Color.White);
-                    _spriteBatch.DrawString(arial12, "Stage 2", new Vector2(485, 590), Color.Black);
-
-                    _spriteBatch.Draw(blankRectangleSprite, buttonPlayThree, Color.White);
-                    _spriteBatch.DrawString(arial12, "Stage 3", new Vector2(485, 740), Color.Black);
+                    DrawButton(_spriteBatch, ms, buttonPlayDemo, "Demo");
+                    DrawButton(_spriteBatch, ms, buttonPlayOne, "Stage One");
+                    DrawButton(_spriteBatch, ms, buttonPlayTwo, "Stage Two");
+                    DrawButton(_spriteBatch, ms, buttonPlayThree, "Stage Three");
 
                     break;
 
@@ -273,15 +266,11 @@ namespace ShotgunBoomerang
                     _spriteBatch.DrawString(arial36, "- PAUSED -", new Vector2((graphics.PreferredBackBufferWidth / 2) - 120,
                         (graphics.PreferredBackBufferHeight / 2) - 450), Color.Black);
 
-                    // "Buttons"
-                    _spriteBatch.Draw(blankRectangleSprite, pauseButtonDebug, Color.White);
-                    _spriteBatch.DrawString(arial12, "Debug: " + debugOn, new Vector2(265, 340), Color.Black);
-
-                    _spriteBatch.Draw(blankRectangleSprite, pauseButtonQuit, Color.White);
-                    _spriteBatch.DrawString(arial12, "Quit to Menu", new Vector2(665, 340), Color.Black);
+                    // Buttons
+                    DrawButton(_spriteBatch, ms, pauseButtonDebug, "Debug: " + debugOn);
+                    DrawButton(_spriteBatch, ms, pauseButtonQuit, "Quit to Menu");
 
                     // Text at the bottom that changes depending on hover
-
                     if (pauseButtonDebug.Contains(ms.Position))
                     { pauseText = "Enable debug text (position, velocity, etc.)"; }
                     else if (pauseButtonQuit.Contains(ms.Position))
@@ -347,6 +336,36 @@ namespace ShotgunBoomerang
 
             // print the player's state
             _spriteBatch.DrawString(arial12, $"Player state: {player.CurrentState}", new Vector2(10, 110), Color.White);
+        }
+
+        /// <summary>
+        /// Draws a button and its text. Helper Method!
+        /// </summary>
+        /// <param name="sb">Spritebatch</param>
+        /// <param name="ms">Mouse state</param>
+        /// <param name="rect">Rectangle</param>
+        /// <param name="text">Text in the button</param>
+        public void DrawButton(SpriteBatch sb, MouseState ms, Rectangle rect, string text)
+        {
+            // Button color changes with hover & on click!
+            Color buttonColor = Color.White;
+            if (ms.LeftButton == ButtonState.Pressed && rect.Contains(ms.Position))
+            {
+                buttonColor = Color.Gray;
+            }
+            else if (rect.Contains(ms.Position))
+            {
+                buttonColor = Color.DarkGray;
+            }
+            else
+            {
+                buttonColor = Color.White;
+            }
+
+            // Positions button & text within button (scales dependent on text size)
+            _spriteBatch.Draw(blankRectangleSprite, rect, buttonColor);
+            _spriteBatch.DrawString(arial12, text, new Vector2(rect.X + rect.Width / 2 - arial12.MeasureString(text).X / 2,
+                rect.Y + rect.Height / 2 - arial12.MeasureString(text).Y / 2), Color.Black);
         }
     }
 }
