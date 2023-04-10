@@ -48,7 +48,7 @@ namespace ShotgunBoomerang
         /// Should allow the boomerang to bounce off walls
         /// </summary>
         /// <param name="tileMap">The current level's tiles</param>
-        public void ResolveTileCollisions()
+        public void ResolveTileCollisions(List<Tile> t)
         {
             // take the tilemap currently in use
             List<Tile> tileMap = GameManager.currentTileMap;
