@@ -14,11 +14,10 @@ namespace LevelEditor
     {
         // Fields
         private int minHeight;
-        private int minWidth;
-
         private int maxHeight;
-        private int maxWidth;
 
+        private int minWidth;
+        private int maxWidth;
         /// <summary>
         /// opens the window at the beginning of the program
         /// </summary>
@@ -27,11 +26,10 @@ namespace LevelEditor
             InitializeComponent();
 
             minHeight = 32;
-            minWidth = 48;
-
             maxHeight = 256;
+
+            minWidth = 48;
             maxWidth = 256;
-             
         }
 
         /// <summary>

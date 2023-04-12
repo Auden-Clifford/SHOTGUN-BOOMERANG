@@ -43,6 +43,7 @@ namespace ShotgunBoomerang
         private Texture2D menuBackground;
         private Texture2D testTileSprite;
         private Texture2D playerSprite;
+        private Texture2D snakeSprite;
         private Texture2D blankRectangleSprite;
         private Texture2D boomerangSprite;
         private SpriteFont arial12;
@@ -50,6 +51,7 @@ namespace ShotgunBoomerang
 
         private Level testLevel;
         private Player player;
+        private SnakeEnemy snek;
 
         GameState gameState = GameState.MainMenu; // enum for managing gamestate (this is what starts the game on the menu screen)
         private bool debugOn = false; // boolean to toggle debug mode
@@ -100,6 +102,7 @@ namespace ShotgunBoomerang
             playerSprite = this.Content.Load<Texture2D>("PlayerTestSprite");
             blankRectangleSprite = this.Content.Load<Texture2D>("blankRectangle");
             boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
+            snakeSprite = this.Content.Load<Texture2D>("Snek");
 
             // Load fonts
             arial12 = this.Content.Load<SpriteFont>("Arial12");
@@ -115,6 +118,14 @@ namespace ShotgunBoomerang
 
             // set up the player
             player = new Player(playerSprite, boomerangSprite, testLevel.PlayerStart, 100);
+
+            //Test enemy
+            snek = new SnakeEnemy(
+                snakeSprite,
+                new Vector2(testLevel.PlayerStart.X + (testTileSprite.Width * 3), testLevel.PlayerStart.Y + (testTileSprite.Height * 2)),
+                10,
+                5);
+            testLevel.CurrentEnemies.Add(snek);
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
             pauseButtonDebug = new Rectangle(230, 300, 163, 100);
@@ -192,7 +203,11 @@ namespace ShotgunBoomerang
                 case GameState.Gameplay:
 
                     // Update the player
-                    player.Update(kb, prevKb, ms, prevMs, testLevel.CurrentTileMap, testLevel.CurrentEnemies, testLevel.CurrentProjectiles, player);
+                    player.Update(kb, prevKb, ms, prevMs, testLevel.CurrentTileMap, testLevel.CurrentEnemies, testLevel.CurrentProjectiles, graphics);
+
+                    //Update the test snake
+                    
+                    //snek.Update(kb, prevKb, testLevel.CurrentTileMap, testLevel.CurrentProjectiles, player);
 
                     // Update elements of the level
                     testLevel.Update(kb, prevKb, ms, prevMs, player);
@@ -326,13 +341,23 @@ namespace ShotgunBoomerang
         {
             List<Tile> tileMap = new List<Tile>();
 
+
+            //Adds a wall at the beginning
+            tileMap.Add(new Tile(testTileSprite, new Vector2(0, -testTileSprite.Height)));
+
+
             // create a 32-tile long floor
-            for(int i = 0; i < 32; i++)
+            int i = 0;
+
+            for(i = 0; i < 32; i++)
             {
                 tileMap.Add(new Tile(testTileSprite, 
                     new Vector2(i * testTileSprite.Width, 
                     0)));
             }
+
+            //Adds a wall at the end
+            tileMap.Add(new Tile(testTileSprite, new Vector2((i - 1) * testTileSprite.Width, -testTileSprite.Height)));
 
             return tileMap;
         }

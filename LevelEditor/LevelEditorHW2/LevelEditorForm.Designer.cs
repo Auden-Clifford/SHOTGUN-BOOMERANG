@@ -40,7 +40,8 @@
             this.button_Save = new System.Windows.Forms.Button();
             this.button_Load = new System.Windows.Forms.Button();
             this.groupBox_MapView = new System.Windows.Forms.GroupBox();
-            this.ScrollBar = new System.Windows.Forms.HScrollBar();
+            this.ScrollBarX = new System.Windows.Forms.HScrollBar();
+            this.ScrollBarY = new System.Windows.Forms.VScrollBar();
             this.groupBox_TileSelector.SuspendLayout();
             this.groupBox_CurrentTile.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_CurrentTile)).BeginInit();
@@ -164,24 +165,34 @@
             // 
             this.groupBox_MapView.Location = new System.Drawing.Point(130, 15);
             this.groupBox_MapView.Name = "groupBox_MapView";
-            this.groupBox_MapView.Size = new System.Drawing.Size(660, 424);
+            this.groupBox_MapView.Size = new System.Drawing.Size(1344, 896);
             this.groupBox_MapView.TabIndex = 4;
             this.groupBox_MapView.TabStop = false;
             this.groupBox_MapView.Text = "Map";
             // 
-            // ScrollBar
+            // ScrollBarX
             // 
-            this.ScrollBar.Location = new System.Drawing.Point(130, 442);
-            this.ScrollBar.Name = "ScrollBar";
-            this.ScrollBar.Size = new System.Drawing.Size(660, 17);
-            this.ScrollBar.TabIndex = 5;
+            this.ScrollBarX.Location = new System.Drawing.Point(130, 914);
+            this.ScrollBarX.Name = "ScrollBarX";
+            this.ScrollBarX.Size = new System.Drawing.Size(1344, 17);
+            this.ScrollBarX.TabIndex = 5;
+            this.ScrollBarX.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ScrollBar_Scroll);
+            // 
+            // ScrollBarY
+            // 
+            this.ScrollBarY.Location = new System.Drawing.Point(1492, 15);
+            this.ScrollBarY.Name = "ScrollBarY";
+            this.ScrollBarY.Size = new System.Drawing.Size(17, 896);
+            this.ScrollBarY.TabIndex = 0;
+            this.ScrollBarY.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ScrollBar_Scroll);
             // 
             // LevelEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(804, 472);
-            this.Controls.Add(this.ScrollBar);
+            this.ClientSize = new System.Drawing.Size(1518, 943);
+            this.Controls.Add(this.ScrollBarY);
+            this.Controls.Add(this.ScrollBarX);
             this.Controls.Add(this.groupBox_MapView);
             this.Controls.Add(this.button_Load);
             this.Controls.Add(this.button_Save);
@@ -212,6 +223,7 @@
         private Button button_Save;
         private Button button_Load;
         private GroupBox groupBox_MapView;
-        private HScrollBar ScrollBar;
+        private HScrollBar ScrollBarX;
+        private VScrollBar ScrollBarY;
     }
 }

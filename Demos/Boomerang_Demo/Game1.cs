@@ -19,6 +19,7 @@ namespace Boomerang_Demo
         private Vector2 boomerangVelocity;
         private bool isThrown;
         private bool returning = false;
+        private float boomerangRotation = 0;
 
 
 
@@ -101,7 +102,17 @@ namespace Boomerang_Demo
             //Only draw the boomerang if it's been thrown
             if (isThrown)
             {
-                _spriteBatch.Draw(boomerangTexture, boomerangRect, Color.White);
+                //_spriteBatch.Draw(boomerangTexture, boomerangRect, Color.White);
+                _spriteBatch.Draw(
+                    boomerangTexture,
+                    boomerangRect,
+                    null,
+                    Color.White,
+                    boomerangRotation,
+                    new Vector2(boomerangTexture.Width / 2, boomerangTexture.Height / 2),
+                    SpriteEffects.None,
+                    0
+                    );
             }
 
             //_spriteBatch.DrawString(arial12, "playerPos = " + player.X + ", " + player.Y, new Vector2(50, 50), Color.White);
@@ -238,7 +249,7 @@ namespace Boomerang_Demo
 
                 //If the boomerang's velocity is closer to zero than each increment's value
                 //set the velocity to zero
-                if (boomerangVelocity.X < 0.1f && boomerangVelocity.X > -0.1f)
+                if (boomerangVelocity.X < 0.5f && boomerangVelocity.X > -0.5)
                 {
                     boomerangVelocity.X = 0;
                 }
@@ -254,7 +265,7 @@ namespace Boomerang_Demo
 
                 //If the boomerang's velocity is closer to zero than each increment's value
                 //set the velocity to zero
-                if (boomerangVelocity.Y < 0.1f && boomerangVelocity.Y > -0.1f)
+                if (boomerangVelocity.Y < 0.5f && boomerangVelocity.Y > -0.5f)
                 {
                     boomerangVelocity.Y = 0;
                 }
@@ -267,6 +278,7 @@ namespace Boomerang_Demo
         /// <param name="directionalVector">The vector to apply as movement</param>
         public void ApplyMovement(Vector2 directionalVector)
         {
+            boomerangRotation += 0.1f;
             boomerangVelocity += directionalVector;
             boomerangPosition += boomerangVelocity;
             boomerangRect.X = (int)boomerangPosition.X;
