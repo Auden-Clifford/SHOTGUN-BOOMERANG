@@ -12,12 +12,26 @@ namespace LevelEditor
     /// </summary>
     public partial class MainMenuForm : Form
     {
+        // Fields
+        private int minHeight;
+        private int minWidth;
+
+        private int maxHeight;
+        private int maxWidth;
+
         /// <summary>
         /// opens the window at the beginning of the program
         /// </summary>
         public MainMenuForm()
         {
             InitializeComponent();
+
+            minHeight = 32;
+            minWidth = 48;
+
+            maxHeight = 256;
+            maxWidth = 256;
+             
         }
 
         /// <summary>
@@ -33,25 +47,25 @@ namespace LevelEditor
             string errorMessage = "Errors:";
 
             //check if width is below minimum
-            if(widthInput < 10)
+            if(widthInput < minWidth)
             {
                 errorMessage += "\n - Width too small. Minimum is 10";
             }
             
             //check if width is above maximum
-            if(widthInput > 30)
+            if(widthInput > maxWidth)
             {
                 errorMessage += "\n - Width too large. Maximum is 30";
             }
 
             //check if height is below minimum
-            if(heightInput < 10)
+            if(heightInput < minHeight)
             {
                 errorMessage += "\n - Height too small. Minimum is 10";
             }
 
             //check if height is above maximum
-            if(heightInput > 30)
+            if(heightInput > maxHeight)
             {
                 errorMessage += "\n - height too large. Maximum is 30";
             }
@@ -68,7 +82,7 @@ namespace LevelEditor
             }
             else //otherwise create a new map
             {
-                // feed it the widthe and height
+                // feed it the width and height
                 LevelEditorForm levelEditor = new LevelEditorForm(widthInput, heightInput);
 
                 // show the window (without allowing the user to click on the old window)

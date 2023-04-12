@@ -87,7 +87,7 @@
             this.textBox_HeightInput.Name = "textBox_HeightInput";
             this.textBox_HeightInput.Size = new System.Drawing.Size(125, 23);
             this.textBox_HeightInput.TabIndex = 2;
-            this.textBox_HeightInput.Text = "20";
+            this.textBox_HeightInput.Text = "32";
             // 
             // textBox_WidthInput
             // 
@@ -95,7 +95,7 @@
             this.textBox_WidthInput.Name = "textBox_WidthInput";
             this.textBox_WidthInput.Size = new System.Drawing.Size(125, 23);
             this.textBox_WidthInput.TabIndex = 1;
-            this.textBox_WidthInput.Text = "20";
+            this.textBox_WidthInput.Text = "48";
             // 
             // label_WidthInput
             // 
