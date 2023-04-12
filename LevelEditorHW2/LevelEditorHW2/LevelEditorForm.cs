@@ -32,6 +32,9 @@ namespace LevelEditor
         // tracks whether there are unsaved changes
         private bool _unsavedChanges;
 
+        // store the tile size
+        private int _tileSize;
+
 
         // constructors
 
@@ -285,11 +288,11 @@ namespace LevelEditor
             int height = grid.GetLength(0);
             int width = grid.GetLength(1);
 
-            // set the tile size so they fit within the height of the map view (with a margin of 12; 6 on each side)
-            int tileSize = (groupBox_MapView.Height - 12) / height;
+            // set the tile size so 32 tiles fit within the height of the map view (with a margin of 12; 6 on each side)
+            _tileSize = (groupBox_MapView.Height - 12) / 32;
 
             // set the map view box's width to fit the tiles (with a margin of 12; 6 on each side)
-            groupBox_MapView.Width = tileSize * 48 + 12;
+            groupBox_MapView.Width = _tileSize * 48 + 12;
 
             // set the X scrollbar's width to match the view box
             ScrollBarX.Width = groupBox_MapView.Width;
@@ -297,12 +300,12 @@ namespace LevelEditor
             // set the Y scrollbar's cocation to be just after the edge of the view box
             ScrollBarY.Location = new Point(groupBox_MapView.Location.X + groupBox_MapView.Width + 6, ScrollBarY.Location.Y);
 
-            // the Y scrollbar starts at the bottom
-            ScrollBarY.Value = ScrollBarY.Maximum;
-
             // set the max values of the scrollbars to match the grid size
             ScrollBarX.Maximum = width - 48;
             ScrollBarY.Maximum = height - 32;
+
+            // the Y scrollbar starts at the bottom
+            ScrollBarY.Value = ScrollBarY.Maximum;
 
             // set the window size to fit the map view window (with a margin of 30)
             this.Width = groupBox_MapView.Location.X + groupBox_MapView.Width + ScrollBarY.Width + 30;
@@ -315,12 +318,12 @@ namespace LevelEditor
                     PictureBox pb = grid[y, x];
 
                     //set it's size
-                    pb.Size = new Size(tileSize, tileSize);
+                    pb.Size = new Size(_tileSize, _tileSize);
 
                     //this should set the boxes edge-to-edge with each other
                     // y is given a margin of 15 with the map border
                     // x is given a margin of 6 with the map border
-                    pb.Location = new Point(x * tileSize + 6, y * tileSize + 15);
+                    pb.Location = new Point(x * _tileSize + 6, y * _tileSize + 15);
 
                     // add tile_click to the click event
                     pb.MouseDown += tile_Click;
@@ -328,6 +331,20 @@ namespace LevelEditor
 
                     // add the picturebox to the controls list
                     groupBox_MapView.Controls.Add(pb);
+
+                    // hide all tiles t first
+                    pb.Hide();
+                }
+            }
+
+            // show only tiles within the first 48 x or the last 32 y (y is the first dimetion)
+            // all shown tiles will be positioned edge-to edge in the window
+            for (int y = 0; y < 32; y++)
+            {
+                for(int x = 0; x < 48; x++)
+                {
+                    grid[y + grid.GetLength(0) - 32, x].Location = new Point(x * _tileSize + 6, y * _tileSize + 15);
+                    grid[y + grid.GetLength(0) - 32, x].Show();
                 }
             }
         }
@@ -380,6 +397,34 @@ namespace LevelEditor
             this.Text = "Level Editor - " + filePath.Split('\\')[^1];
 
             return grid;
+        }
+
+        /// <summary>
+        /// Allows the user to scroll throughout a 
+        /// level that is larger than the view screen
+        /// </summary>
+        private void ScrollBar_Scroll(object sender, ScrollEventArgs e)
+        {
+            // loop through all tiles
+            for(int y = 0; y < _currentMapGrid.GetLength(0); y++)
+            {
+                for(int x = 0; x < _currentMapGrid.GetLength(1); x++)
+                {
+                    // if theyre within the scrollbar value range, show them and position them
+                    // so that they properly fill the screen and sit edge-to-edge
+                    if((y >= ScrollBarY.Value && y <= ScrollBarY.Value + 32) &&
+                        (x >= ScrollBarX.Value && x <= ScrollBarX.Value + 48))
+                    {
+                        _currentMapGrid[y, x].Location = new Point((x - ScrollBarX.Value) * _tileSize + 6, (y - ScrollBarY.Value) * _tileSize + 15);
+                        _currentMapGrid[y, x].Show();
+                    }
+                    // otherwise hide them
+                    else
+                    {
+                        _currentMapGrid[y, x].Hide();
+                    }
+                }
+            }
         }
     }
 }

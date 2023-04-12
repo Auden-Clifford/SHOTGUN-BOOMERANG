@@ -176,6 +176,7 @@
             this.ScrollBarX.Name = "ScrollBarX";
             this.ScrollBarX.Size = new System.Drawing.Size(1344, 17);
             this.ScrollBarX.TabIndex = 5;
+            this.ScrollBarX.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ScrollBar_Scroll);
             // 
             // ScrollBarY
             // 
@@ -183,6 +184,7 @@
             this.ScrollBarY.Name = "ScrollBarY";
             this.ScrollBarY.Size = new System.Drawing.Size(17, 896);
             this.ScrollBarY.TabIndex = 0;
+            this.ScrollBarY.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ScrollBar_Scroll);
             // 
             // LevelEditorForm
             // 
