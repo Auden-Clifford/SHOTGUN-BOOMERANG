@@ -20,7 +20,7 @@ namespace ShotgunBoomerang
         /// <summary>
         /// Should tell the given spritebatch to draw/animate the enemy
         /// </summary>
-        public void Draw(SpriteBatch sb, Vector2 screenOffset);
+        public void Draw(SpriteBatch sb, Vector2 offset);
 
         /// <summary>
         /// method for use in the update loop, contains all logic the object needs to go through in a frame
@@ -35,12 +35,7 @@ namespace ShotgunBoomerang
         /// <param name="enemies">The current level's enemies</param>
         /// <param name="projectiles">The projectiles currently in play</param>
         public void Update(
-            KeyboardState kb,
-            KeyboardState prevKb,
-            MouseState ms,
-            MouseState prevMs,
             List<Tile> tileMap,
-            List<IGameEnemy> enemies,
             List<IGameProjectile> projectiles,
             Player player);
 
@@ -48,16 +43,23 @@ namespace ShotgunBoomerang
         /// Should check if the enemy is colliding with any game objects
         /// </summary>
         /// <returns></returns>
-        public bool CheckCollision();
+        public bool CheckCollision(MobileEntity other);
 
         /// <summary>
         /// Should either launch a projectile or melee attack on the player
         /// </summary>
-        public void Attack();
+        public void Attack(Player player);
 
+        /// <summary>
+        /// Checks the health of the enemy to trigger it's death
+        /// </summary>
+        public void CheckHealth();
+        
         /// <summary>
         /// should contain logic for movement
         /// </summary>
         public void Move();
+
+
     }
 }

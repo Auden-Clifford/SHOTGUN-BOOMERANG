@@ -85,7 +85,7 @@ namespace ShotgunBoomerang
         protected virtual void ApplyPhysics()
         {
             // apply gravity to velocity
-            _velocity.Y += GameManager.Gravity;
+            _velocity.Y += GameManager.Gravity / 2;
 
             // apply velocity to position
             _position += _velocity;

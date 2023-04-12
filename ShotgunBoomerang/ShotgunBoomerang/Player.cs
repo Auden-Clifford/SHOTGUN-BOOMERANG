@@ -249,6 +249,7 @@ namespace ShotgunBoomerang
                     // Transition to Slide when CTRL is pressed
                     if(kb.IsKeyDown(Keys.LeftControl))
                     {
+                        
                         _currentState = PlayerState.Slide;
                     }
 
