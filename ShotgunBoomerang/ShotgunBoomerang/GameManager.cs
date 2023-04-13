@@ -132,6 +132,7 @@ namespace ShotgunBoomerang
                     2);
             testLevel.StartEnemies.Add(snek);
             testLevel.CurrentEnemies.Add(snek);
+            testLevel.StartEnemies.Add(snek);
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
             pauseButtonDebug = new Rectangle(230, 300, 163, 100);
