@@ -187,6 +187,7 @@ namespace ShotgunBoomerang
             _currentEnemies.Clear();
             foreach (IGameEnemy enemy in _startEnemies)
             {
+                
                 _currentEnemies.Add(enemy);
             }
 
