@@ -87,6 +87,7 @@ namespace ShotgunBoomerang
             foreach (IGameEnemy enemy in _startEnemies)
             {
                 _currentEnemies.Add(enemy);
+                
             }
 
             _startProjectiles = projectiles;
