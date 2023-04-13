@@ -16,6 +16,10 @@ namespace ShotgunBoomerang
         private bool isAlive;
         private bool onGround;
         private float defaultSpeed;
+        private Vector2 startPos;
+        private Color color;
+        private float timer;
+        private bool damaged;
 
         public SnakeEnemy(Texture2D sprite, Vector2 position, float maxHealth, float damage, float moveSpeed)
 
@@ -25,6 +29,8 @@ namespace ShotgunBoomerang
             this._maxHealth = maxHealth;
             this._health = maxHealth;
             this._damage = damage;
+
+            startPos = new Vector2(position.X, position.Y);
 
             _velocity = new Vector2(moveSpeed, 0);
 
@@ -36,8 +42,18 @@ namespace ShotgunBoomerang
             bump = new Vector2(2, -3);
             isAlive = true;
             onGround = false;
+            color = Color.White;
+            damaged = false;
         }
 
+        public void Reset()
+        {
+            _health = _maxHealth;
+            _position.X = startPos.X;
+            _position.Y = startPos.Y;
+            isAlive = true;
+            onGround = false;
+        }
         
         /// <summary>
         /// Draws the snake
@@ -46,8 +62,19 @@ namespace ShotgunBoomerang
         /// <param name="offset">The screenoffset</param>
         public override void Draw(SpriteBatch sb, Vector2 offset)
         {
-
-            sb.Draw(Sprite, _position - offset, Color.White);
+            //Draws red if damaged
+            if (damaged && timer > 0)
+            {
+                sb.Draw(Sprite, _position - offset, Color.Red);
+                timer -= 0.1f;
+            }
+            else
+            {
+                sb.Draw(Sprite, _position - offset, Color.White);
+                timer = 5.00f;
+                damaged = false;
+            }
+            
 
         }
 
@@ -114,7 +141,8 @@ namespace ShotgunBoomerang
         public void TakeDamage(float damage)
         {
             _health -= damage;
-            
+            timer = 5.00f;
+            damaged = true;
         }
 
         /// <summary>
