@@ -66,5 +66,10 @@ namespace ShotgunBoomerang
         /// <param name="damage">amount of damage to take</param>
         /// <returns></returns>
         public void TakeDamage(float damage);
+
+        /// <summary>
+        /// Resets to start location
+        /// </summary>
+        public void Reset();
     }
 }
