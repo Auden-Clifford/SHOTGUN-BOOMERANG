@@ -530,6 +530,7 @@ namespace ShotgunBoomerang
                 MobileEntity currentEnemy = (MobileEntity)enemies[i];
                 float distance = Vector2.Distance(CenterPoint, currentEnemy.CenterPoint);
 
+                //caluclates if enemy is in range
                 if (distance <= _shotgunRadius)
                 {
                     enemies[i].TakeDamage(_damage);
