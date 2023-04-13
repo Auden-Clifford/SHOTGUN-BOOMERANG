@@ -101,7 +101,7 @@ namespace ShotgunBoomerang
             _ammo = 2;
             _isHoldingBoomerang = true;
             _currentState = PlayerState.Idle;
-            _shotgunRadius = 64;
+            _shotgunRadius = 256;
             _shotgunAngle = 45;
             _isCollidingWithGround = false;
             _jumpForce = 32;
@@ -175,7 +175,9 @@ namespace ShotgunBoomerang
                     if(ms.LeftButton == ButtonState.Pressed && 
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics);
+                        ShotgunAttack(ms, graphics, enemies);
+
+                        
                     }
 
                     // if the player right clicks (only once) and
@@ -215,7 +217,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics);
+                        ShotgunAttack(ms, graphics, enemies);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -267,7 +269,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics);
+                        ShotgunAttack(ms, graphics, enemies);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -311,7 +313,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics);
+                        ShotgunAttack(ms, graphics, enemies);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -349,7 +351,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics);
+                        ShotgunAttack(ms, graphics, enemies);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -508,7 +510,7 @@ namespace ShotgunBoomerang
             }
         }
 
-        private void ShotgunAttack(MouseState ms, GraphicsDeviceManager graphics)
+        private void ShotgunAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameEnemy> enemies)
         {
             // need the mouse's position to be a Vector2 for math
             Vector2 mousePos = new Vector2(ms.Position.X, ms.Position.Y);
@@ -520,7 +522,19 @@ namespace ShotgunBoomerang
 
             // throw the player back in the opposite direction of the blast
             _velocity += velocityNormal * (_damage / 2);
-            
+
+
+            //Caluclates shotgun hits on enemies
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                MobileEntity currentEnemy = (MobileEntity)enemies[i];
+                float distance = Vector2.Distance(CenterPoint, currentEnemy.CenterPoint);
+
+                if (distance <= _shotgunRadius)
+                {
+                    enemies[i].TakeDamage(_damage);
+                }
+            }
         }
 
         private void BoomerangAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameProjectile> projectiles)

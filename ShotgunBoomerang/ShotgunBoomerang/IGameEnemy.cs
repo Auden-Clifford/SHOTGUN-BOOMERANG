@@ -60,6 +60,11 @@ namespace ShotgunBoomerang
         /// </summary>
         public void Move();
 
-
+        /// <summary>
+        /// Takes a set amount of damage from a source
+        /// </summary>
+        /// <param name="damage">amount of damage to take</param>
+        /// <returns></returns>
+        public void TakeDamage(float damage);
     }
 }

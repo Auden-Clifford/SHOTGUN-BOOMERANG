@@ -114,6 +114,7 @@ namespace ShotgunBoomerang
         public void TakeDamage(float damage)
         {
             _health -= damage;
+            
         }
 
         /// <summary>
