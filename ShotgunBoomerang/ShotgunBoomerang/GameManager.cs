@@ -116,6 +116,8 @@ namespace ShotgunBoomerang
                 new Vector2(testTileSprite.Width, 
                 -testTileSprite.Width * 3));
 
+            
+
             // set up the player
             player = new Player(playerSprite, boomerangSprite, testLevel.PlayerStart, 100);
 
@@ -128,6 +130,7 @@ namespace ShotgunBoomerang
                     10,
                     5,
                     2);
+            testLevel.StartEnemies.Add(snek);
             testLevel.CurrentEnemies.Add(snek);
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
