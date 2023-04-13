@@ -11,13 +11,13 @@ namespace ShotgunBoomerang
 {
     internal class SnakeEnemy : MobileEntity, IGameEnemy
     {
-        private bool goingLeft;
-        private bool _isCollidingWithGround;
-        private List<Rectangle> intersectionHitboxes;
+        private bool goingLeft = false;
         private Vector2 bump;
         private bool isAlive;
+        private bool onGround;
+        private float defaultSpeed;
 
-        public SnakeEnemy(Texture2D sprite, Vector2 position, float maxHealth, float damage)
+        public SnakeEnemy(Texture2D sprite, Vector2 position, float maxHealth, float damage, float moveSpeed)
 
         {
             this._sprite = sprite;
@@ -26,12 +26,16 @@ namespace ShotgunBoomerang
             this._health = maxHealth;
             this._damage = damage;
 
-            _velocity = new Vector2(2, 0);
-            goingLeft = false;
-            _isCollidingWithGround = false;
-            intersectionHitboxes = new List<Rectangle>();
+            _velocity = new Vector2(moveSpeed, 0);
+
+            //Default speed is used to reset the velocity X value after it is clamped
+            //during collision resolution
+            defaultSpeed = moveSpeed;
+
+            //goingLeft = false;
             bump = new Vector2(2, -3);
             isAlive = true;
+            onGround = false;
         }
 
         
@@ -53,15 +57,9 @@ namespace ShotgunBoomerang
         /// <param name="tileMap">The level map</param>
         /// <param name="projectiles">The list of projectiles</param>
         /// <param name="player">The player</param>
-        public void Update(
-            List<Tile> tileMap,
-            List<IGameProjectile> projectiles,
-            Player player)
+        public void Update(List<Tile> tileMap, List<IGameProjectile> projectiles, Player player)
         {
-            if(_velocity.X != 2)
-            {
-                _velocity.X = 2;
-            }
+            _velocity.X = defaultSpeed;
             Attack(player);
             Move();
             ResolveTileCollisions(tileMap);
@@ -130,6 +128,15 @@ namespace ShotgunBoomerang
             }
         }
 
+        protected override void ApplyPhysics()
+        {
+            // apply gravity to velocity
+            _velocity.Y += GameManager.Gravity;
+
+            // apply velocity to position
+            _position.Y += _velocity.Y;
+        }
+
         /// <summary>
         /// Gets or sets the X of the enemy
         /// </summary>
@@ -147,13 +154,14 @@ namespace ShotgunBoomerang
             
             if (!goingLeft) //If going right
             {
-                _position += _velocity;
+                _position.X += _velocity.X;
+                //_position.X += 2;
             }
             else //If going left
             {
-                _position -= _velocity;
+                _position.X -= _velocity.X;
+                //_position.X -= 2;
             }
-
             
 
             
@@ -162,14 +170,17 @@ namespace ShotgunBoomerang
         
         /// <summary>
         /// Definitely not just Auden's code I took cause it wasn't necessary to do the work again
-        /// That would be insane (:
+        /// 
         /// </summary>
         /// <param name="tileMap"></param>
         protected override void ResolveTileCollisions(List<Tile> tileMap)
         {
-            
+
             //gravity is applied beforehand
-            ApplyPhysics();
+            if (!onGround)
+            {
+                ApplyPhysics();
+            }
 
             // get the player's hitbox
             Rectangle hitBox = this.HitBox;
@@ -186,7 +197,6 @@ namespace ShotgunBoomerang
                 {
                     // add it's hitbox to the list
                     intersectionsList.Add(tile.HitBox);
-                    intersectionHitboxes.Add(tile.HitBox);
                 }
             }
 
@@ -218,10 +228,13 @@ namespace ShotgunBoomerang
 
                         //the player's X velocity cannot be positive when touching the right wall
                         this._velocity.X = Math.Clamp(_velocity.X, float.MinValue, 0);
-                        if (intersectRect.Height >= 16)
-                        {
+
+                        //I implemented this conditional because I was concerned that the snake was getting caught
+                        //on the lip of the next tile.
+                        //It wasn't, but the limit doesn't affect the desired behaviour. Removing it makes no difference
+                        
                             goingLeft = !goingLeft;
-                        }
+                        
                     }
                     // otherwise move right
                     else
@@ -230,11 +243,12 @@ namespace ShotgunBoomerang
 
                         //the player's X velocity cannot be negative when touching the left wall
                         this._velocity.X = Math.Clamp(_velocity.X, 0, float.MaxValue);
-                        if (intersectRect.Height >= 16)
-                        {
+                        
                             goingLeft = !goingLeft;
-                        }
+                        
                     }
+
+                    //goingLeft = !goingLeft;
 
                     
 
@@ -250,7 +264,7 @@ namespace ShotgunBoomerang
                         hitBox.Y -= intersectRect.Height;
 
                         // this means the player is in contact with the ground
-                        _isCollidingWithGround = true;
+                        onGround = true;
 
                         //the player's Y velocity cannot be negative when touching the ground
                         this._velocity.Y = Math.Clamp(_velocity.Y, float.MinValue, 0);

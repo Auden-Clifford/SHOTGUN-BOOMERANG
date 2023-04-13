@@ -122,9 +122,12 @@ namespace ShotgunBoomerang
             //Test enemy
             snek = new SnakeEnemy(
                 snakeSprite,
-                new Vector2(testLevel.PlayerStart.X + (testTileSprite.Width * 3), testLevel.PlayerStart.Y + (testTileSprite.Height * 2)),
-                10,
-                5);
+                new Vector2(
+                    testLevel.PlayerStart.X + (testTileSprite.Width * 3),
+                    testLevel.PlayerStart.Y + (testTileSprite.Height)),
+                    10,
+                    5,
+                    2);
             testLevel.CurrentEnemies.Add(snek);
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
