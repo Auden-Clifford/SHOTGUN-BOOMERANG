@@ -28,7 +28,9 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LevelEditorForm));
             this.groupBox_TileSelector = new System.Windows.Forms.GroupBox();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.button_RedTile = new System.Windows.Forms.Button();
             this.button_DarkGreenTile = new System.Windows.Forms.Button();
             this.button_GreenTile = new System.Windows.Forms.Button();
@@ -42,13 +44,21 @@
             this.groupBox_MapView = new System.Windows.Forms.GroupBox();
             this.ScrollBarX = new System.Windows.Forms.HScrollBar();
             this.ScrollBarY = new System.Windows.Forms.VScrollBar();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
+            this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.groupBox_TileSelector.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.groupBox_CurrentTile.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_CurrentTile)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox_TileSelector
             // 
+            this.groupBox_TileSelector.Controls.Add(this.pictureBox3);
+            this.groupBox_TileSelector.Controls.Add(this.pictureBox2);
+            this.groupBox_TileSelector.Controls.Add(this.pictureBox1);
             this.groupBox_TileSelector.Controls.Add(this.button_RedTile);
             this.groupBox_TileSelector.Controls.Add(this.button_DarkGreenTile);
             this.groupBox_TileSelector.Controls.Add(this.button_GreenTile);
@@ -57,10 +67,22 @@
             this.groupBox_TileSelector.Controls.Add(this.button_BlueTile);
             this.groupBox_TileSelector.Location = new System.Drawing.Point(15, 15);
             this.groupBox_TileSelector.Name = "groupBox_TileSelector";
-            this.groupBox_TileSelector.Size = new System.Drawing.Size(100, 160);
+            this.groupBox_TileSelector.Size = new System.Drawing.Size(158, 160);
             this.groupBox_TileSelector.TabIndex = 0;
             this.groupBox_TileSelector.TabStop = false;
             this.groupBox_TileSelector.Text = "Tiles";
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.Control;
+            this.pictureBox1.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox1.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox1.Image")));
+            this.pictureBox1.Location = new System.Drawing.Point(100, 22);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(50, 50);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 7;
+            this.pictureBox1.TabStop = false;
             // 
             // button_RedTile
             // 
@@ -125,9 +147,9 @@
             // groupBox_CurrentTile
             // 
             this.groupBox_CurrentTile.Controls.Add(this.pictureBox_CurrentTile);
-            this.groupBox_CurrentTile.Location = new System.Drawing.Point(15, 181);
+            this.groupBox_CurrentTile.Location = new System.Drawing.Point(15, 200);
             this.groupBox_CurrentTile.Name = "groupBox_CurrentTile";
-            this.groupBox_CurrentTile.Size = new System.Drawing.Size(100, 100);
+            this.groupBox_CurrentTile.Size = new System.Drawing.Size(158, 185);
             this.groupBox_CurrentTile.TabIndex = 1;
             this.groupBox_CurrentTile.TabStop = false;
             this.groupBox_CurrentTile.Text = "Current Tile";
@@ -135,15 +157,15 @@
             // pictureBox_CurrentTile
             // 
             this.pictureBox_CurrentTile.BackColor = System.Drawing.Color.CadetBlue;
-            this.pictureBox_CurrentTile.Location = new System.Drawing.Point(15, 20);
+            this.pictureBox_CurrentTile.Location = new System.Drawing.Point(6, 20);
             this.pictureBox_CurrentTile.Name = "pictureBox_CurrentTile";
-            this.pictureBox_CurrentTile.Size = new System.Drawing.Size(70, 70);
+            this.pictureBox_CurrentTile.Size = new System.Drawing.Size(146, 146);
             this.pictureBox_CurrentTile.TabIndex = 0;
             this.pictureBox_CurrentTile.TabStop = false;
             // 
             // button_Save
             // 
-            this.button_Save.Location = new System.Drawing.Point(30, 287);
+            this.button_Save.Location = new System.Drawing.Point(39, 417);
             this.button_Save.Name = "button_Save";
             this.button_Save.Size = new System.Drawing.Size(70, 70);
             this.button_Save.TabIndex = 2;
@@ -153,7 +175,7 @@
             // 
             // button_Load
             // 
-            this.button_Load.Location = new System.Drawing.Point(30, 369);
+            this.button_Load.Location = new System.Drawing.Point(30, 509);
             this.button_Load.Name = "button_Load";
             this.button_Load.Size = new System.Drawing.Size(70, 70);
             this.button_Load.TabIndex = 3;
@@ -163,9 +185,9 @@
             // 
             // groupBox_MapView
             // 
-            this.groupBox_MapView.Location = new System.Drawing.Point(130, 15);
+            this.groupBox_MapView.Location = new System.Drawing.Point(179, 15);
             this.groupBox_MapView.Name = "groupBox_MapView";
-            this.groupBox_MapView.Size = new System.Drawing.Size(1344, 896);
+            this.groupBox_MapView.Size = new System.Drawing.Size(1295, 896);
             this.groupBox_MapView.TabIndex = 4;
             this.groupBox_MapView.TabStop = false;
             this.groupBox_MapView.Text = "Map";
@@ -186,6 +208,28 @@
             this.ScrollBarY.TabIndex = 0;
             this.ScrollBarY.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ScrollBar_Scroll);
             // 
+            // pictureBox2
+            // 
+            this.pictureBox2.BackColor = System.Drawing.Color.Gray;
+            this.pictureBox2.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox2.Location = new System.Drawing.Point(44, 22);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(50, 50);
+            this.pictureBox2.TabIndex = 8;
+            this.pictureBox2.TabStop = false;
+            // 
+            // pictureBox3
+            // 
+            this.pictureBox3.BackColor = System.Drawing.Color.Transparent;
+            this.pictureBox3.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.pictureBox3.Image = ((System.Drawing.Image)(resources.GetObject("pictureBox3.Image")));
+            this.pictureBox3.Location = new System.Drawing.Point(100, 87);
+            this.pictureBox3.Name = "pictureBox3";
+            this.pictureBox3.Size = new System.Drawing.Size(50, 50);
+            this.pictureBox3.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox3.TabIndex = 9;
+            this.pictureBox3.TabStop = false;
+            // 
             // LevelEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -203,8 +247,11 @@
             this.Text = "Level Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LevelEditorForm_FormClosing);
             this.groupBox_TileSelector.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.groupBox_CurrentTile.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_CurrentTile)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -225,5 +272,8 @@
         private GroupBox groupBox_MapView;
         private HScrollBar ScrollBarX;
         private VScrollBar ScrollBarY;
+        private PictureBox pictureBox1;
+        private PictureBox pictureBox3;
+        private PictureBox pictureBox2;
     }
 }
