@@ -41,10 +41,14 @@ namespace ShotgunBoomerang
         private SpriteBatch _spriteBatch;
 
         private Texture2D menuBackground;
+        private Texture2D blankRectangleSprite;
+        private Texture2D darkFilter;
+        private Texture2D healthBar;
+        private Texture2D ammoBar;
+
         private Texture2D testTileSprite;
         private Texture2D playerSprite;
         private Texture2D snakeSprite;
-        private Texture2D blankRectangleSprite;
         private Texture2D boomerangSprite;
         private SpriteFont arial12;
         private SpriteFont arial36;
@@ -103,6 +107,9 @@ namespace ShotgunBoomerang
             blankRectangleSprite = this.Content.Load<Texture2D>("blankRectangle");
             boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
             snakeSprite = this.Content.Load<Texture2D>("Snek");
+            darkFilter = this.Content.Load<Texture2D>("darkfilter");
+            healthBar = this.Content.Load<Texture2D>("redsquare");
+            ammoBar = this.Content.Load<Texture2D>("ammoui");
 
             // Load fonts
             arial12 = this.Content.Load<SpriteFont>("Arial12");
@@ -115,8 +122,6 @@ namespace ShotgunBoomerang
                 new List<IGameProjectile>(),
                 new Vector2(testTileSprite.Width, 
                 -testTileSprite.Width * 3));
-
-            
 
             // set up the player
             player = new Player(playerSprite, boomerangSprite, testLevel.PlayerStart, 100);
@@ -229,13 +234,11 @@ namespace ShotgunBoomerang
                         testLevel.ResetLevel(player);
                     }
 
-
                     if(ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
                         snek.TakeDamage(25, player);
                     }
                     
-
                     break;
             }
 
@@ -311,6 +314,7 @@ namespace ShotgunBoomerang
 
                     testLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics);
+                    _spriteBatch.Draw(darkFilter, new Rectangle(0,0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
                     // Pause & return text
                     _spriteBatch.DrawString(arial36, "- PAUSED -", new Vector2((graphics.PreferredBackBufferWidth / 2) - 120,
@@ -338,6 +342,12 @@ namespace ShotgunBoomerang
 
                     testLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics);
+
+                    _spriteBatch.Draw(healthBar, new Rectangle(80, graphics.PreferredBackBufferHeight - 120, (int)(4 * player.Health), 30), Color.Red);
+                    for (int i = 1; i <= player.Ammo; i++)
+                    {
+                        _spriteBatch.Draw(ammoBar, new Rectangle(80 + 48 * (i-1), graphics.PreferredBackBufferHeight - 200, 32, 64), Color.White);
+                    }
 
                     break;
             }
@@ -397,6 +407,10 @@ namespace ShotgunBoomerang
             // print the player's state
             _spriteBatch.DrawString(arial12, $"Player state: {player.CurrentState}", new Vector2(10, 110), Color.White);
 
+            // print the player's health and ammo
+            _spriteBatch.DrawString(arial12, $"Player health: {player.Health}", new Vector2(10, 150), Color.White);
+            _spriteBatch.DrawString(arial12, $"Player ammo: {player.Ammo}", new Vector2(10, 170), Color.White);
+
             /*
             // print the boomerang's X and Y
             _spriteBatch.DrawString(arial12, $"Boomerang Coordinates: {boomerang.Position.X}, {boomerang.Position.Y}", new Vector2(10, 130), Color.White);
@@ -407,6 +421,7 @@ namespace ShotgunBoomerang
             // print the boomerang's state
             _spriteBatch.DrawString(arial12, $"Boomerang state: {boomerang.CurrentState}", new Vector2(10, 170), Color.White);
             */
+
         }
 
         /// <summary>

@@ -93,6 +93,15 @@ namespace ShotgunBoomerang
             get { return kills; }
             set { kills = value; }
         }
+
+        /// <summary>
+        /// retrieves/sets the players ammo
+        /// </summary>
+        public int Ammo
+        {
+            get { return _ammo; }
+            set { _ammo = value; }
+        }
         
         // Constructors
 
@@ -283,9 +292,10 @@ namespace ShotgunBoomerang
                 case PlayerState.Airborne:
                     // if the player left clicks (only once), perform a shotgun attack
                     if (ms.LeftButton == ButtonState.Pressed &&
-                        prevMs.LeftButton == ButtonState.Released)
+                        prevMs.LeftButton == ButtonState.Released && _ammo > 0)
                     {
                         ShotgunAttack(ms, graphics, enemies);
+                        _ammo--;
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -302,6 +312,7 @@ namespace ShotgunBoomerang
                     // this state ends once the player hits the ground
                     if(_isCollidingWithGround)
                     {
+                        _ammo = 2;
                         // if the horizontal velocity is 0, transition to idle
                         if(_velocity.X == 0)
                         {
