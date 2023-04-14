@@ -168,7 +168,8 @@ namespace ShotgunBoomerang
             List<Tile> tileMap,
             List<IGameEnemy> enemies,
             List<IGameProjectile> projectiles,
-            Player player)
+            Player player,
+            GameTime gameTime)
         {
             switch(_currentState)
             {
@@ -247,6 +248,24 @@ namespace ShotgunBoomerang
         void IGameProjectile.ResolveTileCollisions(List<Tile> tilemap)
         {
             throw new NotImplementedException();
+        }
+
+
+        /// <summary>
+        /// THIS DOES NOT WORK YET, DO 
+        /// </summary>
+        /// <param name="mausPos"></param>
+        /// <param name="graphics"></param>
+        public void ShotgunHit(Vector2 playerPos, GraphicsDeviceManager graphics)
+        {
+            
+            
+            Vector2 velocityNormal = _velocity*-2;
+            
+            
+
+            // throw the player back in the opposite direction of the blast
+            _velocity += velocityNormal;
         }
     }
 }

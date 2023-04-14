@@ -89,13 +89,6 @@ namespace ShotgunBoomerang
                     damaged = false;
                 }
             }
-
-
-
-            
-
-            
-
         }
 
         /// <summary>
@@ -104,7 +97,7 @@ namespace ShotgunBoomerang
         /// <param name="tileMap">The level map</param>
         /// <param name="projectiles">The list of projectiles</param>
         /// <param name="player">The player</param>
-        public void Update(List<Tile> tileMap, List<IGameProjectile> projectiles, Player player)
+        public void Update(List<Tile> tileMap, List<IGameProjectile> projectiles, Player player, GameTime gameTime)
         {
             if (goingLeft)
             {
@@ -114,8 +107,6 @@ namespace ShotgunBoomerang
             Move();
             
             ResolveTileCollisions(tileMap);
-
-
         }
 
 
@@ -144,7 +135,7 @@ namespace ShotgunBoomerang
         {
             if (CheckCollision(player))
             {
-                player.Health -= _damage;
+                player.TakeDamage(_damage);
                 if(player.Position.X >= this.Position.X)
                 {
                     bump.X = 2;
@@ -255,10 +246,8 @@ namespace ShotgunBoomerang
             {
                 _velocity.X = defaultSpeed;
             }
-
         }
 
-        
         /// <summary>
         /// Definitely not just Auden's code I took cause it wasn't necessary to do the work again
         /// 
@@ -266,7 +255,6 @@ namespace ShotgunBoomerang
         /// <param name="tileMap"></param>
         protected override void ResolveTileCollisions(List<Tile> tileMap)
         {
-
             //gravity is applied beforehand
             
             ApplyPhysics();
