@@ -49,7 +49,7 @@ namespace ShotgunBoomerang
         private int kills;
         private double dmgTimer; //this might not be handled here. won't implement until it's clear
 
-        private bool hasIFrames;
+        private Color drawColor;
 
         // Properties
 
@@ -135,6 +135,7 @@ namespace ShotgunBoomerang
             _jumpForce = 32;
 
             dmgTimer = .5;
+            drawColor = Color.White;
         }
 
 
@@ -152,7 +153,7 @@ namespace ShotgunBoomerang
                     - _sprite.Width / 2,
                     graphics.PreferredBackBufferHeight / 2 
                     - _sprite.Height / 2), 
-                Color.White);
+                drawColor);
         }
 
         /// <summary>
@@ -424,10 +425,13 @@ namespace ShotgunBoomerang
                 case PlayerState.Damaged:
                     dmgTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
+                    drawColor = Color.Red;
+
                     _velocity *= 0.99f;
 
                     if(dmgTimer <= 0)
                     {
+                        drawColor = Color.White;
                         dmgTimer = .5;
                         _currentState = PlayerState.Idle;
                     }

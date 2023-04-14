@@ -89,13 +89,6 @@ namespace ShotgunBoomerang
                     damaged = false;
                 }
             }
-
-
-
-            
-
-            
-
         }
 
         /// <summary>
@@ -114,8 +107,6 @@ namespace ShotgunBoomerang
             Move();
             
             ResolveTileCollisions(tileMap);
-
-
         }
 
 
@@ -255,10 +246,8 @@ namespace ShotgunBoomerang
             {
                 _velocity.X = defaultSpeed;
             }
-
         }
 
-        
         /// <summary>
         /// Definitely not just Auden's code I took cause it wasn't necessary to do the work again
         /// 
@@ -266,7 +255,6 @@ namespace ShotgunBoomerang
         /// <param name="tileMap"></param>
         protected override void ResolveTileCollisions(List<Tile> tileMap)
         {
-
             //gravity is applied beforehand
             
             ApplyPhysics();
