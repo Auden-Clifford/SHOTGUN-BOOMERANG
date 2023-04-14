@@ -45,6 +45,7 @@ namespace ShotgunBoomerang
         private Texture2D darkFilter;
         private Texture2D healthBar;
         private Texture2D ammoBar;
+        private Texture2D demoDisplay;
 
         private Texture2D testTileSprite;
         private Texture2D playerSprite;
@@ -66,6 +67,7 @@ namespace ShotgunBoomerang
         private Rectangle pauseButtonQuit;
 
         private string levelText;
+        private Texture2D levelSprite;
         private Rectangle buttonPlayDemo;
         private Rectangle buttonPlayOne;
         private Rectangle buttonPlayTwo;
@@ -78,7 +80,6 @@ namespace ShotgunBoomerang
             graphics.PreferredBackBufferWidth = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Width;
             graphics.PreferredBackBufferHeight = GraphicsAdapter.DefaultAdapter.CurrentDisplayMode.Height;
             graphics.ApplyChanges();
-            //Window.AllowUserResizing = true;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -110,6 +111,9 @@ namespace ShotgunBoomerang
             darkFilter = this.Content.Load<Texture2D>("darkfilter");
             healthBar = this.Content.Load<Texture2D>("redsquare");
             ammoBar = this.Content.Load<Texture2D>("ammoui");
+            demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
+
+            levelSprite = demoDisplay;
 
             // Load fonts
             arial12 = this.Content.Load<SpriteFont>("Arial12");
@@ -143,10 +147,10 @@ namespace ShotgunBoomerang
             pauseButtonDebug = new Rectangle(230, 300, 163, 100);
             pauseButtonQuit = new Rectangle(630, 300, 163, 100);
 
-            buttonPlayDemo = new Rectangle(430, 300, 163, 50);
-            buttonPlayOne = new Rectangle(430, 400, 163, 100);
-            buttonPlayTwo = new Rectangle(430, 550, 163, 100);
-            buttonPlayThree = new Rectangle(430, 700, 163, 100);
+            buttonPlayDemo = new Rectangle(510, 300, 163, 50);
+            buttonPlayOne = new Rectangle(510, 400, 163, 100);
+            buttonPlayTwo = new Rectangle(510, 550, 163, 100);
+            buttonPlayThree = new Rectangle(510, 700, 163, 100);
         }
 
         /// <summary>
@@ -302,10 +306,42 @@ namespace ShotgunBoomerang
                         (graphics.PreferredBackBufferHeight / 2) - 450), Color.Black);
 
                     // Level Buttons
-                    DrawButton(_spriteBatch, ms, buttonPlayDemo, "Demo");
-                    DrawButton(_spriteBatch, ms, buttonPlayOne, "Stage One");
-                    DrawButton(_spriteBatch, ms, buttonPlayTwo, "Stage Two");
-                    DrawButton(_spriteBatch, ms, buttonPlayThree, "Stage Three");
+                    DrawButton(ms, buttonPlayDemo, "Demo");
+                    DrawButton(ms, buttonPlayOne, "Stage One");
+                    DrawButton(ms, buttonPlayTwo, "Stage Two");
+                    DrawButton(ms, buttonPlayThree, "Stage Three");
+
+                    // Changes text and sprite depending on hover
+                    if (buttonPlayDemo.Contains(ms.Position))
+                    {
+                        levelText = "Enter the testing stage.";
+                        levelSprite = demoDisplay;
+                    }
+                    else if (buttonPlayOne.Contains(ms.Position))
+                    {
+                        levelText = "level one lore goes here, image will change upon hover";
+                        //levelSprite = oneDisplay;
+                    }
+                    else if (buttonPlayTwo.Contains(ms.Position))
+                    {
+                        levelText = "level two lore goes here, image will change upon hover";
+                        //levelSprite = twoDisplay;
+                    }
+                    else if (buttonPlayThree.Contains(ms.Position))
+                    {
+                        levelText = "level three lore goes here, image will change upon hover";
+                        //levelSprite = threeDisplay;
+                    }
+                    else // Note that level sprite will remain the same as whatever was last hovered over
+                    {
+                        levelText = "Press ESC to quit to title screen";
+                    }
+
+                    // Drawing preview box then writing text
+                    _spriteBatch.Draw(blankRectangleSprite, new Rectangle(780, 300, 615, 500), Color.White);
+                    _spriteBatch.Draw(levelSprite, new Rectangle(783, 303, 609, 494), Color.White);
+                    _spriteBatch.DrawString(arial12, levelText, new Vector2(1087 -  arial12.MeasureString(levelText).X / 2,
+                        790 - arial12.MeasureString(levelText).Y), Color.Black);
 
                     break;
 
@@ -314,6 +350,7 @@ namespace ShotgunBoomerang
 
                     testLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics);
+                    DrawHPAmmo();
                     _spriteBatch.Draw(darkFilter, new Rectangle(0,0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
                     // Pause & return text
@@ -321,8 +358,8 @@ namespace ShotgunBoomerang
                         (graphics.PreferredBackBufferHeight / 2) - 450), Color.Black);
 
                     // Buttons
-                    DrawButton(_spriteBatch, ms, pauseButtonDebug, "Debug: " + debugOn);
-                    DrawButton(_spriteBatch, ms, pauseButtonQuit, "Quit to Menu");
+                    DrawButton(ms, pauseButtonDebug, "Debug: " + debugOn);
+                    DrawButton(ms, pauseButtonQuit, "Quit to Menu");
 
                     // Text at the bottom that changes depending on hover
                     if (pauseButtonDebug.Contains(ms.Position))
@@ -342,12 +379,7 @@ namespace ShotgunBoomerang
 
                     testLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics);
-
-                    _spriteBatch.Draw(healthBar, new Rectangle(80, graphics.PreferredBackBufferHeight - 120, (int)(4 * player.Health), 30), Color.Red);
-                    for (int i = 1; i <= player.Ammo; i++)
-                    {
-                        _spriteBatch.Draw(ammoBar, new Rectangle(80 + 48 * (i-1), graphics.PreferredBackBufferHeight - 200, 32, 64), Color.White);
-                    }
+                    DrawHPAmmo();
 
                     break;
             }
@@ -431,7 +463,7 @@ namespace ShotgunBoomerang
         /// <param name="ms">Mouse state</param>
         /// <param name="rect">Rectangle</param>
         /// <param name="text">Text in the button</param>
-        public void DrawButton(SpriteBatch sb, MouseState ms, Rectangle rect, string text)
+        public void DrawButton(MouseState ms, Rectangle rect, string text)
         {
             // Button color changes with hover & on click!
             Color buttonColor = Color.White;
@@ -452,6 +484,18 @@ namespace ShotgunBoomerang
             _spriteBatch.Draw(blankRectangleSprite, rect, buttonColor);
             _spriteBatch.DrawString(arial12, text, new Vector2(rect.X + rect.Width / 2 - arial12.MeasureString(text).X / 2,
                 rect.Y + rect.Height / 2 - arial12.MeasureString(text).Y / 2), Color.Black);
+        }
+
+        /// <summary>
+        /// Draws the player's HP and Ammo UI. Helper Method!
+        /// </summary>
+        public void DrawHPAmmo()
+        {
+            _spriteBatch.Draw(healthBar, new Rectangle(80, graphics.PreferredBackBufferHeight - 120, (int)(4 * player.Health), 30), Color.Red);
+            for (int i = 1; i <= player.Ammo; i++)
+            {
+                _spriteBatch.Draw(ammoBar, new Rectangle(80 + 48 * (i - 1), graphics.PreferredBackBufferHeight - 200, 32, 64), Color.White);
+            }
         }
     }
 }

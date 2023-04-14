@@ -75,6 +75,18 @@
 /processorParam:TextureFormat=Color
 /build:darkfilter.png
 
+#begin demoDisplay.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:demoDisplay.png
+
 #begin pixeldesertback.png
 /importer:TextureImporter
 /processor:TextureProcessor

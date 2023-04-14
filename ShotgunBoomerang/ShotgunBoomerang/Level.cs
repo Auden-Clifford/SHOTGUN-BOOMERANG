@@ -178,6 +178,7 @@ namespace ShotgunBoomerang
         public void ResetLevel(Player player)
         {
             player.Position = _playerStart;
+            player.Health = 100;
             player.IsHoldingBoomerang = true;
             player.Velocity = new Vector2(0, 0);
             
