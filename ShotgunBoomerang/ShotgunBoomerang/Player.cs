@@ -20,7 +20,8 @@ namespace ShotgunBoomerang
         Run,
         Airborne,
         Slide,
-        Skid
+        Skid,
+        Damaged
     }
 
     /// <summary>
@@ -46,7 +47,7 @@ namespace ShotgunBoomerang
 
         private double score;
         private int kills;
-        private double timer; //this might not be handled here. won't implement until it's clear
+        private double dmgTimer; //this might not be handled here. won't implement until it's clear
 
         private bool hasIFrames;
 
@@ -133,7 +134,7 @@ namespace ShotgunBoomerang
             _isCollidingWithGround = false;
             _jumpForce = 32;
 
-            timer = 500;
+            dmgTimer = .5;
         }
 
 
@@ -177,7 +178,8 @@ namespace ShotgunBoomerang
             List<Tile> tileMap,
             List<IGameEnemy> enemies,
             List<IGameProjectile> projectiles,
-            GraphicsDeviceManager graphics)
+            GraphicsDeviceManager graphics,
+            GameTime gameTime)
         {
             // The player is slowed by different amounts depending
             // on whether they are running, skidding, or in the air
@@ -418,6 +420,16 @@ namespace ShotgunBoomerang
                         _currentState = PlayerState.Run;
                     }
                     break;
+
+                case PlayerState.Damaged:
+                    dmgTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+
+                    if(dmgTimer <= 0)
+                    {
+                        dmgTimer = .5;
+                        _currentState = PlayerState.Idle;
+                    }
+                    break;
             }
             
             // the player's isCollidingWithGround variable must always
@@ -591,14 +603,10 @@ namespace ShotgunBoomerang
         /// </summary>
         public void TakeDamage(float incDmg)
         {
-            if (!hasIFrames)
+            if (_currentState != PlayerState.Damaged)
             {
                 _health -= incDmg;
-                hasIFrames = true;
-                
-                // wait .5 sec
-
-                hasIFrames = false;
+                _currentState = PlayerState.Damaged;
             }
         }
     }

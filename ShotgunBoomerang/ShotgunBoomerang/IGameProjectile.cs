@@ -42,7 +42,8 @@ namespace ShotgunBoomerang
             List<Tile> tileMap,
             List<IGameEnemy> enemies,
             List<IGameProjectile> projectiles,
-            Player player);
+            Player player,
+            GameTime gameTime);
 
         /// <summary>
         /// Should Resolve Collisions with Tiles

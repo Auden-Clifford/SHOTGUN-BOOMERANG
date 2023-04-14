@@ -104,7 +104,7 @@ namespace ShotgunBoomerang
         /// <param name="tileMap">The level map</param>
         /// <param name="projectiles">The list of projectiles</param>
         /// <param name="player">The player</param>
-        public void Update(List<Tile> tileMap, List<IGameProjectile> projectiles, Player player)
+        public void Update(List<Tile> tileMap, List<IGameProjectile> projectiles, Player player, GameTime gameTime)
         {
             if (goingLeft)
             {

@@ -92,7 +92,8 @@ namespace ShotgunBoomerang
             List<Tile> tileMap,
             List<IGameEnemy> enemies,
             List<IGameProjectile> projectiles,
-            Player player);
+            Player player,
+            GameTime gameTime);
 
         /// <summary>
         /// Checks if this object has collided with another
