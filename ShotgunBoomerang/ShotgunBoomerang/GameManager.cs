@@ -155,7 +155,7 @@ namespace ShotgunBoomerang
                     testLevel.PlayerStart.X + (testTileSprite.Width * 3),
                     testLevel.PlayerStart.Y + (testTileSprite.Height)),
                     100,
-                    5,
+                    20,
                     2);
             testLevel.StartEnemies.Add(snek);
             testLevel.CurrentEnemies.Add(snek);
@@ -326,22 +326,15 @@ namespace ShotgunBoomerang
                         MediaPlayer.Stop();
                     }
 
+                    // Skeleton logic
                     if (skullSize <= 1)
-                    {
-                        skullGrow = true;
-                    }
+                    { skullGrow = true; }
                     if (skullSize >= 360)
-                    {
-                        skullGrow = false;
-                    }
+                    { skullGrow = false; }
                     if (skullGrow)
-                    {
-                        skullSize += 5;
-                    }
+                    { skullSize += 5; }
                     else
-                    {
-                        skullSize -= 5;
-                    }
+                    { skullSize -= 5;}
 
                     break;
             }
@@ -506,7 +499,7 @@ namespace ShotgunBoomerang
                     DrawButton(ms, deadRespawnButton, "Respawn");
                     DrawButton(ms, deadQuitButton, "Quit to Menu");
 
-                    _spriteBatch.Draw(awesomeFlamingSkull, new Rectangle(1400, 300, skullSize, skullSize), Color.White);
+                    _spriteBatch.Draw(awesomeFlamingSkull, new Rectangle(1400, 300, skullSize, skullSize), Color.White); // THE SKELETON APPEARS
 
                     break;
             }
