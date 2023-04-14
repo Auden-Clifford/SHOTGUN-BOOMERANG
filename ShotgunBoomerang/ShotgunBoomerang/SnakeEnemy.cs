@@ -144,7 +144,7 @@ namespace ShotgunBoomerang
         {
             if (CheckCollision(player))
             {
-                player.Health -= _damage;
+                player.TakeDamage(_damage);
                 if(player.Position.X >= this.Position.X)
                 {
                     bump.X = 2;

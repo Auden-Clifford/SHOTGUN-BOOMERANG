@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
+using System.Diagnostics;
+using System.Threading;
 
 namespace ShotgunBoomerang
 {
@@ -47,6 +48,7 @@ namespace ShotgunBoomerang
         private int kills;
         private double timer; //this might not be handled here. won't implement until it's clear
 
+        private bool hasIFrames;
 
         // Properties
 
@@ -130,6 +132,8 @@ namespace ShotgunBoomerang
             _shotgunAngle = 45;
             _isCollidingWithGround = false;
             _jumpForce = 32;
+
+            timer = 500;
         }
 
 
@@ -580,6 +584,22 @@ namespace ShotgunBoomerang
 
             // player is no longer holding the boomerang
             _isHoldingBoomerang = false;
+        }
+
+        /// <summary>
+        /// Player takes damage, gains i frames
+        /// </summary>
+        public void TakeDamage(float incDmg)
+        {
+            if (!hasIFrames)
+            {
+                _health -= incDmg;
+                hasIFrames = true;
+                
+                // wait .5 sec
+
+                hasIFrames = false;
+            }
         }
     }
 }
