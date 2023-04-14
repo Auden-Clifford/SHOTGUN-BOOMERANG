@@ -58,7 +58,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <assembly alias="System.Drawing" name="System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a" />
-  <data name="pictureBox3.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="tilePicker_snek.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
         iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABGdBTUEAALGPC/xhBQAAAiZJREFUeF7t
         lFFywyAMRHOe3qBfvU+P1Cv1UKmFtcyi4IKN7DZEb+ZNDKwFYpLcgiAIgiAIgiAIgiAIgiAI/iH3hlOT
@@ -73,13 +73,13 @@
         7fYDR45JPWhOA9EAAAAASUVORK5CYII=
 </value>
   </data>
-  <data name="pictureBox1.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+  <data name="tilePicker_testTile.Image" type="System.Drawing.Bitmap, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
     <value>
-        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8
-        YQUAAAAJcEhZcwAACxIAAAsSAdLdfvwAAAC1SURBVGhD7dMxCgIxGAVh77WsjY3gWSzE+4OdDEHYbseE
-        ga/7Ibwpcrnu29QKsK0V8H49Dz3ut6/hdBpuLsDAzQUYuLkAAzcXYODmAgzcXICBmwswcPNaARz3z7i5
-        AAM3rxUw/JWf+NBwOg03F2Dg5gIM3FyAgZsLMHBzAQZuLsDAzQUYuLkAAzcXYODmAgzcXICBmwswcHMB
-        Bm4uwMDNBRi4uQADNxdg4Oa1AmZUgG3ygH37ANjt/DCCKagBAAAAAElFTkSuQmCC
+        iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAIAAAAlC+aJAAAABGdBTUEAALGPC/xhBQAAAAlwSFlzAAAL
+        DwAACw8BkvkDpQAAALVJREFUaEPt0zEKAjEYBWHvtayNjeBZLMT7g50MQdhux4SBr/shvClyue7b1Aqw
+        rRXwfj0PPe63r+F0Gm4uwMDNBRi4uQADNxdg4OYCDNxcgIGbCzBw81oBHPfPuLkAAzevFTD8lZ/40HA6
+        DTcXYODmAgzcXICBmwswcHMBBm4uwMDNBRi4uQADNxdg4OYCDNxcgIGbCzBwcwEGbi7AwM0FGLi5AAM3
+        F2Dg5rUCZlSAbfKAffsA2O38MIIpqAEAAAAASUVORK5CYII=
 </value>
   </data>
 </root>

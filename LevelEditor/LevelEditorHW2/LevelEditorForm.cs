@@ -57,7 +57,7 @@ namespace LevelEditor
                 {
                     //create a blue picturebox to put at each index of the array
                     PictureBox pb = new PictureBox();
-                    pb.BackColor = Color.CadetBlue;
+                    pb.BackColor = Color.Gray;
 
                     // place that picture box in the correct spot in the grid
                     grid[y, x] = pb;
@@ -106,7 +106,7 @@ namespace LevelEditor
             tileThatWasClicked.Capture = false;
 
             // set the color of the tile to the selected color
-            tileThatWasClicked.BackColor = pictureBox_CurrentTile.BackColor;
+            tileThatWasClicked.Image = pictureBox_CurrentTile.Image;
 
             // report that there are unsaved changes in title bar
             // set _unsavedChanges to true
@@ -141,7 +141,7 @@ namespace LevelEditor
             if(Control.MouseButtons == MouseButtons.Left)
             {
                 // set the color of the tile to the selected color
-                tileThatWasClicked.BackColor = pictureBox_CurrentTile.BackColor;
+                tileThatWasClicked.Image = pictureBox_CurrentTile.Image;
 
                 // report that there are unsaved changes in title bar
                 // set _unsavedChanges to true
@@ -161,19 +161,19 @@ namespace LevelEditor
         {
             // make sure the cast from object to Button works
             // otherwise don't do anything
-            Button colorButtonThatWasClicked = null;
+            PictureBox tilePickerThatWasClicked = null;
 
-            if (sender is Button == false)
+            if (sender is PictureBox == false)
             {
                 return;
             }
             else
             {
-                colorButtonThatWasClicked = (Button)sender;
+                tilePickerThatWasClicked = (PictureBox)sender;
             }
 
             // set the current tile's color to the color of the button that was clicked
-            pictureBox_CurrentTile.BackColor = colorButtonThatWasClicked.BackColor;
+            pictureBox_CurrentTile.Image = tilePickerThatWasClicked.Image;
         }
 
         /// <summary>
@@ -328,6 +328,9 @@ namespace LevelEditor
                     // y is given a margin of 15 with the map border
                     // x is given a margin of 6 with the map border
                     pb.Location = new Point(x * _tileSize + 6, y * _tileSize + 15);
+
+                    // set the pictureboxes to resize the textures
+                    pb.SizeMode = PictureBoxSizeMode.StretchImage;
 
                     // add tile_click to the click event
                     pb.MouseDown += tile_Click;
