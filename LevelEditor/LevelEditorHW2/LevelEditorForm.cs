@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Data;
 using System.Drawing;
 using System.Drawing.Design;
+using System.Drawing.Imaging;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -208,9 +209,21 @@ namespace LevelEditor
                     {
                         PictureBox pb = _currentMapGrid[y, x];
 
-                        // write the picture boxes' colors separated by a comma
+                        // write the names of the pictureboxs' images
                         // (each line of the file = a line of picture boxes in the grid)
-                        writer.Write(pb.BackColor.ToArgb() + ",");
+                        if(pb.Image == tilePicker_testTile.Image)
+                        {
+                            writer.Write("testTile,");
+                        }
+                        else if(pb.Image == tilePicker_snek.Image)
+                        {
+                            writer.Write("snek,");
+                        }
+                        // if it doesn't match either image, it must be empty
+                        else
+                        {
+                            writer.Write("air,");
+                        }
                     }
 
                     // start a new line for the next set of picture boxes
