@@ -301,11 +301,11 @@ namespace LevelEditor
             ScrollBarY.Location = new Point(groupBox_MapView.Location.X + groupBox_MapView.Width + 6, ScrollBarY.Location.Y);
 
             // set the max values of the scrollbars to match the grid size
-            ScrollBarX.Maximum = width - 48;
-            ScrollBarY.Maximum = height - 32;
+            ScrollBarX.Maximum = width - 48 + 1;
+            ScrollBarY.Maximum = height - 32 + 1;
 
-            // the Y scrollbar starts at the bottom
-            ScrollBarY.Value = ScrollBarY.Maximum;
+            // the Y scrollbar starts at the bottom (the scrollbar cannot reach the maximum)
+            ScrollBarY.Value = ScrollBarY.Maximum - 1;
 
             // set the window size to fit the map view window (with a margin of 30)
             this.Width = groupBox_MapView.Location.X + groupBox_MapView.Width + ScrollBarY.Width + 30;
@@ -412,8 +412,8 @@ namespace LevelEditor
                 {
                     // if theyre within the scrollbar value range, show them and position them
                     // so that they properly fill the screen and sit edge-to-edge
-                    if((y >= ScrollBarY.Value && y <= ScrollBarY.Value + 32) &&
-                        (x >= ScrollBarX.Value && x <= ScrollBarX.Value + 48))
+                    if((y >= ScrollBarY.Value && y < ScrollBarY.Value + 32) &&
+                        (x >= ScrollBarX.Value && x < ScrollBarX.Value + 48))
                     {
                         _currentMapGrid[y, x].Location = new Point((x - ScrollBarX.Value) * _tileSize + 6, (y - ScrollBarY.Value) * _tileSize + 15);
                         _currentMapGrid[y, x].Show();
