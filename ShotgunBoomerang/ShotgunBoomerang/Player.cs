@@ -416,7 +416,6 @@ namespace ShotgunBoomerang
                     break;
             }
             
-
             // the player's isCollidingWithGround variable must always
             // be set to false at the end of Update, it will be detected again in ResolveCollisions
             _isCollidingWithGround = false;

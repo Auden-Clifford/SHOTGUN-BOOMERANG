@@ -60,11 +60,16 @@ namespace ShotgunBoomerang
 
         GameState gameState = GameState.MainMenu; // enum for managing gamestate (this is what starts the game on the menu screen)
         private bool debugOn = false; // boolean to toggle debug mode
+        private bool infiniteHP = false;
+        private bool infiniteAmmo = false;
 
         // Pause & Start menu objects
         private string pauseText;
         private Rectangle pauseButtonDebug;
         private Rectangle pauseButtonQuit;
+        private Rectangle pauseButtonHP;
+        private Rectangle pauseButtonAmmo;
+        private Rectangle pauseButtonReset;
 
         private string levelText;
         private Texture2D levelSprite;
@@ -144,9 +149,14 @@ namespace ShotgunBoomerang
             testLevel.StartEnemies.Add(snek);
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
-            pauseButtonDebug = new Rectangle(230, 300, 163, 100);
-            pauseButtonQuit = new Rectangle(630, 300, 163, 100);
+            pauseButtonDebug = new Rectangle(graphics.PreferredBackBufferWidth /2 - 264, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);
+            pauseButtonHP = new Rectangle(graphics.PreferredBackBufferWidth / 2 - 81, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);
+            pauseButtonAmmo = new Rectangle(graphics.PreferredBackBufferWidth / 2 + 102, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);
 
+            pauseButtonReset = new Rectangle(graphics.PreferredBackBufferWidth / 2 - 173, graphics.PreferredBackBufferHeight / 2 + 10, 163, 100);
+            pauseButtonQuit = new Rectangle(graphics.PreferredBackBufferWidth / 2 + 10, graphics.PreferredBackBufferHeight / 2 + 10, 163, 100);
+
+            // Rectangles for level select screen
             buttonPlayDemo = new Rectangle(510, 300, 163, 50);
             buttonPlayOne = new Rectangle(510, 400, 163, 100);
             buttonPlayTwo = new Rectangle(510, 550, 163, 100);
@@ -203,14 +213,31 @@ namespace ShotgunBoomerang
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
                     { gameState = GameState.Gameplay; }
 
-                    // "Buttons" on the pause menu are clicked
+                    // Debug button clicked
                     if (pauseButtonDebug.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     { debugOn = !debugOn; } // Enables debug
 
+                    // Inf HP button clicked
+                    if (pauseButtonHP.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
+                    { infiniteHP = !infiniteHP; } // Enables infinite health
+
+                    // Inf Ammo button clicked
+                    if (pauseButtonAmmo.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
+                    { infiniteAmmo = !infiniteAmmo; } // Enables infinite ammo
+
+                    // Reset button clicked
+                    if (pauseButtonReset.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
+                    {
+                        testLevel.ResetLevel(player);
+                        gameState = GameState.Gameplay;
+                    }
+
+                    // Quit button clicked
                     if (pauseButtonQuit.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
                         testLevel.ResetLevel(player);
-                        gameState = GameState.MainMenu; } // Quitting to main menu
+                        gameState = GameState.MainMenu;
+                    }
 
                     break;
 
@@ -220,6 +247,12 @@ namespace ShotgunBoomerang
 
                     // Update the player
                     player.Update(kb, prevKb, ms, prevMs, testLevel.CurrentTileMap, testLevel.CurrentEnemies, testLevel.CurrentProjectiles, graphics);
+
+                    // Updating player health and ammo if godmode options are enabled
+                    if (infiniteHP && player.Health != 100)
+                    { player.Health = 100; }
+                    if (infiniteAmmo && player.Ammo != 2)
+                    { player.Ammo = 2; }
 
                     //Update the test snake
                     
@@ -288,11 +321,11 @@ namespace ShotgunBoomerang
                         graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
                     // (Placeholders) draws the logo and start text. Will probably use a custom logo and different font in the future
-                    _spriteBatch.DrawString(arial36, "SHOTGUNBOOMERANG", new Vector2((graphics.PreferredBackBufferWidth / 2) - 280,
-                        (graphics.PreferredBackBufferHeight / 2) - 100), Color.Black);
+                    _spriteBatch.DrawString(arial36, "SHOTGUNBOOMERANG", new Vector2((graphics.PreferredBackBufferWidth / 2) - 
+                        arial36.MeasureString("SHOTGUNBOOMERANG").X/2, (graphics.PreferredBackBufferHeight / 2) - 100), Color.Black);
 
-                    _spriteBatch.DrawString(arial12, "Press any button to start", new Vector2((graphics.PreferredBackBufferWidth / 2) - 100,
-                        (graphics.PreferredBackBufferHeight / 2) - 30), Color.Black);
+                    _spriteBatch.DrawString(arial12, "Press any button to start", new Vector2((graphics.PreferredBackBufferWidth / 2)
+                        - arial12.MeasureString("Press any button to start").X/2, (graphics.PreferredBackBufferHeight / 2) - 30), Color.Black);
 
                     break;
 
@@ -321,17 +354,17 @@ namespace ShotgunBoomerang
                     }
                     else if (buttonPlayOne.Contains(ms.Position))
                     {
-                        levelText = "level one lore goes here, image will change upon hover";
+                        levelText = "level one desc goes here, image will change upon hover";
                         //levelSprite = oneDisplay;
                     }
                     else if (buttonPlayTwo.Contains(ms.Position))
                     {
-                        levelText = "level two lore goes here, image will change upon hover";
+                        levelText = "level two desc goes here, image will change upon hover";
                         //levelSprite = twoDisplay;
                     }
                     else if (buttonPlayThree.Contains(ms.Position))
                     {
-                        levelText = "level three lore goes here, image will change upon hover";
+                        levelText = "level three desc goes here, image will change upon hover";
                         //levelSprite = threeDisplay;
                     }
                     else // Note that level sprite will remain the same as whatever was last hovered over
@@ -356,16 +389,25 @@ namespace ShotgunBoomerang
                     _spriteBatch.Draw(darkFilter, new Rectangle(0,0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
                     // Pause & return text
-                    _spriteBatch.DrawString(arial36, "- PAUSED -", new Vector2((graphics.PreferredBackBufferWidth / 2) - 120,
-                        (graphics.PreferredBackBufferHeight / 2) - 450), Color.Black);
+                    _spriteBatch.DrawString(arial36, "- PAUSED -", new Vector2((graphics.PreferredBackBufferWidth / 2)
+                        - arial36.MeasureString("- PAUSED -").X/2, (graphics.PreferredBackBufferHeight / 2) - 450), Color.Black);
 
                     // Buttons
                     DrawButton(ms, pauseButtonDebug, "Debug: " + debugOn);
+                    DrawButton(ms, pauseButtonHP, "Inf. Health : " + infiniteHP);
+                    DrawButton(ms, pauseButtonAmmo, "Inf. Ammo : " + infiniteAmmo);
+                    DrawButton(ms, pauseButtonReset, "Reset Stage");
                     DrawButton(ms, pauseButtonQuit, "Quit to Menu");
 
                     // Text at the bottom that changes depending on hover
                     if (pauseButtonDebug.Contains(ms.Position))
                     { pauseText = "Enable debug text (position, velocity, etc.)"; }
+                    else if (pauseButtonAmmo.Contains(ms.Position))
+                    { pauseText = "Enable infinite health"; }
+                    else if (pauseButtonHP.Contains(ms.Position))
+                    { pauseText = "Enable infinite ammo"; }
+                    else if (pauseButtonReset.Contains(ms.Position))
+                    { pauseText = "Reset and restart the current stage (you can also do this by pressing R during gameplay)"; }
                     else if (pauseButtonQuit.Contains(ms.Position))
                     { pauseText = "Quit to the main menu";  }
                     else
