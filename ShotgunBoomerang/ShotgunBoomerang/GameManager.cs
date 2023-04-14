@@ -41,6 +41,10 @@ namespace ShotgunBoomerang
         private static GraphicsDeviceManager graphics;
         private SpriteBatch _spriteBatch;
 
+        private int skullSize = 1;
+        private bool skullGrow = true;
+        private Texture2D awesomeFlamingSkull;
+
         private Texture2D menuBackground;
         private Texture2D blankRectangleSprite;
         private Texture2D darkFilter;
@@ -120,6 +124,7 @@ namespace ShotgunBoomerang
             healthBar = this.Content.Load<Texture2D>("redsquare");
             ammoBar = this.Content.Load<Texture2D>("ammoui");
             demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
+            awesomeFlamingSkull = this.Content.Load<Texture2D>("awesomeflamingskull");
 
             levelSprite = demoDisplay;
 
@@ -310,6 +315,23 @@ namespace ShotgunBoomerang
                         gameState = GameState.MainMenu;
                     }
 
+                    if (skullSize <= 1)
+                    {
+                        skullGrow = true;
+                    }
+                    if (skullSize >= 360)
+                    {
+                        skullGrow = false;
+                    }
+                    if (skullGrow)
+                    {
+                        skullSize += 5;
+                    }
+                    else
+                    {
+                        skullSize -= 5;
+                    }
+
                     break;
             }
 
@@ -472,6 +494,8 @@ namespace ShotgunBoomerang
 
                     DrawButton(ms, deadRespawnButton, "Respawn");
                     DrawButton(ms, deadQuitButton, "Quit to Menu");
+
+                    _spriteBatch.Draw(awesomeFlamingSkull, new Rectangle(1400, 300, skullSize, skullSize), Color.White);
 
                     break;
             }
