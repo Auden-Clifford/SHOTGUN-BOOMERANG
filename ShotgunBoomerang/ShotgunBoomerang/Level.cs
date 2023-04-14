@@ -87,6 +87,7 @@ namespace ShotgunBoomerang
             foreach (IGameEnemy enemy in _startEnemies)
             {
                 _currentEnemies.Add(enemy);
+                
             }
 
             _startProjectiles = projectiles;
@@ -141,6 +142,10 @@ namespace ShotgunBoomerang
             for (int i = _currentEnemies.Count - 1; i >= 0; i--)
             {
                 _currentEnemies[i].Update(_currentTileMap, _currentProjectiles, player);
+                if (!_currentEnemies[i].CheckHealth())
+                {
+                    _currentEnemies.RemoveAt(i);
+                }
             }
 
             for(int i = _currentProjectiles.Count- 1; i >= 0; i--)
@@ -173,6 +178,7 @@ namespace ShotgunBoomerang
         public void ResetLevel(Player player)
         {
             player.Position = _playerStart;
+            player.Health = 100;
             player.IsHoldingBoomerang = true;
             player.Velocity = new Vector2(0, 0);
             
@@ -186,6 +192,7 @@ namespace ShotgunBoomerang
             _currentEnemies.Clear();
             foreach (IGameEnemy enemy in _startEnemies)
             {
+                enemy.Reset();
                 _currentEnemies.Add(enemy);
             }
 

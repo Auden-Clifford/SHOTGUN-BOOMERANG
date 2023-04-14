@@ -18,6 +18,7 @@ namespace ShotgunBoomerang
         // Fields
         protected Texture2D _sprite;
         protected Vector2 _position;
+        
 
 
         // Properties
@@ -35,6 +36,19 @@ namespace ShotgunBoomerang
                     _sprite.Width, 
                     _sprite.Height); 
             } 
+        }
+
+        /// <summary>
+        /// returns the center point of a game object
+        /// </summary>
+        public Vector2 CenterPoint
+        {
+            get
+            {
+                return new Vector2(
+                    HitBox.Center.X,
+                    HitBox.Center.Y);
+            }
         }
 
         /// <summary>
