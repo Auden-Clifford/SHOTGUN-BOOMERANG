@@ -238,10 +238,12 @@ namespace ShotgunBoomerang
                         testLevel.ResetLevel(player);
                     }
 
+                    /*
                     if(ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
                         snek.TakeDamage(25, player);
                     }
+                    */
                     
                     break;
             }
