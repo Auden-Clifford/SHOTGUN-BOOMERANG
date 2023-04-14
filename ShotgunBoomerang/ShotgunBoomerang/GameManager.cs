@@ -127,7 +127,7 @@ namespace ShotgunBoomerang
                 new Vector2(
                     testLevel.PlayerStart.X + (testTileSprite.Width * 3),
                     testLevel.PlayerStart.Y + (testTileSprite.Height)),
-                    10,
+                    100,
                     5,
                     2);
             testLevel.StartEnemies.Add(snek);
@@ -229,6 +229,11 @@ namespace ShotgunBoomerang
                         testLevel.ResetLevel(player);
                     }
 
+
+                    if(ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
+                    {
+                        snek.TakeDamage(25, player);
+                    }
                     
 
                     break;

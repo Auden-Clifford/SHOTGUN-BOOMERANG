@@ -17,7 +17,6 @@ namespace ShotgunBoomerang
         private bool onGround;
         private float defaultSpeed;
         private Vector2 startPos;
-        private Color color;
         private float timer;
         private bool damaged;
 
@@ -42,8 +41,9 @@ namespace ShotgunBoomerang
             bump = new Vector2(2, -3);
             isAlive = true;
             onGround = false;
-            color = Color.White;
             damaged = false;
+
+            timer = 0.5f;
         }
 
         public void Reset()
@@ -53,6 +53,8 @@ namespace ShotgunBoomerang
             _position.Y = startPos.Y;
             isAlive = true;
             onGround = false;
+            goingLeft = false;
+            _velocity = new Vector2(defaultSpeed, 0);
         }
         
         /// <summary>
@@ -62,18 +64,36 @@ namespace ShotgunBoomerang
         /// <param name="offset">The screenoffset</param>
         public override void Draw(SpriteBatch sb, Vector2 offset)
         {
+            if (timer <= 0)
+            {
+                Console.WriteLine();
+            }
+
+            if (goingLeft)
+            {
+                Console.WriteLine();
+            }
+
             //Draws red if damaged
-            if (damaged && timer > 0)
+            if (damaged && timer > 0 && isAlive)
             {
                 sb.Draw(Sprite, _position - offset, Color.Red);
                 timer -= 0.1f;
             }
-            else
+            else if(isAlive)
             {
                 sb.Draw(Sprite, _position - offset, Color.White);
-                timer = 5.00f;
-                damaged = false;
+                timer = 0.5f;
+                if (damaged)
+                {
+                    damaged = false;
+                }
             }
+
+
+
+            
+
             
 
         }
@@ -86,9 +106,13 @@ namespace ShotgunBoomerang
         /// <param name="player">The player</param>
         public void Update(List<Tile> tileMap, List<IGameProjectile> projectiles, Player player)
         {
-            _velocity.X = defaultSpeed;
+            if (goingLeft)
+            {
+                Console.WriteLine();
+            }
             Attack(player);
             Move();
+            
             ResolveTileCollisions(tileMap);
 
 
@@ -131,6 +155,8 @@ namespace ShotgunBoomerang
                 }
 
                 player.Velocity += bump;
+                bump.X = 2;
+                
             }
         }
 
@@ -138,24 +164,43 @@ namespace ShotgunBoomerang
         /// Take damage
         /// </summary>
         /// <param name="damage">Amount of damage to take</param>
-        public void TakeDamage(float damage)
+        public void TakeDamage(float damage, Player player)
         {
-            _health -= damage;
-            timer = 5.00f;
-            damaged = true;
+            if (!damaged)
+            {
+                _health -= damage;
+                CheckHealth();
+                timer = 0.5f;
+                damaged = true;
+                if (player.X < this.X)
+                {
+                    bump.X = 2;
+                }
+                else if (player.X > this.X)
+                {
+                    bump.X = -2;
+                }
+
+                _velocity += bump * 3;
+                bump.X = 2;
+            }
+            
         }
 
         /// <summary>
         /// Checks health to see if the enemy has died
         /// </summary>
-        public void CheckHealth()
+        public bool CheckHealth()
         {
             if(_health <= 0)
             {
                 isAlive = false;
                 
             }
+            return isAlive;
         }
+
+        
 
         protected override void ApplyPhysics()
         {
@@ -164,6 +209,10 @@ namespace ShotgunBoomerang
 
             // apply velocity to position
             _position.Y += _velocity.Y;
+
+            
+
+            
         }
 
         /// <summary>
@@ -183,17 +232,30 @@ namespace ShotgunBoomerang
             
             if (!goingLeft) //If going right
             {
-                _position.X += _velocity.X;
-                //_position.X += 2;
+                //_position.X += _velocity.X;
+                _position += _velocity;
             }
             else //If going left
             {
-                _position.X -= _velocity.X;
-                //_position.X -= 2;
+                //_position.X -= _velocity.X;
+                _position -= _velocity;
             }
-            
 
-            
+
+            if (_velocity.X > defaultSpeed)
+            {
+                _velocity.X -= 0.1f;
+            }
+            else if (_velocity.X < defaultSpeed)
+            {
+                _velocity.X += 0.1f;
+            }
+
+            if (_velocity.X > defaultSpeed - 0.15f && _velocity.X < defaultSpeed + 0.15f)
+            {
+                _velocity.X = defaultSpeed;
+            }
+
         }
 
         
@@ -206,11 +268,13 @@ namespace ShotgunBoomerang
         {
 
             //gravity is applied beforehand
-            if (!onGround)
-            {
-                ApplyPhysics();
-            }
+            
+            ApplyPhysics();
 
+            if (goingLeft)
+            {
+                Console.WriteLine();
+            }
             // get the player's hitbox
             Rectangle hitBox = this.HitBox;
 
@@ -261,8 +325,11 @@ namespace ShotgunBoomerang
                         //I implemented this conditional because I was concerned that the snake was getting caught
                         //on the lip of the next tile.
                         //It wasn't, but the limit doesn't affect the desired behaviour. Removing it makes no difference
-                        
+
+                        if (intersectRect.Height >= 16)
+                        {
                             goingLeft = !goingLeft;
+                        }
                         
                     }
                     // otherwise move right
@@ -272,9 +339,12 @@ namespace ShotgunBoomerang
 
                         //the player's X velocity cannot be negative when touching the left wall
                         this._velocity.X = Math.Clamp(_velocity.X, 0, float.MaxValue);
-                        
+
+                        if (intersectRect.Height >= 16)
+                        {
                             goingLeft = !goingLeft;
-                        
+                        }
+
                     }
 
                     //goingLeft = !goingLeft;

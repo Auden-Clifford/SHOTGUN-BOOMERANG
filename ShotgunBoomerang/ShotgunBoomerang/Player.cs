@@ -60,6 +60,22 @@ namespace ShotgunBoomerang
         /// </summary>
         public bool IsHoldingBoomerang { get { return _isHoldingBoomerang; } set { _isHoldingBoomerang= value; } }
 
+        /// <summary>
+        /// Gets the X coord of the player
+        /// </summary>
+        public float X
+        {
+            get { return _position.X; }
+        }
+
+        /// <summary>
+        /// Gets the Y coord of the player
+        /// </summary>
+        public float Y
+        {
+            get { return _position.Y; }
+        }
+
 
         /// <summary>
         /// retrieves/sets the players current score
@@ -528,6 +544,7 @@ namespace ShotgunBoomerang
             for (int i = 0; i < enemies.Count; i++)
             {
                 MobileEntity currentEnemy = (MobileEntity)enemies[i];
+                /*
                 float distance = Vector2.Distance(CenterPoint, currentEnemy.CenterPoint);
 
                 //caluclates if enemy is in range
@@ -535,6 +552,7 @@ namespace ShotgunBoomerang
                 {
                     enemies[i].TakeDamage(_damage);
                 }
+                */
             }
         }
 

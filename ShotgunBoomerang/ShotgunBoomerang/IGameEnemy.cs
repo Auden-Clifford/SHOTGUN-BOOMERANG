@@ -53,7 +53,7 @@ namespace ShotgunBoomerang
         /// <summary>
         /// Checks the health of the enemy to trigger it's death
         /// </summary>
-        public void CheckHealth();
+        public bool CheckHealth();
         
         /// <summary>
         /// should contain logic for movement
@@ -65,7 +65,7 @@ namespace ShotgunBoomerang
         /// </summary>
         /// <param name="damage">amount of damage to take</param>
         /// <returns></returns>
-        public void TakeDamage(float damage);
+        public void TakeDamage(float damage, Player player);
 
         /// <summary>
         /// Resets to start location
