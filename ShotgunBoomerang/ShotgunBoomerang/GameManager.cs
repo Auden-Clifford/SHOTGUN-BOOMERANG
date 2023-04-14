@@ -60,6 +60,8 @@ namespace ShotgunBoomerang
         private SpriteFont arial12;
         private SpriteFont arial36;
 
+        private Song deathSound;
+
         private Level testLevel;
         private Player player;
         private SnakeEnemy snek;
@@ -126,6 +128,8 @@ namespace ShotgunBoomerang
             ammoBar = this.Content.Load<Texture2D>("ammoui");
             demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
             awesomeFlamingSkull = this.Content.Load<Texture2D>("awesomeflamingskull");
+
+            deathSound = this.Content.Load<Song>("BadToTheBones");
 
             levelSprite = demoDisplay;
 
@@ -302,11 +306,16 @@ namespace ShotgunBoomerang
                 // You can RESPAWN, or QUIT. BOTH reset the level.
                 case GameState.Dead:
 
+                    if(MediaPlayer.State != MediaState.Playing)
+                    {
+                        MediaPlayer.Play(deathSound);
+                    }
                     // Quit button clicked
                     if (deadRespawnButton.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
                         testLevel.ResetLevel(player);
                         gameState = GameState.Gameplay;
+                        MediaPlayer.Stop();
                     }
 
                     // Quit button clicked
@@ -314,6 +323,7 @@ namespace ShotgunBoomerang
                     {
                         testLevel.ResetLevel(player);
                         gameState = GameState.MainMenu;
+                        MediaPlayer.Stop();
                     }
 
                     if (skullSize <= 1)
