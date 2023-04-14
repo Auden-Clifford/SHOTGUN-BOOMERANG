@@ -259,7 +259,7 @@ namespace ShotgunBoomerang
                 case GameState.Gameplay:
 
                     // Update the player
-                    player.Update(kb, prevKb, ms, prevMs, testLevel.CurrentTileMap, testLevel.CurrentEnemies, testLevel.CurrentProjectiles, graphics);
+                    player.Update(kb, prevKb, ms, prevMs, testLevel.CurrentTileMap, testLevel.CurrentEnemies, testLevel.CurrentProjectiles, graphics, gameTime);
 
                     // Updating player health and ammo if godmode options are enabled
                     if (infiniteHP && player.Health != 100)
@@ -276,7 +276,7 @@ namespace ShotgunBoomerang
                     //snek.Update(kb, prevKb, testLevel.CurrentTileMap, testLevel.CurrentProjectiles, player);
 
                     // Update elements of the level
-                    testLevel.Update(kb, prevKb, ms, prevMs, player);
+                    testLevel.Update(kb, prevKb, ms, prevMs, player, gameTime);
 
                     // Change to pause state if escape key pressed
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))

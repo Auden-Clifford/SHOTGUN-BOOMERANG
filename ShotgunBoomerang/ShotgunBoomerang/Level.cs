@@ -129,7 +129,8 @@ namespace ShotgunBoomerang
             KeyboardState prevKb,
             MouseState ms,
             MouseState prevMs,
-            Player player)
+            Player player,
+            GameTime gameTime)
         {
             // tiles dont have an update yet so disregard this
             /*
@@ -141,7 +142,7 @@ namespace ShotgunBoomerang
 
             for (int i = _currentEnemies.Count - 1; i >= 0; i--)
             {
-                _currentEnemies[i].Update(_currentTileMap, _currentProjectiles, player);
+                _currentEnemies[i].Update(_currentTileMap, _currentProjectiles, player, gameTime);
                 if (!_currentEnemies[i].CheckHealth())
                 {
                     _currentEnemies.RemoveAt(i);
@@ -150,7 +151,7 @@ namespace ShotgunBoomerang
 
             for(int i = _currentProjectiles.Count- 1; i >= 0; i--)
             {
-                _currentProjectiles[i].Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player);
+                _currentProjectiles[i].Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player, gameTime);
             }
         }
 
