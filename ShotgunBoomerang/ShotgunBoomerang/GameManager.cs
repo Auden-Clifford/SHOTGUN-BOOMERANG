@@ -15,7 +15,8 @@ namespace ShotgunBoomerang
         MainMenu,
         LevelSelect,
         PauseMenu,
-        Gameplay
+        Gameplay,
+        Dead
     }
 
     public class GameManager : Game
@@ -63,7 +64,7 @@ namespace ShotgunBoomerang
         private bool infiniteHP = false;
         private bool infiniteAmmo = false;
 
-        // Pause & Start menu objects
+        // Pause & Start & Death menu objects
         private string pauseText;
         private Rectangle pauseButtonDebug;
         private Rectangle pauseButtonQuit;
@@ -77,6 +78,9 @@ namespace ShotgunBoomerang
         private Rectangle buttonPlayOne;
         private Rectangle buttonPlayTwo;
         private Rectangle buttonPlayThree;
+
+        private Rectangle deadRespawnButton;
+        private Rectangle deadQuitButton;
 
         public GameManager()
         {
@@ -103,7 +107,6 @@ namespace ShotgunBoomerang
 
         protected override void LoadContent()
         {
-
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // Load textures
@@ -161,6 +164,11 @@ namespace ShotgunBoomerang
             buttonPlayOne = new Rectangle(510, 400, 163, 100);
             buttonPlayTwo = new Rectangle(510, 550, 163, 100);
             buttonPlayThree = new Rectangle(510, 700, 163, 100);
+
+            // Rectangles for dead screen
+            deadRespawnButton = new Rectangle(graphics.PreferredBackBufferWidth / 2 - 173, graphics.PreferredBackBufferHeight / 2 - 50, 163, 100);
+            deadQuitButton = new Rectangle(graphics.PreferredBackBufferWidth / 2 + 10, graphics.PreferredBackBufferHeight / 2 - 50, 163, 100);
+
         }
 
         /// <summary>
@@ -242,7 +250,7 @@ namespace ShotgunBoomerang
                     break;
 
                 // We are in GAMEPLAY.
-                // We can PAUSE.
+                // We can PAUSE, or DIE when health reaches zero.
                 case GameState.Gameplay:
 
                     // Update the player
@@ -253,6 +261,10 @@ namespace ShotgunBoomerang
                     { player.Health = 100; }
                     if (infiniteAmmo && player.Ammo != 2)
                     { player.Ammo = 2; }
+
+                    // Dying when health reaches
+                    if (player.Health <= 0)
+                    { gameState = GameState.Dead; }
 
                     //Update the test snake
                     
@@ -265,7 +277,7 @@ namespace ShotgunBoomerang
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
                     { gameState = GameState.PauseMenu; }
 
-                    //Resets the level to starting state
+                    // Pressing R is a quick restart
                     if (kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R))
                     {
                         testLevel.ResetLevel(player);
@@ -278,6 +290,26 @@ namespace ShotgunBoomerang
                     }
                     */
                     
+                    break;
+
+                // You are DEAD. This state occurs from GAMEPLAY.
+                // You can RESPAWN, or QUIT. BOTH reset the level.
+                case GameState.Dead:
+
+                    // Quit button clicked
+                    if (deadRespawnButton.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
+                    {
+                        testLevel.ResetLevel(player);
+                        gameState = GameState.Gameplay;
+                    }
+
+                    // Quit button clicked
+                    if (deadQuitButton.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
+                    {
+                        testLevel.ResetLevel(player);
+                        gameState = GameState.MainMenu;
+                    }
+
                     break;
             }
 
@@ -321,11 +353,11 @@ namespace ShotgunBoomerang
                         graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
                     // (Placeholders) draws the logo and start text. Will probably use a custom logo and different font in the future
-                    _spriteBatch.DrawString(arial36, "SHOTGUNBOOMERANG", new Vector2((graphics.PreferredBackBufferWidth / 2) - 
-                        arial36.MeasureString("SHOTGUNBOOMERANG").X/2, (graphics.PreferredBackBufferHeight / 2) - 100), Color.Black);
+                    _spriteBatch.DrawString(arial36, "SHOTGUNBOOMERANG", new Vector2((graphics.PreferredBackBufferWidth / 2) -
+                        arial36.MeasureString("SHOTGUNBOOMERANG").X / 2, (graphics.PreferredBackBufferHeight / 2) - 100), Color.Black);
 
                     _spriteBatch.DrawString(arial12, "Press any button to start", new Vector2((graphics.PreferredBackBufferWidth / 2)
-                        - arial12.MeasureString("Press any button to start").X/2, (graphics.PreferredBackBufferHeight / 2) - 30), Color.Black);
+                        - arial12.MeasureString("Press any button to start").X / 2, (graphics.PreferredBackBufferHeight / 2) - 30), Color.Black);
 
                     break;
 
@@ -375,7 +407,7 @@ namespace ShotgunBoomerang
                     // Drawing preview box then writing text
                     _spriteBatch.Draw(blankRectangleSprite, new Rectangle(780, 300, 615, 500), Color.White);
                     _spriteBatch.Draw(levelSprite, new Rectangle(783, 303, 609, 494), Color.White);
-                    _spriteBatch.DrawString(arial12, levelText, new Vector2(1087 -  arial12.MeasureString(levelText).X / 2,
+                    _spriteBatch.DrawString(arial12, levelText, new Vector2(1087 - arial12.MeasureString(levelText).X / 2,
                         790 - arial12.MeasureString(levelText).Y), Color.Black);
 
                     break;
@@ -386,11 +418,11 @@ namespace ShotgunBoomerang
                     testLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics);
                     DrawHPAmmo();
-                    _spriteBatch.Draw(darkFilter, new Rectangle(0,0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+                    _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
                     // Pause & return text
                     _spriteBatch.DrawString(arial36, "- PAUSED -", new Vector2((graphics.PreferredBackBufferWidth / 2)
-                        - arial36.MeasureString("- PAUSED -").X/2, (graphics.PreferredBackBufferHeight / 2) - 450), Color.Black);
+                        - arial36.MeasureString("- PAUSED -").X / 2, (graphics.PreferredBackBufferHeight / 2) - 450), Color.Black);
 
                     // Buttons
                     DrawButton(ms, pauseButtonDebug, "Debug: " + debugOn);
@@ -409,12 +441,12 @@ namespace ShotgunBoomerang
                     else if (pauseButtonReset.Contains(ms.Position))
                     { pauseText = "Reset and restart the current stage (you can also do this by pressing R during gameplay)"; }
                     else if (pauseButtonQuit.Contains(ms.Position))
-                    { pauseText = "Quit to the main menu";  }
+                    { pauseText = "Quit to the main menu"; }
                     else
                     { pauseText = "Press ESC to return to game"; }
 
                     _spriteBatch.DrawString(arial12, pauseText, new Vector2(graphics.PreferredBackBufferWidth / 2 -
-                        arial12.MeasureString(pauseText).X /2, graphics.PreferredBackBufferHeight - 150), Color.Black);
+                        arial12.MeasureString(pauseText).X / 2, graphics.PreferredBackBufferHeight - 150), Color.Black);
 
                     break;
 
@@ -424,6 +456,22 @@ namespace ShotgunBoomerang
                     testLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics);
                     DrawHPAmmo();
+
+                    break;
+
+                // Drawing for death screen
+                case GameState.Dead:
+
+                    testLevel.Draw(_spriteBatch, screenOffset);
+                    player.Draw(_spriteBatch, graphics);
+                    DrawHPAmmo();
+                    _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+
+                    _spriteBatch.DrawString(arial36, "YOU DIED!", new Vector2(graphics.PreferredBackBufferWidth / 2 - arial36.MeasureString("YOU DIED!").X / 2,
+                        (graphics.PreferredBackBufferHeight / 2) - 450), Color.Black);
+
+                    DrawButton(ms, deadRespawnButton, "Respawn");
+                    DrawButton(ms, deadQuitButton, "Quit to Menu");
 
                     break;
             }
