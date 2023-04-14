@@ -424,6 +424,8 @@ namespace ShotgunBoomerang
                 case PlayerState.Damaged:
                     dmgTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
+                    _velocity *= 0.99f;
+
                     if(dmgTimer <= 0)
                     {
                         dmgTimer = .5;
