@@ -399,7 +399,17 @@ namespace LevelEditor
                     // create a new picturebox and give
                     // it a color from the saved file
                     PictureBox pb = new PictureBox();
-                    pb.BackColor = Color.FromArgb(int.Parse(currentLine[x]));
+                    pb.BackColor = Color.Gray;
+                    //pb.BackColor = Color.FromArgb(int.Parse(currentLine[x]));
+
+                    if (currentLine[x] == "testTile")
+                    {
+                        pb.Image = Image.FromFile("../../../../textures/testTile.png");
+                    }
+                    else if (currentLine[x] == "snek")
+                    {
+                        pb.Image = Image.FromFile("../../../../textures/snek.png");
+                    }
 
                     // place the new picturebox in the grid
                     grid[y, x] = pb;
