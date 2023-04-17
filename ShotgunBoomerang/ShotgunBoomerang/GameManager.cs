@@ -61,12 +61,17 @@ namespace ShotgunBoomerang
         //private Texture2D snakeSprite;
         private Texture2D boomerangSprite;
 
-        private List<Texture2D> testLevelTexturepack;
+        private List<Texture2D> demoLevelTexturepack;
 
         private SpriteFont arial12;
         private SpriteFont arial36;
 
-        private Level testLevel;
+        private Level currentLevel;
+
+        private Level demoLevel;
+        private Level levelOne;
+        private Level levelTwo;
+        private Level levelThree;
         private Player player;
 
         GameState gameState = GameState.MainMenu; // enum for managing gamestate (this is what starts the game on the menu screen)
@@ -134,8 +139,8 @@ namespace ShotgunBoomerang
             demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
             awesomeFlamingSkull = this.Content.Load<Texture2D>("awesomeflamingskull");
 
-            // these are the textures the test level will need to display prperly
-            testLevelTexturepack = new List<Texture2D>()
+            // These are the textures the test level will need to display prperly
+            demoLevelTexturepack = new List<Texture2D>()
             {
                 this.Content.Load<Texture2D>("TestTile"),
                 this.Content.Load<Texture2D>("Snek"),
@@ -160,9 +165,9 @@ namespace ShotgunBoomerang
                 -testTileSprite.Width * 3));
             */
 
-            testLevel = new Level(testLevelTexturepack, "../../../../Levels/testLevel3.level");
+            demoLevel = new Level(demoLevelTexturepack, "../../../../Levels/testLevel3.level");
             // set up the player
-            player = new Player(playerSprite, boomerangSprite, testLevel.PlayerStart, 100);
+            player = new Player(playerSprite, boomerangSprite, demoLevel.PlayerStart, 100);
 
             //Test enemy
             /*
@@ -216,6 +221,9 @@ namespace ShotgunBoomerang
                 // We can move to the LEVEL SELECT, or close the game.
                 case GameState.MainMenu:
 
+                    // Turning off debug outside of the levels
+                    debugOn = false;
+
                     // "Press any button to continue" (or user can click)
                     if  ((kb != prevKb && kb.IsKeyUp(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
                         || (ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed))
@@ -231,13 +239,40 @@ namespace ShotgunBoomerang
                 // We can move back to the MAIN MENU, or move to GAMEPLAY.
                 case GameState.LevelSelect:
 
+                    // Turning off debug outside of the level
+                    debugOn = false;
+
                     // Return to main menu screen
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
                     { gameState = GameState.MainMenu; }
 
                     // Play the demo level
                     if (buttonPlayDemo.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
-                    { gameState = GameState.Gameplay; }
+                    {
+                        currentLevel = demoLevel;
+                        gameState = GameState.Gameplay;
+                    }
+
+                    // Play level one
+                    if (buttonPlayOne.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
+                    {
+                        currentLevel = levelOne;
+                        gameState = GameState.Gameplay;
+                    }
+
+                    // Play level two
+                    if (buttonPlayTwo.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
+                    {
+                        currentLevel = levelTwo;
+                        gameState = GameState.Gameplay;
+                    }
+
+                    // Play level three
+                    if (buttonPlayThree.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
+                    {
+                        currentLevel = levelThree;
+                        gameState = GameState.Gameplay;
+                    }
 
                     break;
 
@@ -264,14 +299,14 @@ namespace ShotgunBoomerang
                     // Reset button clicked
                     if (pauseButtonReset.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
-                        testLevel.ResetLevel(player);
+                        currentLevel.ResetLevel(player);
                         gameState = GameState.Gameplay;
                     }
 
                     // Quit button clicked
                     if (pauseButtonQuit.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
-                        testLevel.ResetLevel(player);
+                        currentLevel.ResetLevel(player);
                         gameState = GameState.MainMenu;
                     }
 
@@ -282,7 +317,7 @@ namespace ShotgunBoomerang
                 case GameState.Gameplay:
 
                     // Update the player
-                    player.Update(kb, prevKb, ms, prevMs, testLevel.CurrentTileMap, testLevel.CurrentEnemies, testLevel.CurrentProjectiles, graphics, gameTime, testLevel.LevelEnd);
+                    player.Update(kb, prevKb, ms, prevMs, currentLevel.CurrentTileMap, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, graphics, gameTime);
 
                     // Updating player health and ammo if godmode options are enabled
                     if (infiniteHP && player.Health != 100)
@@ -295,7 +330,7 @@ namespace ShotgunBoomerang
                     { gameState = GameState.Dead; }
                     
                     // Winning if flagpole is touched
-                    if (testLevel.LevelEnd.IncidentWithPlayer)
+                    if (currentLevel.LevelEnd.IncidentWithPlayer)
                     { gameState = GameState.Victory; }
 
                     //Update the test snake
@@ -303,7 +338,7 @@ namespace ShotgunBoomerang
                     //snek.Update(kb, prevKb, testLevel.CurrentTileMap, testLevel.CurrentProjectiles, player);
 
                     // Update elements of the level
-                    testLevel.Update(kb, prevKb, ms, prevMs, player, gameTime);
+                    currentLevel.Update(kb, prevKb, ms, prevMs, player, gameTime);
 
                     // Change to pause state if escape key pressed
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
@@ -312,7 +347,7 @@ namespace ShotgunBoomerang
                     // Pressing R is a quick restart
                     if (kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R))
                     {
-                        testLevel.ResetLevel(player);
+                        currentLevel.ResetLevel(player);
                     }
 
                     //this is likely test code. waiting for confirmation before delete
@@ -336,7 +371,7 @@ namespace ShotgunBoomerang
                     // Quit button clicked
                     if (deadRespawnButton.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
-                        testLevel.ResetLevel(player);
+                        currentLevel.ResetLevel(player);
                         gameState = GameState.Gameplay;
                         MediaPlayer.Stop();
                     }
@@ -344,7 +379,7 @@ namespace ShotgunBoomerang
                     // Quit button clicked
                     if (deadQuitButton.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
-                        testLevel.ResetLevel(player);
+                        currentLevel.ResetLevel(player);
                         gameState = GameState.MainMenu;
                         MediaPlayer.Stop();
                     }
@@ -368,7 +403,7 @@ namespace ShotgunBoomerang
                     // Pressing Enter returns to menu
                     if (kb.IsKeyDown(Keys.Enter) && prevKb.IsKeyUp(Keys.Enter))
                     {
-                        testLevel.ResetLevel(player);
+                        currentLevel.ResetLevel(player);
                         gameState = GameState.LevelSelect;
                     }
 
@@ -399,12 +434,6 @@ namespace ShotgunBoomerang
             MouseState ms = Mouse.GetState();
 
             _spriteBatch.Begin();
-
-            // If debug enabled, print position & speed stats on screen
-            ShapeBatch.Begin(GraphicsDevice);
-            if (debugOn)
-            { DrawDebug(); }
-            ShapeBatch.End();
 
             // Drawing differently depending on the gamestates
             switch (gameState)
@@ -479,7 +508,7 @@ namespace ShotgunBoomerang
                 // Drawing for pause menu
                 case GameState.PauseMenu:
 
-                    testLevel.Draw(_spriteBatch, screenOffset);
+                    currentLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics);
                     DrawHPAmmo();
                     _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
@@ -517,7 +546,7 @@ namespace ShotgunBoomerang
                 // Drawing for gameplay
                 case GameState.Gameplay:
 
-                    testLevel.Draw(_spriteBatch, screenOffset);
+                    currentLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics);
                     DrawHPAmmo();
 
@@ -526,7 +555,7 @@ namespace ShotgunBoomerang
                 // Drawing for death screen
                 case GameState.Dead:
 
-                    testLevel.Draw(_spriteBatch, screenOffset);
+                    currentLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics);
                     DrawHPAmmo();
                     _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
@@ -544,7 +573,7 @@ namespace ShotgunBoomerang
                 // Drawing for victory screen
                 case GameState.Victory:
 
-                    testLevel.Draw(_spriteBatch, screenOffset);
+                    currentLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics);
                     DrawHPAmmo();
                     _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
@@ -563,6 +592,12 @@ namespace ShotgunBoomerang
 
                     break;
             }
+
+            // If debug enabled, print position & speed stats on screen
+            ShapeBatch.Begin(GraphicsDevice);
+            if (debugOn)
+            { DrawDebug(); }
+            ShapeBatch.End();
 
             // Important code! Leave at the end of the method
             _spriteBatch.End(); 

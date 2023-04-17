@@ -254,6 +254,8 @@ namespace ShotgunBoomerang
             {
                 _currentProjectiles[i].Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player, gameTime);
             }
+
+            _levelEnd.Update(kb,prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player, gameTime);
         }
 
         /// <summary>
