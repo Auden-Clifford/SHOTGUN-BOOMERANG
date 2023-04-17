@@ -142,7 +142,7 @@ namespace ShotgunBoomerang
             _isHoldingBoomerang = true;
             _currentState = PlayerState.Idle;
             _shotgunRadius = 256;
-            _shotgunAngle = 45;
+            _shotgunAngle = MathF.PI / 4;
             _isCollidingWithGround = false;
             _jumpForce = 32;
 
@@ -594,13 +594,13 @@ namespace ShotgunBoomerang
                 graphics.PreferredBackBufferHeight / 2);
 
             // velocity normal between the mouse and the player's centerpoint
-            Vector2 velocityNormal = Vector2.Normalize(screenCenter - mousePos);
+            Vector2 mouseCenterNormal = Vector2.Normalize(mousePos - screenCenter);
 
             // throw the player back in the opposite direction of the blast
-            _velocity += velocityNormal * (_damage / 2);
+            _velocity -= mouseCenterNormal * (_damage / 2);
 
             //calculates the lines which bound the blast
-            float angle = MathF.Atan((mousePos.Y - screenCenter.Y) / (mousePos.X - screenCenter.X));
+            float angle = MathF.Atan2(-mouseCenterNormal.Y, mouseCenterNormal.X);
 
             //Caluclates shotgun hits on enemies
             for (int i = 0; i < enemies.Count; i++)
@@ -608,7 +608,7 @@ namespace ShotgunBoomerang
                 MobileEntity currentEnemy = (MobileEntity)enemies[i];
                 
                 float distance = Vector2.Distance(CenterPoint, currentEnemy.CenterPoint);
-                float enemyAngle = MathF.Atan((currentEnemy.CenterPoint.Y - screenCenter.Y) /
+                float enemyAngle = MathF.Atan2(-(currentEnemy.CenterPoint.Y - CenterPoint.Y),
                     (currentEnemy.CenterPoint.X - screenCenter.X));
 
                 if (distance <= _shotgunRadius && // only if the enemy is within the radius
