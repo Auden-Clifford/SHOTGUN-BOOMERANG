@@ -141,7 +141,7 @@ namespace ShotgunBoomerang
             _ammo = 2;
             _isHoldingBoomerang = true;
             _currentState = PlayerState.Idle;
-            _shotgunRadius = 256;
+            _shotgunRadius = 384;
             _shotgunAngle = MathF.PI / 4;
             _isCollidingWithGround = false;
             _jumpForce = 32;
@@ -616,14 +616,18 @@ namespace ShotgunBoomerang
 
             for(int i = 0; i < projectiles.Count; i++)
             {
-                Boomerang currentShot = (Boomerang)projectiles[i];
+                Boomerang currentProjectile = (Boomerang)projectiles[i];
 
-                float distance = Vector2.Distance(CenterPoint, currentShot.CenterPoint);
+                float distance = Vector2.Distance(CenterPoint, currentProjectile.CenterPoint);
+                float projectileAngle = MathF.Atan2(-(currentProjectile.CenterPoint.Y - CenterPoint.Y),
+                    (currentProjectile.CenterPoint.X - screenCenter.X));
 
                 //caluclates if enemy is in range
-                if (distance <= _shotgunRadius)
+                if (distance <= _shotgunRadius & // only if the projectile is within the radius
+                    projectileAngle <= angle + _shotgunAngle / 2 && // and the angle between the projectile and the player is less than the max spread angle
+                    projectileAngle >= angle - _shotgunAngle / 2)  // and the angle between the projectile and the player is greater than the min spread angle
                 {
-                    currentShot.ShotgunHit(velocityNormal, graphics, _damage);
+                    currentProjectile.ShotgunHit(mouseCenterNormal, graphics, _damage);
                 }
             }
             

@@ -180,6 +180,9 @@ namespace ShotgunBoomerang
                 }
             }
 
+            // the boomerang will experience a slowing due to friction while in the air
+            float airFriction = 0.99f;
+
             switch (_currentState)
             {
                 /*
@@ -207,11 +210,7 @@ namespace ShotgunBoomerang
                     break;
                 */
 
-                
-
                 case BoomerangState.Flying:
-                    // the boomerang will experience a slowing due to friction while in the air
-                    float airFriction = 0.99f;
 
                     _velocity *= airFriction;
 
@@ -235,6 +234,8 @@ namespace ShotgunBoomerang
                            player.Position.Y + player.Sprite.Height / 2) - _position);
 
                     _acceleration = playerBoomerangNormal;
+
+                    _velocity *= airFriction;
 
                     // apply physics to the boomerang
                     ApplyPhysics();
@@ -277,7 +278,10 @@ namespace ShotgunBoomerang
             
 
             // throw the player back in the opposite direction of the blast
-            _velocity -= shotgunNormal * (damage);
+            _velocity = shotgunNormal * _velocity.Length() * 2;
+
+            // go back into the flying state
+            _currentState = BoomerangState.Flying;
         }
     }
 }
