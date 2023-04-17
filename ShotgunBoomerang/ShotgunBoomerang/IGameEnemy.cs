@@ -9,6 +9,18 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ShotgunBoomerang
 {
+    public enum enemyState
+    {
+        Damaged,
+        Run
+    }
+
+    public enum directionState
+    {
+        Left,
+        Right,
+    }
+
     /// <summary>
     /// An interface that describes the methods 
     /// common to all Enemies in the game. 

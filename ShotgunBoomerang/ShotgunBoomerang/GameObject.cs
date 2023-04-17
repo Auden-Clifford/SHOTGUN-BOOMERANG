@@ -18,8 +18,6 @@ namespace ShotgunBoomerang
         // Fields
         protected Texture2D _sprite;
         protected Vector2 _position;
-        
-
 
         // Properties
 
