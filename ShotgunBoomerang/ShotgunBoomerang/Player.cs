@@ -571,6 +571,17 @@ namespace ShotgunBoomerang
             // throw the player back in the opposite direction of the blast
             _velocity += velocityNormal * (_damage / 2);
 
+            //caluclates screen center
+            Vector2 screenCenter = new Vector2(graphics.PreferredBackBufferWidth / 2,
+                graphics.PreferredBackBufferHeight / 2);
+
+            //calculates the lines which bound the blast
+            float angle = MathF.Atan((mousePos.Y - screenCenter.Y) / (mousePos.X - screenCenter.X));
+            float m1 = MathF.Tan(20f + angle);
+            float m2 = MathF.Tan(angle - 20f);
+
+            float b1 = (CenterPoint.Y - m1 * CenterPoint.X);
+            float b2 = (CenterPoint.Y - m2 * CenterPoint.X);
 
             //Caluclates shotgun hits on enemies
             for (int i = 0; i < enemies.Count; i++)
@@ -580,7 +591,9 @@ namespace ShotgunBoomerang
                 float distance = Vector2.Distance(CenterPoint, currentEnemy.CenterPoint);
 
                 //caluclates if enemy is in range
-                if (distance <= _shotgunRadius)
+                if (distance <= _shotgunRadius &&
+                    (currentEnemy.CenterPoint.Y < (m1 * currentEnemy.CenterPoint.X + b1) )
+                    && ( currentEnemy.CenterPoint.Y > (m2 * currentEnemy.CenterPoint.X + b2)))
                 {
                     enemies[i].TakeDamage(_damage, this);
                 }
@@ -616,6 +629,8 @@ namespace ShotgunBoomerang
 
             // player is no longer holding the boomerang
             _isHoldingBoomerang = false;
+
+
         }
 
         /// <summary>
