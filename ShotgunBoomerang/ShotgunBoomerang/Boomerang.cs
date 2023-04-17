@@ -268,16 +268,16 @@ namespace ShotgunBoomerang
         /// </summary>
         /// <param name="mausPos"></param>
         /// <param name="graphics"></param>
-        public void ShotgunHit(Vector2 playerPos, GraphicsDeviceManager graphics)
+        public void ShotgunHit(Vector2 shotgunNormal, GraphicsDeviceManager graphics)
         {
             
             
-            Vector2 velocityNormal = _velocity*-2;
+            //Vector2 velocityNormal = _velocity*-2;
             
             
 
             // throw the player back in the opposite direction of the blast
-            _velocity += velocityNormal;
+            _velocity += shotgunNormal * 2;
         }
     }
 }
