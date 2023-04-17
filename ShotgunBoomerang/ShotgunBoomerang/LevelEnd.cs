@@ -12,7 +12,7 @@ namespace ShotgunBoomerang
     internal class LevelEnd : GameObject
     {
         // Fields
-        private bool _inContactWithPlayer;
+        public bool _inContactWithPlayer;
 
         // Properties
         public bool IncidentWithPlayer { get { return _inContactWithPlayer; } }
