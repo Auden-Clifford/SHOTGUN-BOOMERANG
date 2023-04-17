@@ -676,14 +676,20 @@ namespace ShotgunBoomerang
                 graphics.PreferredBackBufferHeight / 2), 
                 player.ShotgunRadius, Color.White);
 
-            /*
+            
             // player shotgun angles
             Vector2 screenCenter = new Vector2(
                 graphics.PreferredBackBufferWidth / 2,
                     graphics.PreferredBackBufferHeight / 2);
 
             // normal of the vector between mouse and screen center
-            Vector2 mouseCenterNormal = Vector2.Normalize(screenCenter - new Vector2(ms.Position.X, ms.Position.Y));
+            Vector2 mouseCenterNormal = Vector2.Normalize(new Vector2(ms.Position.X, ms.Position.Y) - screenCenter);
+
+            float angle = MathF.Atan2(-mouseCenterNormal.Y, mouseCenterNormal.X);
+           
+            
+
+            //angle = -MathF.Atan(mouseCenterNormal.Y / mouseCenterNormal.X);
 
             try
             {
@@ -691,31 +697,26 @@ namespace ShotgunBoomerang
                 ShapeBatch.Line(
                     screenCenter,
                     player.ShotgunRadius,
-                    MathF.Atan(mouseCenterNormal.Y / mouseCenterNormal.X),
+                    angle,
                     Color.White);
-
+                
                 // top line
                 ShapeBatch.Line(
-                    new Vector2(graphics.PreferredBackBufferWidth / 2,
-                    graphics.PreferredBackBufferHeight / 2),
+                    screenCenter,
                     player.ShotgunRadius,
-                    MathF.Atan(
-                        (ms.Position.Y - graphics.PreferredBackBufferHeight / 2) /
-                        (ms.Position.X - graphics.PreferredBackBufferWidth / 2)) + 20,
+                    angle + MathF.PI / 8,
                     Color.Red);
 
                 // bottom line
                 ShapeBatch.Line(
-                    new Vector2(graphics.PreferredBackBufferWidth / 2,
-                    graphics.PreferredBackBufferHeight / 2),
+                    screenCenter,
                     player.ShotgunRadius,
-                    MathF.Atan(
-                        (ms.Position.Y - graphics.PreferredBackBufferHeight / 2) /
-                        (ms.Position.X - graphics.PreferredBackBufferWidth / 2)) - 20,
+                    angle - MathF.PI / 8,
                     Color.Red);
+
             }
             catch { }
-            */
+            
 
 
             /*
