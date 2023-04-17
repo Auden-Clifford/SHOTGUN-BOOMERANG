@@ -139,7 +139,7 @@ namespace ShotgunBoomerang
             demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
             awesomeFlamingSkull = this.Content.Load<Texture2D>("awesomeflamingskull");
 
-            // these are the textures the test level will need to display prperly
+            // These are the textures the test level will need to display prperly
             demoLevelTexturepack = new List<Texture2D>()
             {
                 this.Content.Load<Texture2D>("TestTile"),
@@ -317,7 +317,7 @@ namespace ShotgunBoomerang
                 case GameState.Gameplay:
 
                     // Update the player
-                    player.Update(kb, prevKb, ms, prevMs, currentLevel.CurrentTileMap, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, graphics, gameTime, currentLevel.LevelEnd);
+                    player.Update(kb, prevKb, ms, prevMs, currentLevel.CurrentTileMap, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, graphics, gameTime);
 
                     // Updating player health and ammo if godmode options are enabled
                     if (infiniteHP && player.Health != 100)
