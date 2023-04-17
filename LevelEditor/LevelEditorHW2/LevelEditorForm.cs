@@ -211,13 +211,21 @@ namespace LevelEditor
 
                         // write the names of the pictureboxs' images
                         // (each line of the file = a line of picture boxes in the grid)
-                        if(pb.Image == tilePicker_testTile.Image)
+                        if(pb.Image == tilePicker_TestTile.Image)
                         {
                             writer.Write("testTile,");
                         }
-                        else if(pb.Image == tilePicker_snek.Image)
+                        else if(pb.Image == tilePicker_Snek.Image)
                         {
                             writer.Write("snek,");
+                        }
+                        else if(pb.Image == tilePicker_PlayerStart.Image)
+                        {
+                            writer.Write("playerStart,");
+                        }
+                        else if(pb.Image == tilePicker_LevelEnd.Image)
+                        {
+                            writer.Write("levelEnd,");
                         }
                         // if it doesn't match either image, it must be empty
                         else
@@ -409,6 +417,14 @@ namespace LevelEditor
                     else if (currentLine[x] == "snek")
                     {
                         pb.Image = Image.FromFile("../../../../textures/snek.png");
+                    }
+                    else if (currentLine[x] == "playerStart")
+                    {
+                        pb.Image = Image.FromFile("../../../../textures/playerStart.png");
+                    }
+                    else if (currentLine[x] == "levelEnd")
+                    {
+                        pb.Image = Image.FromFile("../../../../textures/levelEnd.png");
                     }
 
                     // place the new picturebox in the grid
