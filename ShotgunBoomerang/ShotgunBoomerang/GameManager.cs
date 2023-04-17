@@ -645,7 +645,10 @@ namespace ShotgunBoomerang
             // player shotgun angles
             Vector2 screenCenter = new Vector2(
                 graphics.PreferredBackBufferWidth / 2,
-                    graphics.PreferredBackBufferHeight / 2);;
+                    graphics.PreferredBackBufferHeight / 2);
+
+            // normal of the vector between mouse and screen center
+            Vector2 mouseCenterNormal = Vector2.Normalize(screenCenter - new Vector2(ms.Position.X, ms.Position.Y));
 
             try
             {
@@ -653,7 +656,7 @@ namespace ShotgunBoomerang
                 ShapeBatch.Line(
                     screenCenter,
                     player.ShotgunRadius,
-                    MathF.Atan((screenCenter.Y - ms.Position.Y) / (screenCenter.X - ms.Position.X)),
+                    MathF.Atan(mouseCenterNormal.Y / mouseCenterNormal.X),
                     Color.White);
 
                 // top line
