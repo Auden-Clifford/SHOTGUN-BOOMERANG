@@ -623,7 +623,7 @@ namespace ShotgunBoomerang
                 //caluclates if enemy is in range
                 if (distance <= _shotgunRadius)
                 {
-                    currentShot.ShotgunHit(this.CenterPoint, graphics);
+                    currentShot.ShotgunHit(velocityNormal, graphics, _damage);
                 }
             }
             
