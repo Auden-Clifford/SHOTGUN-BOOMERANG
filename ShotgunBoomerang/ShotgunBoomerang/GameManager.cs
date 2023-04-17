@@ -53,12 +53,17 @@ namespace ShotgunBoomerang
         private Texture2D ammoBar;
         private Texture2D demoDisplay;
 
-        private Texture2D testTileSprite;
+        //private Texture2D testTileSprite;
         private Texture2D playerSprite;
-        private Texture2D snakeSprite;
+        //private Texture2D snakeSprite;
         private Texture2D boomerangSprite;
+
+        private List<Texture2D> testLevelTexturepack;
+
         private SpriteFont arial12;
         private SpriteFont arial36;
+
+
 
         private Song deathSound;
 
@@ -118,16 +123,26 @@ namespace ShotgunBoomerang
 
             // Load textures
             menuBackground = this.Content.Load<Texture2D>("pixeldesertback");
-            testTileSprite = this.Content.Load<Texture2D>("TestTile");
+            //testTileSprite = this.Content.Load<Texture2D>("TestTile");
             playerSprite = this.Content.Load<Texture2D>("PlayerTestSprite");
             blankRectangleSprite = this.Content.Load<Texture2D>("blankRectangle");
             boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
-            snakeSprite = this.Content.Load<Texture2D>("Snek");
+            //snakeSprite = this.Content.Load<Texture2D>("Snek");
             darkFilter = this.Content.Load<Texture2D>("darkfilter");
             healthBar = this.Content.Load<Texture2D>("redsquare");
             ammoBar = this.Content.Load<Texture2D>("ammoui");
             demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
             awesomeFlamingSkull = this.Content.Load<Texture2D>("awesomeflamingskull");
+
+            // these are the textures the test level will need to display prperly
+            testLevelTexturepack = new List<Texture2D>()
+            {
+                this.Content.Load<Texture2D>("TestTile"),
+                this.Content.Load<Texture2D>("Snek"),
+                this.Content.Load<Texture2D>("endFlag")
+            };
+
+
 
             deathSound = this.Content.Load<Song>("BadToTheBones");
 
@@ -138,17 +153,21 @@ namespace ShotgunBoomerang
             arial36 = this.Content.Load<SpriteFont>("Arial36");
 
             // create the test level
+            /*
             testLevel = new Level(
                 GenerateTestLevel(),
                 new List<IGameEnemy>(),
                 new List<IGameProjectile>(),
                 new Vector2(testTileSprite.Width, 
                 -testTileSprite.Width * 3));
+            */
 
+            testLevel = new Level(testLevelTexturepack, "../../../../Levels/testLevel1.level");
             // set up the player
             player = new Player(playerSprite, boomerangSprite, testLevel.PlayerStart, 100);
 
             //Test enemy
+            /*
             snek = new SnakeEnemy(
                 snakeSprite,
                 new Vector2(
@@ -160,6 +179,7 @@ namespace ShotgunBoomerang
             testLevel.StartEnemies.Add(snek);
             testLevel.CurrentEnemies.Add(snek);
             testLevel.StartEnemies.Add(snek);
+            */
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
             pauseButtonDebug = new Rectangle(graphics.PreferredBackBufferWidth /2 - 264, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);
@@ -509,6 +529,7 @@ namespace ShotgunBoomerang
             base.Draw(gameTime);
         }
 
+        /*
         /// <summary>
         /// Generates the demo level
         /// </summary>
@@ -537,6 +558,7 @@ namespace ShotgunBoomerang
 
             return tileMap;
         }
+        */
 
         /// <summary>
         /// Draws the debug text. Helper Method!
