@@ -221,6 +221,8 @@ namespace ShotgunBoomerang
             {
                 projectile.Draw(sb, screenOffset);
             }
+
+            _levelEnd.Draw(sb, screenOffset);
         }
 
         public void Update(KeyboardState kb,

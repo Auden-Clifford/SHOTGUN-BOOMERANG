@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Imaging;
 using System.Linq;
+using System.Numerics;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -398,8 +399,8 @@ namespace LevelEditor
 
             for(int y = 0; y < height; y++)
             {
-                // get a string that represents the colors
-                // of every picturebox in the current line
+                // get an array of strings that represent
+                // the images on each picturebox on this line
                 string[] currentLine = reader.ReadLine().Split(',');
 
                 for(int x = 0; x < width; x++)
@@ -424,7 +425,7 @@ namespace LevelEditor
                     }
                     else if (currentLine[x] == "levelEnd")
                     {
-                        pb.Image = Image.FromFile("../../../../textures/levelEnd.png");
+                        pb.Image = Image.FromFile("../../../../textures/endFlag_1t.png");
                     }
 
                     // place the new picturebox in the grid

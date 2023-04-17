@@ -162,7 +162,7 @@ namespace ShotgunBoomerang
                 -testTileSprite.Width * 3));
             */
 
-            testLevel = new Level(testLevelTexturepack, "../../../../Levels/testLevel1.level");
+            testLevel = new Level(testLevelTexturepack, "../../../../Levels/testLevel2.level");
             // set up the player
             player = new Player(playerSprite, boomerangSprite, testLevel.PlayerStart, 100);
 
