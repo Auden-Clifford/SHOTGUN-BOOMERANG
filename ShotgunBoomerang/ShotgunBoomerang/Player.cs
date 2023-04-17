@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-
+using System.Diagnostics;
+using System.Threading;
 
 namespace ShotgunBoomerang
 {
@@ -19,7 +20,8 @@ namespace ShotgunBoomerang
         Run,
         Airborne,
         Slide,
-        Skid
+        Skid,
+        Damaged
     }
 
     /// <summary>
@@ -45,8 +47,9 @@ namespace ShotgunBoomerang
 
         private double score;
         private int kills;
-        private double timer; //this might not be handled here. won't implement until it's clear
+        private double dmgTimer; //this might not be handled here. won't implement until it's clear
 
+        private Color drawColor;
 
         // Properties
 
@@ -130,6 +133,9 @@ namespace ShotgunBoomerang
             _shotgunAngle = 45;
             _isCollidingWithGround = false;
             _jumpForce = 32;
+
+            dmgTimer = .5;
+            drawColor = Color.White;
         }
 
 
@@ -147,7 +153,7 @@ namespace ShotgunBoomerang
                     - _sprite.Width / 2,
                     graphics.PreferredBackBufferHeight / 2 
                     - _sprite.Height / 2), 
-                Color.White);
+                drawColor);
         }
 
         /// <summary>
@@ -173,7 +179,8 @@ namespace ShotgunBoomerang
             List<Tile> tileMap,
             List<IGameEnemy> enemies,
             List<IGameProjectile> projectiles,
-            GraphicsDeviceManager graphics)
+            GraphicsDeviceManager graphics,
+            GameTime gameTime)
         {
             // The player is slowed by different amounts depending
             // on whether they are running, skidding, or in the air
@@ -200,7 +207,7 @@ namespace ShotgunBoomerang
                     if(ms.LeftButton == ButtonState.Pressed && 
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies);
+                        ShotgunAttack(ms, graphics, enemies, projectiles);
 
                         
                     }
@@ -242,7 +249,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies);
+                        ShotgunAttack(ms, graphics, enemies, projectiles);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -294,7 +301,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released && _ammo > 0)
                     {
-                        ShotgunAttack(ms, graphics, enemies);
+                        ShotgunAttack(ms, graphics, enemies, projectiles);
                         _ammo--;
                     }
 
@@ -340,7 +347,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies);
+                        ShotgunAttack(ms, graphics, enemies, projectiles);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -378,7 +385,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies);
+                        ShotgunAttack(ms, graphics, enemies, projectiles);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -414,9 +421,23 @@ namespace ShotgunBoomerang
                         _currentState = PlayerState.Run;
                     }
                     break;
+
+                case PlayerState.Damaged:
+                    dmgTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+
+                    drawColor = Color.Red;
+
+                    _velocity *= 0.99f;
+
+                    if(dmgTimer <= 0)
+                    {
+                        drawColor = Color.White;
+                        dmgTimer = .5;
+                        _currentState = PlayerState.Idle;
+                    }
+                    break;
             }
             
-
             // the player's isCollidingWithGround variable must always
             // be set to false at the end of Update, it will be detected again in ResolveCollisions
             _isCollidingWithGround = false;
@@ -537,7 +558,7 @@ namespace ShotgunBoomerang
             }
         }
 
-        private void ShotgunAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameEnemy> enemies)
+        private void ShotgunAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameEnemy> enemies, List<IGameProjectile> projectiles)
         {
             // need the mouse's position to be a Vector2 for math
             Vector2 mousePos = new Vector2(ms.Position.X, ms.Position.Y);
@@ -565,6 +586,20 @@ namespace ShotgunBoomerang
                 }
                 
             }
+
+            for(int i = 0; i < projectiles.Count; i++)
+            {
+                Boomerang currentShot = (Boomerang)projectiles[i];
+
+                float distance = Vector2.Distance(CenterPoint, currentShot.CenterPoint);
+
+                //caluclates if enemy is in range
+                if (distance <= _shotgunRadius)
+                {
+                    currentShot.ShotgunHit(this.CenterPoint, graphics);
+                }
+            }
+            
         }
 
         private void BoomerangAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameProjectile> projectiles)
@@ -583,6 +618,18 @@ namespace ShotgunBoomerang
             _isHoldingBoomerang = false;
 
 
+        }
+
+        /// <summary>
+        /// Player takes damage, gains i frames
+        /// </summary>
+        public void TakeDamage(float incDmg)
+        {
+            if (_currentState != PlayerState.Damaged)
+            {
+                _health -= incDmg;
+                _currentState = PlayerState.Damaged;
+            }
         }
     }
 }

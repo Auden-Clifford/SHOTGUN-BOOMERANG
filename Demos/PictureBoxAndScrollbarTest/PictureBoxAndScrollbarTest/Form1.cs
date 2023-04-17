@@ -34,11 +34,23 @@ namespace PictureBoxAndScrollbarTest
             groupBox1.Controls[0].Show();
             groupBox1.Controls[1].Location = new Point(_pictureBoxStartingPoint.X + _pictureBoxSize, _pictureBoxStartingPoint.Y);
             groupBox1.Controls[1].Show();
+            groupBox1.Controls[2].Location = new Point(_pictureBoxStartingPoint.X + _pictureBoxSize * 2, _pictureBoxStartingPoint.Y);
+            groupBox1.Controls[2].Show();
         }
 
         private void hScrollBar1_Scroll(object sender, ScrollEventArgs e)
         {
+            foreach(Control control in groupBox1.Controls)
+            {
+                control.Hide();
+            }
 
+            for(int i = 0; i < 3; i++)
+            {
+                groupBox1.Controls[i + hScrollBar1.Value].Location = new Point(_pictureBoxStartingPoint.X + _pictureBoxSize * i, _pictureBoxStartingPoint.Y);
+                groupBox1.Controls[i + hScrollBar1.Value].Show();
+            }
+            
         }
     }
 }

@@ -37,7 +37,8 @@ namespace ShotgunBoomerang
         public void Update(
             List<Tile> tileMap,
             List<IGameProjectile> projectiles,
-            Player player);
+            Player player,
+            GameTime gameTime);
 
         /// <summary>
         /// Should check if the enemy is colliding with any game objects
