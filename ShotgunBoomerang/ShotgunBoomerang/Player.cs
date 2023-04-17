@@ -580,25 +580,18 @@ namespace ShotgunBoomerang
             // need the mouse's position to be a Vector2 for math
             Vector2 mousePos = new Vector2(ms.Position.X, ms.Position.Y);
 
-            // velocity normal between the mouse and the player's centerpoint
-            Vector2 velocityNormal = Vector2.Normalize(
-                new Vector2(graphics.PreferredBackBufferWidth / 2,
-                           graphics.PreferredBackBufferHeight / 2) - mousePos);
-
-            // throw the player back in the opposite direction of the blast
-            _velocity += velocityNormal * (_damage / 2);
-
             //caluclates screen center
             Vector2 screenCenter = new Vector2(graphics.PreferredBackBufferWidth / 2,
                 graphics.PreferredBackBufferHeight / 2);
 
+            // velocity normal between the mouse and the player's centerpoint
+            Vector2 velocityNormal = Vector2.Normalize(screenCenter - mousePos);
+
+            // throw the player back in the opposite direction of the blast
+            _velocity += velocityNormal * (_damage / 2);
+
             //calculates the lines which bound the blast
             float angle = MathF.Atan((mousePos.Y - screenCenter.Y) / (mousePos.X - screenCenter.X));
-            float m1 = MathF.Tan(20f + angle);
-            float m2 = MathF.Tan(angle - 20f);
-
-            float b1 = (CenterPoint.Y - m1 * CenterPoint.X);
-            float b2 = (CenterPoint.Y - m2 * CenterPoint.X);
 
             //Caluclates shotgun hits on enemies
             for (int i = 0; i < enemies.Count; i++)
@@ -606,29 +599,15 @@ namespace ShotgunBoomerang
                 MobileEntity currentEnemy = (MobileEntity)enemies[i];
                 
                 float distance = Vector2.Distance(CenterPoint, currentEnemy.CenterPoint);
+                float enemyAngle = MathF.Atan((currentEnemy.CenterPoint.Y - screenCenter.Y) /
+                    (currentEnemy.CenterPoint.X - screenCenter.X));
 
-                // the equasions will be flipped if if the player is facing right
-                if(_currentDirection == Direction.Left)
+                if (distance <= _shotgunRadius && // only if the enemy is within the radius
+                    enemyAngle <= angle + _shotgunAngle / 2 && // and the angle between the enemy and the player is less than the max spread angle
+                    enemyAngle >= angle - _shotgunAngle / 2)  // and the angle between the enemy and the player is greater than the min spread angle
                 {
-                    //caluclates if enemy is in range
-                    if (distance <= _shotgunRadius && // if the point is within the distance
-                        (currentEnemy.CenterPoint.Y < (m1 * currentEnemy.CenterPoint.X + b1)) // the centerpoint is below the first line
-                        && (currentEnemy.CenterPoint.Y > (m2 * currentEnemy.CenterPoint.X + b2))) // the centerpoint is above the second line
-                    {
-                        enemies[i].TakeDamage(_damage, this);
-                    }
+                    enemies[i].TakeDamage(_damage, this);
                 }
-                else
-                {
-                    //caluclates if enemy is in range
-                    if (distance <= _shotgunRadius && // if the point is within the distance
-                        (currentEnemy.CenterPoint.Y > (m1 * currentEnemy.CenterPoint.X + b1)) // the centerpoint is below the first line
-                        && (currentEnemy.CenterPoint.Y < (m2 * currentEnemy.CenterPoint.X + b2))) // the centerpoint is above the second line
-                    {
-                        enemies[i].TakeDamage(_damage, this);
-                    }
-                }
-
                 
             }
 
