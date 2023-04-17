@@ -571,10 +571,11 @@ namespace ShotgunBoomerang
             // throw the player back in the opposite direction of the blast
             _velocity += velocityNormal * (_damage / 2);
 
+            //caluclates screen center
             Vector2 screenCenter = new Vector2(graphics.PreferredBackBufferWidth / 2,
                 graphics.PreferredBackBufferHeight / 2);
 
-
+            //calculates the lines which bound the blast
             float angle = MathF.Atan((mousePos.Y - screenCenter.Y) / (mousePos.X - screenCenter.X));
             float m1 = MathF.Tan(20f + angle);
             float m2 = MathF.Tan(angle - 20f);

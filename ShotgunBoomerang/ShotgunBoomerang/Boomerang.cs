@@ -41,7 +41,7 @@ namespace ShotgunBoomerang
             _currentState = BoomerangState.Flying;
 
             _acceleration = Vector2.Zero;
-            _damage = 30;
+            _damage = 1;
             _health = 0;
             _maxHealth = 0;
         }
@@ -171,7 +171,17 @@ namespace ShotgunBoomerang
             Player player,
             GameTime gameTime)
         {
-            switch(_currentState)
+            //detetcts enemy collisions
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                MobileEntity enemey = (MobileEntity) enemies[i];
+                if (this.CheckCollision(enemey))
+                {
+                    enemies[i].TakeDamage(_damage * _velocity.Length(), player);
+                }
+            }
+
+            switch (_currentState)
             {
                 /*
                 case BoomerangState.Held:
@@ -197,6 +207,9 @@ namespace ShotgunBoomerang
                     }
                     break;
                 */
+
+                
+
                 case BoomerangState.Flying:
                     // the boomerang will experience a slowing due to friction while in the air
                     float airFriction = 0.99f;
