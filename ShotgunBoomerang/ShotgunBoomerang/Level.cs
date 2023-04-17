@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
@@ -28,7 +30,8 @@ namespace ShotgunBoomerang
         private List<IGameProjectile> _currentProjectiles;
 
         private Vector2 _playerStart;
-
+        private LevelEnd _levelEnd;
+        
         // Properties
         /// <summary>
         /// Gets the level's original tile map
@@ -66,6 +69,11 @@ namespace ShotgunBoomerang
         public Vector2 PlayerStart { get { return _playerStart; } }
 
         /// <summary>
+        /// Get's the level's LevelEnd object
+        /// </summary>
+        public LevelEnd LevelEnd { get { return _levelEnd; } }
+
+        /// <summary>
         /// Creates a new level with a given tile map
         /// </summary>
         /// <param name="tileMap">The list of tiles the level will have</param>
@@ -100,6 +108,96 @@ namespace ShotgunBoomerang
             }
             
             _playerStart = playerStart;
+        }
+
+        /// <summary>
+        /// Creates a new level by reading in level data from a file
+        /// (this process requires a list of textures in a specific order)
+        /// </summary>
+        /// <param name="texturePack">List of all the textures this level uses</param>
+        /// <param name="filePath">path to open the level file</param>
+        public Level(List<Texture2D> texturePack, string filePath)
+        {
+            // open the specified file for reading.
+            StreamReader reader = new StreamReader(File.OpenRead(filePath));
+
+            //read the first line to get the y and x dimentions of the grid
+            string[] dimentions = reader.ReadLine().Split(',');
+            int height = int.Parse(dimentions[0]);
+            int width = int.Parse(dimentions[1]);
+
+            // create new empty object lists
+            _startTileMap = new List<Tile>();
+            _startEnemies = new List<IGameEnemy>();
+            _startProjectiles = new List<IGameProjectile>();
+
+            for(int y = 0; y < height; y++)
+            {
+                // get an array of strings that represent
+                // the objects on this line
+                string[] currentLine = reader.ReadLine().Split(',');
+
+                for(int x = 0; x < width; x++)
+                {
+                    // load the tiles
+                    if (currentLine[x] == "testTile")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[0],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    // load the snake enemy
+                    else if (currentLine[x] == "snek")
+                    {
+                        _startEnemies.Add(
+                            new SnakeEnemy(texturePack[1],
+                            new Vector2(x * 64, y * 64),
+                            100,
+                            20,
+                            2));
+                    }
+                    // load the playerStart
+                    else if (currentLine[x] == "playerStart")
+                    {
+                        _playerStart = new Vector2(x * 64, y * 64);
+                    }
+                    // load the levelEnd
+                    else if (currentLine[x] == "levelEnd")
+                    {
+                        _levelEnd = new LevelEnd(texturePack[2],
+                            new Vector2(x * 64, y * 64));
+                    }
+
+                }
+            }
+
+            // close the stream reader
+            reader.Close();
+
+            // set the current tiles to a copy of the start
+            _currentTileMap = new List<Tile>();
+
+            foreach (Tile tile in _startTileMap)
+            {
+                _currentTileMap.Add(tile);
+            }
+
+            // set the current enemies to a copy of the start
+            _currentEnemies = new List<IGameEnemy>();
+
+            foreach (IGameEnemy enemy in _startEnemies)
+            {
+                _currentEnemies.Add(enemy);
+
+            }
+
+            // set the current projectiles to a copy of the start
+            _currentProjectiles = new List<IGameProjectile>();
+
+            foreach (IGameProjectile projectile in _startProjectiles)
+            {
+                _currentProjectiles.Add(projectile);
+            }
         }
 
         /// <summary>
