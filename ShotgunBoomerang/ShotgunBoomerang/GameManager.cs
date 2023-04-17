@@ -7,6 +7,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
+using ShapeUtils;
 
 namespace ShotgunBoomerang
 {
@@ -386,8 +387,10 @@ namespace ShotgunBoomerang
             _spriteBatch.Begin();
 
             // If debug enabled, print position & speed stats on screen
+            ShapeBatch.Begin(GraphicsDevice);
             if (debugOn)
             { DrawDebug(); }
+            ShapeBatch.End();
 
             // Drawing differently depending on the gamestates
             switch (gameState)
@@ -587,6 +590,59 @@ namespace ShotgunBoomerang
             // print the player's health and ammo
             _spriteBatch.DrawString(arial12, $"Player health: {player.Health}", new Vector2(10, 150), Color.White);
             _spriteBatch.DrawString(arial12, $"Player ammo: {player.Ammo}", new Vector2(10, 170), Color.White);
+
+            // draw hitboxes
+
+            // player hitbox
+            ShapeBatch.BoxOutline(
+                graphics.PreferredBackBufferWidth / 2 - player.Sprite.Width / 2,
+                graphics.PreferredBackBufferHeight / 2 - player.Sprite.Height / 2,
+                player.Sprite.Width, player.Sprite.Height, Color.White);
+
+            // player shotgun radius
+            ShapeBatch.CircleOutline(
+                new Vector2(graphics.PreferredBackBufferWidth / 2, 
+                graphics.PreferredBackBufferHeight / 2), 
+                player.ShotgunRadius, Color.White);
+
+            /*
+            // player shotgun angles
+            Vector2 screenCenter = new Vector2(
+                graphics.PreferredBackBufferWidth / 2,
+                    graphics.PreferredBackBufferHeight / 2);;
+
+            try
+            {
+                // middle line
+                ShapeBatch.Line(
+                    screenCenter,
+                    player.ShotgunRadius,
+                    MathF.Atan((screenCenter.Y - ms.Position.Y) / (screenCenter.X - ms.Position.X)),
+                    Color.White);
+
+                // top line
+                ShapeBatch.Line(
+                    new Vector2(graphics.PreferredBackBufferWidth / 2,
+                    graphics.PreferredBackBufferHeight / 2),
+                    player.ShotgunRadius,
+                    MathF.Atan(
+                        (ms.Position.Y - graphics.PreferredBackBufferHeight / 2) /
+                        (ms.Position.X - graphics.PreferredBackBufferWidth / 2)) + 20,
+                    Color.Red);
+
+                // bottom line
+                ShapeBatch.Line(
+                    new Vector2(graphics.PreferredBackBufferWidth / 2,
+                    graphics.PreferredBackBufferHeight / 2),
+                    player.ShotgunRadius,
+                    MathF.Atan(
+                        (ms.Position.Y - graphics.PreferredBackBufferHeight / 2) /
+                        (ms.Position.X - graphics.PreferredBackBufferWidth / 2)) - 20,
+                    Color.Red);
+            }
+            catch { }
+            */
+
 
             /*
             // print the boomerang's X and Y

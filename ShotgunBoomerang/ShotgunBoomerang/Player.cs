@@ -112,6 +112,11 @@ namespace ShotgunBoomerang
             get { return _ammo; }
             set { _ammo = value; }
         }
+
+        /// <summary>
+        /// Gets the player's shotgun damage radius
+        /// </summary>
+        public float ShotgunRadius { get { return _shotgunRadius; } }
         
         // Constructors
 
