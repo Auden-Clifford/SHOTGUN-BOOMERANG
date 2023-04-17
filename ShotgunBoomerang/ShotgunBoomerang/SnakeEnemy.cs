@@ -175,7 +175,6 @@ namespace ShotgunBoomerang
                 _velocity += bump * 3;
                 bump.X = 2;
             }
-            
         }
 
         /// <summary>

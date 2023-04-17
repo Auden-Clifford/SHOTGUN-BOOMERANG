@@ -192,7 +192,8 @@ namespace ShotgunBoomerang
             List<IGameEnemy> enemies,
             List<IGameProjectile> projectiles,
             GraphicsDeviceManager graphics,
-            GameTime gameTime)
+            GameTime gameTime,
+            LevelEnd levelEnd)
         {
             // The player is slowed by different amounts depending
             // on whether they are running, skidding, or in the air
@@ -229,9 +230,7 @@ namespace ShotgunBoomerang
                     if(ms.LeftButton == ButtonState.Pressed && 
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies, projectiles);
-
-                        
+                        ShotgunAttack(ms, graphics, enemies, projectiles);  
                     }
 
                     // if the player right clicks (only once) and
@@ -458,6 +457,11 @@ namespace ShotgunBoomerang
                         _currentState = PlayerState.Idle;
                     }
                     break;
+            }
+
+            if (levelEnd.HitBox.Intersects(this.HitBox))
+            {
+                levelEnd._inContactWithPlayer = true;
             }
             
             // the player's isCollidingWithGround variable must always

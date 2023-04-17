@@ -246,6 +246,7 @@ namespace ShotgunBoomerang
                 if (!_currentEnemies[i].CheckHealth())
                 {
                     _currentEnemies.RemoveAt(i);
+                    player.Kills++;
                 }
             }
 
@@ -286,7 +287,7 @@ namespace ShotgunBoomerang
             player.Score = 0;
             player.Kills = 0;
 
-            //health reset
+            _levelEnd._inContactWithPlayer = false;
 
             //reset list of enemies and objects
             // by clearing and resetting the current lists to the start lists

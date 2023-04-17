@@ -18,7 +18,8 @@ namespace ShotgunBoomerang
         LevelSelect,
         PauseMenu,
         Gameplay,
-        Dead
+        Dead,
+        Victory
     }
 
     public class GameManager : Game
@@ -46,6 +47,7 @@ namespace ShotgunBoomerang
         private int skullSize = 1;
         private bool skullGrow = true;
         private Texture2D awesomeFlamingSkull;
+        private Song deathSound;
 
         private Texture2D menuBackground;
         private Texture2D blankRectangleSprite;
@@ -64,13 +66,8 @@ namespace ShotgunBoomerang
         private SpriteFont arial12;
         private SpriteFont arial36;
 
-
-
-        private Song deathSound;
-
         private Level testLevel;
         private Player player;
-        private SnakeEnemy snek;
 
         GameState gameState = GameState.MainMenu; // enum for managing gamestate (this is what starts the game on the menu screen)
         private bool debugOn = false; // boolean to toggle debug mode
@@ -94,6 +91,8 @@ namespace ShotgunBoomerang
 
         private Rectangle deadRespawnButton;
         private Rectangle deadQuitButton;
+
+        private SnakeEnemy snek;
 
         public GameManager()
         {
@@ -142,8 +141,6 @@ namespace ShotgunBoomerang
                 this.Content.Load<Texture2D>("Snek"),
                 this.Content.Load<Texture2D>("endFlag")
             };
-
-
 
             deathSound = this.Content.Load<Song>("BadToTheBones");
 
@@ -281,11 +278,11 @@ namespace ShotgunBoomerang
                     break;
 
                 // We are in GAMEPLAY.
-                // We can PAUSE, or DIE when health reaches zero.
+                // We can PAUSE, DIE when health reaches zero, or WIN when touching the flagpole.
                 case GameState.Gameplay:
 
                     // Update the player
-                    player.Update(kb, prevKb, ms, prevMs, testLevel.CurrentTileMap, testLevel.CurrentEnemies, testLevel.CurrentProjectiles, graphics, gameTime);
+                    player.Update(kb, prevKb, ms, prevMs, testLevel.CurrentTileMap, testLevel.CurrentEnemies, testLevel.CurrentProjectiles, graphics, gameTime, testLevel.LevelEnd);
 
                     // Updating player health and ammo if godmode options are enabled
                     if (infiniteHP && player.Health != 100)
@@ -293,9 +290,13 @@ namespace ShotgunBoomerang
                     if (infiniteAmmo && player.Ammo != 2)
                     { player.Ammo = 2; }
 
-                    // Dying when health reaches
+                    // Dying when health reaches zero
                     if (player.Health <= 0)
                     { gameState = GameState.Dead; }
+                    
+                    // Winning if flagpole is touched
+                    if (testLevel.LevelEnd.IncidentWithPlayer)
+                    { gameState = GameState.Victory; }
 
                     //Update the test snake
                     
@@ -357,6 +358,19 @@ namespace ShotgunBoomerang
                     { skullSize += 5; }
                     else
                     { skullSize -= 5;}
+
+                    break;
+
+                // The level has ENDED.
+                // We can RETURN TO LEVEL SELECT ONLY.
+                case GameState.Victory:
+
+                    // Pressing Enter returns to menu
+                    if (kb.IsKeyDown(Keys.Enter) && prevKb.IsKeyUp(Keys.Enter))
+                    {
+                        testLevel.ResetLevel(player);
+                        gameState = GameState.LevelSelect;
+                    }
 
                     break;
             }
@@ -524,6 +538,28 @@ namespace ShotgunBoomerang
                     DrawButton(ms, deadQuitButton, "Quit to Menu");
 
                     _spriteBatch.Draw(awesomeFlamingSkull, new Rectangle(1400, 300, skullSize, skullSize), Color.White); // THE SKELETON APPEARS
+
+                    break;
+
+                // Drawing for victory screen
+                case GameState.Victory:
+
+                    testLevel.Draw(_spriteBatch, screenOffset);
+                    player.Draw(_spriteBatch, graphics);
+                    DrawHPAmmo();
+                    _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+
+                    _spriteBatch.DrawString(arial36, "STAGE CLEAR", new Vector2(graphics.PreferredBackBufferWidth / 2 - arial36.MeasureString("STAGE CLEAR").X / 2,
+                        (graphics.PreferredBackBufferHeight / 2) - 250), Color.Black);
+
+                    _spriteBatch.DrawString(arial12, "Press Enter to return to menu", new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Press Enter to return to menu").X / 2,
+                         (graphics.PreferredBackBufferHeight / 2) - 200), Color.Black);
+
+                    _spriteBatch.DrawString(arial12, "Score: " + player.Score, new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Score: " + player.Score).X / 2,
+                         (graphics.PreferredBackBufferHeight / 2) - 150), Color.Black);
+
+                    _spriteBatch.DrawString(arial12, "Kills: " + player.Kills, new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Kills: " + player.Kills).X / 2,
+                         (graphics.PreferredBackBufferHeight / 2) - 130), Color.Black);
 
                     break;
             }
