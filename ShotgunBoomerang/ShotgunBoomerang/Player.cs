@@ -32,6 +32,7 @@ namespace ShotgunBoomerang
         Left,
         Right
     }
+
     internal class Player : MobileEntity
     {
         // Fields
@@ -40,6 +41,7 @@ namespace ShotgunBoomerang
         private int _ammo;
         private bool _isHoldingBoomerang;
         private PlayerState _currentState;
+        private Direction _currentDirection;
         private float _shotgunRadius;
         private float _shotgunAngle;
         private bool _isCollidingWithGround;
@@ -57,6 +59,11 @@ namespace ShotgunBoomerang
         /// Gets the player's current state
         /// </summary>
         public PlayerState CurrentState { get { return _currentState; } }
+
+        /// <summary>
+        /// Gets the direction the player is currently facing
+        /// </summary>
+        public Direction CurrentDirection { get { return _currentDirection; } }
 
         /// <summary>
         /// Gets or sets whether the player is holding the boomerang
@@ -190,6 +197,16 @@ namespace ShotgunBoomerang
 
             // resolve tile collisions before anything else
             ResolveTileCollisions(tileMap);
+
+            // determine the direction the player is facing
+            if(ms.Position.X < graphics.PreferredBackBufferWidth / 2)
+            {
+                _currentDirection = Direction.Right;
+            }
+            else
+            {
+                _currentDirection = Direction.Left;
+            }
 
             switch (_currentState)
             {
@@ -590,13 +607,28 @@ namespace ShotgunBoomerang
                 
                 float distance = Vector2.Distance(CenterPoint, currentEnemy.CenterPoint);
 
-                //caluclates if enemy is in range
-                if (distance <= _shotgunRadius &&
-                    (currentEnemy.CenterPoint.Y < (m1 * currentEnemy.CenterPoint.X + b1) )
-                    && ( currentEnemy.CenterPoint.Y > (m2 * currentEnemy.CenterPoint.X + b2)))
+                // the equasions will be flipped if if the player is facing right
+                if(_currentDirection == Direction.Left)
                 {
-                    enemies[i].TakeDamage(_damage, this);
+                    //caluclates if enemy is in range
+                    if (distance <= _shotgunRadius && // if the point is within the distance
+                        (currentEnemy.CenterPoint.Y < (m1 * currentEnemy.CenterPoint.X + b1)) // the centerpoint is below the first line
+                        && (currentEnemy.CenterPoint.Y > (m2 * currentEnemy.CenterPoint.X + b2))) // the centerpoint is above the second line
+                    {
+                        enemies[i].TakeDamage(_damage, this);
+                    }
                 }
+                else
+                {
+                    //caluclates if enemy is in range
+                    if (distance <= _shotgunRadius && // if the point is within the distance
+                        (currentEnemy.CenterPoint.Y > (m1 * currentEnemy.CenterPoint.X + b1)) // the centerpoint is below the first line
+                        && (currentEnemy.CenterPoint.Y < (m2 * currentEnemy.CenterPoint.X + b2))) // the centerpoint is above the second line
+                    {
+                        enemies[i].TakeDamage(_damage, this);
+                    }
+                }
+
                 
             }
 

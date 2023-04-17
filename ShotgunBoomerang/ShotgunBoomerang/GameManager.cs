@@ -162,7 +162,7 @@ namespace ShotgunBoomerang
                 -testTileSprite.Width * 3));
             */
 
-            testLevel = new Level(testLevelTexturepack, "../../../../Levels/testLevel2.level");
+            testLevel = new Level(testLevelTexturepack, "../../../../Levels/testLevel3.level");
             // set up the player
             player = new Player(playerSprite, boomerangSprite, testLevel.PlayerStart, 100);
 
@@ -581,6 +581,8 @@ namespace ShotgunBoomerang
 
             // print the player's state
             _spriteBatch.DrawString(arial12, $"Player state: {player.CurrentState}", new Vector2(10, 110), Color.White);
+
+            _spriteBatch.DrawString(arial12, $"Player direction: {player.CurrentDirection}", new Vector2(10, 130), Color.White);
 
             // print the player's health and ammo
             _spriteBatch.DrawString(arial12, $"Player health: {player.Health}", new Vector2(10, 150), Color.White);
