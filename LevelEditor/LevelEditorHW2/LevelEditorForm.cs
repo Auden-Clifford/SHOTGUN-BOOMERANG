@@ -158,7 +158,7 @@ namespace LevelEditor
         /// Sets the current tile's color equal to
         /// the color button the player clicked on
         /// </summary>
-        public void colorPicker_Click(object? sender, EventArgs e)
+        public void tilePicker_Click(object? sender, EventArgs e)
         {
             // make sure the cast from object to Button works
             // otherwise don't do anything

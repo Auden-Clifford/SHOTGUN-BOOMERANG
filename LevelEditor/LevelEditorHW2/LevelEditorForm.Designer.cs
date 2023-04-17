@@ -77,6 +77,7 @@
             this.tilePicker_PlayerStart.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.tilePicker_PlayerStart.TabIndex = 11;
             this.tilePicker_PlayerStart.TabStop = false;
+            this.tilePicker_PlayerStart.Click += new System.EventHandler(this.tilePicker_Click);
             // 
             // tilePicker_LevelEnd
             // 
@@ -89,6 +90,7 @@
             this.tilePicker_LevelEnd.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.tilePicker_LevelEnd.TabIndex = 10;
             this.tilePicker_LevelEnd.TabStop = false;
+            this.tilePicker_LevelEnd.Click += new System.EventHandler(this.tilePicker_Click);
             // 
             // tilePicker_Snek
             // 
@@ -101,7 +103,7 @@
             this.tilePicker_Snek.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.tilePicker_Snek.TabIndex = 9;
             this.tilePicker_Snek.TabStop = false;
-            this.tilePicker_Snek.Click += new System.EventHandler(this.colorPicker_Click);
+            this.tilePicker_Snek.Click += new System.EventHandler(this.tilePicker_Click);
             // 
             // tilePicker_BlankGrey
             // 
@@ -112,7 +114,7 @@
             this.tilePicker_BlankGrey.Size = new System.Drawing.Size(50, 50);
             this.tilePicker_BlankGrey.TabIndex = 8;
             this.tilePicker_BlankGrey.TabStop = false;
-            this.tilePicker_BlankGrey.Click += new System.EventHandler(this.colorPicker_Click);
+            this.tilePicker_BlankGrey.Click += new System.EventHandler(this.tilePicker_Click);
             // 
             // tilePicker_TestTile
             // 
@@ -125,7 +127,7 @@
             this.tilePicker_TestTile.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.tilePicker_TestTile.TabIndex = 7;
             this.tilePicker_TestTile.TabStop = false;
-            this.tilePicker_TestTile.Click += new System.EventHandler(this.colorPicker_Click);
+            this.tilePicker_TestTile.Click += new System.EventHandler(this.tilePicker_Click);
             // 
             // groupBox_CurrentTile
             // 
