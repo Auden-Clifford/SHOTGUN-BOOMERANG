@@ -11,7 +11,6 @@ namespace ShotgunBoomerang
 {
     internal class SnakeEnemy : MobileEntity, IGameEnemy
     {
-        private bool goingLeft = false;
         private Vector2 bump;
         private bool isAlive;
         private bool onGround;
@@ -19,6 +18,8 @@ namespace ShotgunBoomerang
         private Vector2 startPos;
         private float timer;
         private bool damaged;
+
+        
 
         public SnakeEnemy(Texture2D sprite, Vector2 position, float maxHealth, float damage, float moveSpeed)
 
@@ -29,6 +30,8 @@ namespace ShotgunBoomerang
             this._health = maxHealth;
             this._damage = damage;
 
+            _acceleration = new Vector2(2, 0);
+
             startPos = new Vector2(position.X, position.Y);
 
             _velocity = new Vector2(moveSpeed, 0);
@@ -38,7 +41,7 @@ namespace ShotgunBoomerang
             defaultSpeed = moveSpeed;
 
             //goingLeft = false;
-            bump = new Vector2(2, -3);
+            bump = new Vector2(2, -3); //set vector causing major issues
             isAlive = true;
             onGround = false;
             damaged = false;
@@ -53,7 +56,6 @@ namespace ShotgunBoomerang
             _position.Y = startPos.Y;
             isAlive = true;
             onGround = false;
-            goingLeft = false;
             _velocity = new Vector2(defaultSpeed, 0);
         }
         
@@ -69,10 +71,6 @@ namespace ShotgunBoomerang
                 Console.WriteLine();
             }
 
-            if (goingLeft)
-            {
-                Console.WriteLine();
-            }
 
             //Draws red if damaged
             if (damaged && timer > 0 && isAlive)
@@ -99,13 +97,13 @@ namespace ShotgunBoomerang
         /// <param name="player">The player</param>
         public void Update(List<Tile> tileMap, List<IGameProjectile> projectiles, Player player, GameTime gameTime)
         {
-            if (goingLeft)
-            {
-                Console.WriteLine();
-            }
             Attack(player);
-            Move();
-            
+            //Move();
+
+            _position += _velocity;
+
+            //ApplyPhysics();
+
             ResolveTileCollisions(tileMap);
         }
 
@@ -117,14 +115,8 @@ namespace ShotgunBoomerang
         /// <returns>Whether or not a collision was detected</returns>
         public bool CheckCollision(MobileEntity other)
         {
-            if (this.HitBox.Intersects(other.HitBox))
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
+
+            return this.HitBox.Intersects(other.HitBox);
         }
 
         /// <summary>
@@ -220,6 +212,9 @@ namespace ShotgunBoomerang
         public void Move()
         {
             
+            _position += _velocity;
+
+            /*
             if (!goingLeft) //If going right
             {
                 //_position.X += _velocity.X;
@@ -230,8 +225,9 @@ namespace ShotgunBoomerang
                 //_position.X -= _velocity.X;
                 _position -= _velocity;
             }
+            */
 
-
+            /*
             if (_velocity.X > defaultSpeed)
             {
                 _velocity.X -= 0.1f;
@@ -240,11 +236,14 @@ namespace ShotgunBoomerang
             {
                 _velocity.X += 0.1f;
             }
+            */
 
+            
             if (_velocity.X > defaultSpeed - 0.15f && _velocity.X < defaultSpeed + 0.15f)
             {
                 _velocity.X = defaultSpeed;
             }
+            
         }
 
         /// <summary>
@@ -258,10 +257,6 @@ namespace ShotgunBoomerang
             
             ApplyPhysics();
 
-            if (goingLeft)
-            {
-                Console.WriteLine();
-            }
             // get the player's hitbox
             Rectangle hitBox = this.HitBox;
 
@@ -307,16 +302,23 @@ namespace ShotgunBoomerang
                         hitBox.X -= intersectRect.Width;
 
                         //the player's X velocity cannot be positive when touching the right wall
-                        this._velocity.X = Math.Clamp(_velocity.X, float.MinValue, 0);
+                       // this._velocity.X = Math.Clamp(_velocity.X, float.MinValue, 0);
+
+                        
 
                         //I implemented this conditional because I was concerned that the snake was getting caught
                         //on the lip of the next tile.
                         //It wasn't, but the limit doesn't affect the desired behaviour. Removing it makes no difference
 
+                        
                         if (intersectRect.Height >= 16)
                         {
-                            goingLeft = !goingLeft;
+                            //goingLeft = !goingLeft;
+                            this._velocity.X *= -1;
+                            //_acceleration.X *= -1;
+
                         }
+                        
                         
                     }
                     // otherwise move right
@@ -325,12 +327,16 @@ namespace ShotgunBoomerang
                         hitBox.X += intersectRect.Width;
 
                         //the player's X velocity cannot be negative when touching the left wall
-                        this._velocity.X = Math.Clamp(_velocity.X, 0, float.MaxValue);
+                        //this._velocity.X = Math.Clamp(_velocity.X, 0, float.MaxValue);
 
+                        
                         if (intersectRect.Height >= 16)
                         {
-                            goingLeft = !goingLeft;
+                            //goingLeft = !goingLeft;
+                            this._velocity.X *= -1;
+                            //_acceleration.X *= -1;
                         }
+                        
 
                     }
 
