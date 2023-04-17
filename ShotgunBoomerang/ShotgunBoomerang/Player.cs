@@ -581,6 +581,8 @@ namespace ShotgunBoomerang
 
             // player is no longer holding the boomerang
             _isHoldingBoomerang = false;
+
+
         }
     }
 }
