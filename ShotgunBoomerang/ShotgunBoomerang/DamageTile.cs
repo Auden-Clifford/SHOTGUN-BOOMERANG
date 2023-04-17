@@ -9,24 +9,36 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ShotgunBoomerang
 {
-    internal class Tile : GameObject
+    internal class DamageTile : Tile
     {
+        // Damage field
+        private float _damage;
+
+        // Field
+
         /// <summary>
-        /// Creates a new tile with a given texture and position
+        /// Read-Only damage value
         /// </summary>
-        /// <param name="sprite">The tile's texture</param>
-        /// <param name="position">The tile's position</param>
-        public Tile(Texture2D sprite, Vector2 position)
+        public float Damage
         {
-            _sprite = sprite;
-            _position = position;
+            get { return _damage; }
+        }
+        
+        /// <summary>
+        /// Constructor for damaging tile. Damage value is currently fixed at 10.
+        /// </summary>
+        /// <param name="_sprite">Sprite (uses base)</param>
+        /// <param name="_position">Position (uses base)</param>
+        public DamageTile(Texture2D _sprite, Vector2 _position) : base(_sprite, _position)
+        {
+            _damage = 10;
         }
 
         /// <summary>
         /// Base method for use in the update loop, should contain all logic the object needs to go through 
         /// in a frame as well as any parameters from the game manager that might be needed for this logic. 
         /// Update will be the entry point for all data from Game manager to the other classes
-        /// -- There is currently no update logic for Tiles
+        /// -- DamageTile update logic damages the player (wow)
         /// </summary>
         /// <param name="kb">The keyboard state this frame</param>
         /// <param name="prevKb"> The keyboard state last frame</param>
@@ -48,7 +60,11 @@ namespace ShotgunBoomerang
             Player player,
             GameTime gameTime)
         {
-            throw new NotImplementedException();
+            // Checking for player collision
+            if (CheckCollision(player))
+            {
+                player.TakeDamage(_damage);
+            }
         }
     }
 }

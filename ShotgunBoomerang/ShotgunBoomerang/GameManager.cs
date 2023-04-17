@@ -139,7 +139,7 @@ namespace ShotgunBoomerang
             demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
             awesomeFlamingSkull = this.Content.Load<Texture2D>("awesomeflamingskull");
 
-            // these are the textures the test level will need to display prperly
+            // These are the textures the test level will need to display prperly
             demoLevelTexturepack = new List<Texture2D>()
             {
                 this.Content.Load<Texture2D>("TestTile"),
@@ -317,7 +317,7 @@ namespace ShotgunBoomerang
                 case GameState.Gameplay:
 
                     // Update the player
-                    player.Update(kb, prevKb, ms, prevMs, currentLevel.CurrentTileMap, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, graphics, gameTime, currentLevel.LevelEnd);
+                    player.Update(kb, prevKb, ms, prevMs, currentLevel.CurrentTileMap, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, graphics, gameTime);
 
                     // Updating player health and ammo if godmode options are enabled
                     if (infiniteHP && player.Health != 100)
@@ -676,14 +676,20 @@ namespace ShotgunBoomerang
                 graphics.PreferredBackBufferHeight / 2), 
                 player.ShotgunRadius, Color.White);
 
-            /*
+            
             // player shotgun angles
             Vector2 screenCenter = new Vector2(
                 graphics.PreferredBackBufferWidth / 2,
                     graphics.PreferredBackBufferHeight / 2);
 
             // normal of the vector between mouse and screen center
-            Vector2 mouseCenterNormal = Vector2.Normalize(screenCenter - new Vector2(ms.Position.X, ms.Position.Y));
+            Vector2 mouseCenterNormal = Vector2.Normalize(new Vector2(ms.Position.X, ms.Position.Y) - screenCenter);
+
+            float angle = MathF.Atan2(-mouseCenterNormal.Y, mouseCenterNormal.X);
+           
+            
+
+            //angle = -MathF.Atan(mouseCenterNormal.Y / mouseCenterNormal.X);
 
             try
             {
@@ -691,31 +697,26 @@ namespace ShotgunBoomerang
                 ShapeBatch.Line(
                     screenCenter,
                     player.ShotgunRadius,
-                    MathF.Atan(mouseCenterNormal.Y / mouseCenterNormal.X),
+                    angle,
                     Color.White);
-
+                
                 // top line
                 ShapeBatch.Line(
-                    new Vector2(graphics.PreferredBackBufferWidth / 2,
-                    graphics.PreferredBackBufferHeight / 2),
+                    screenCenter,
                     player.ShotgunRadius,
-                    MathF.Atan(
-                        (ms.Position.Y - graphics.PreferredBackBufferHeight / 2) /
-                        (ms.Position.X - graphics.PreferredBackBufferWidth / 2)) + 20,
+                    angle + MathF.PI / 8,
                     Color.Red);
 
                 // bottom line
                 ShapeBatch.Line(
-                    new Vector2(graphics.PreferredBackBufferWidth / 2,
-                    graphics.PreferredBackBufferHeight / 2),
+                    screenCenter,
                     player.ShotgunRadius,
-                    MathF.Atan(
-                        (ms.Position.Y - graphics.PreferredBackBufferHeight / 2) /
-                        (ms.Position.X - graphics.PreferredBackBufferWidth / 2)) - 20,
+                    angle - MathF.PI / 8,
                     Color.Red);
+
             }
             catch { }
-            */
+            
 
 
             /*
