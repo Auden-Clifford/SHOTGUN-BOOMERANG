@@ -717,6 +717,17 @@ namespace ShotgunBoomerang
             }
             catch { }
             
+            foreach(IGameEnemy enemy in currentLevel.CurrentEnemies)
+            {
+                MobileEntity currentEnemy = enemy as MobileEntity;
+
+                ShapeBatch.BoxOutline(
+                    currentEnemy.Position.X - screenOffset.X,
+                    currentEnemy.Position.Y - screenOffset.Y,
+                    currentEnemy.Sprite.Width,
+                    currentEnemy.Sprite.Height,
+                    Color.White);
+            }
 
 
             /*

@@ -233,14 +233,14 @@ namespace ShotgunBoomerang
                             new Vector2(player.Position.X + player.Sprite.Width / 2,
                            player.Position.Y + player.Sprite.Height / 2) - _position);
 
-                    _acceleration = playerBoomerangNormal;
+                    _acceleration = playerBoomerangNormal * 2;
 
                     _velocity *= airFriction;
 
                     // apply physics to the boomerang
                     ApplyPhysics();
 
-                    // if the boomerang intersects with the player, transition to held state
+                    // if the boomerang intersects with the player, go back to the player's hand
                     if(this.CheckCollision(player))
                     {
                         // the tell the player that the boomerang has returned
@@ -248,6 +248,7 @@ namespace ShotgunBoomerang
                         // the boomerang should remove itself from the game when it hits the player
                         projectiles.Remove(this);
                     }
+                    //if()
                     break;
             }
         }

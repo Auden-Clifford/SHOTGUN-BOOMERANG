@@ -602,9 +602,15 @@ namespace ShotgunBoomerang
                 MobileEntity currentEnemy = (MobileEntity)enemies[i];
                 
                 float distance = Vector2.Distance(CenterPoint, currentEnemy.CenterPoint);
-                float enemyAngle = MathF.Atan2(-(currentEnemy.CenterPoint.Y - CenterPoint.Y),
-                    (currentEnemy.CenterPoint.X - screenCenter.X));
-
+                float enemyAngle = MathF.Atan2(
+                    -(currentEnemy.CenterPoint.Y - CenterPoint.Y),
+                    (currentEnemy.CenterPoint.X - CenterPoint.X));
+                /*
+                if(angle < MathF.PI && enemyAngle > 180)
+                {
+                    enemyAngle -= 2 * MathF.PI;
+                }
+                */
                 if (distance <= _shotgunRadius && // only if the enemy is within the radius
                     enemyAngle <= angle + _shotgunAngle / 2 && // and the angle between the enemy and the player is less than the max spread angle
                     enemyAngle >= angle - _shotgunAngle / 2)  // and the angle between the enemy and the player is greater than the min spread angle
@@ -619,8 +625,9 @@ namespace ShotgunBoomerang
                 Boomerang currentProjectile = (Boomerang)projectiles[i];
 
                 float distance = Vector2.Distance(CenterPoint, currentProjectile.CenterPoint);
-                float projectileAngle = MathF.Atan2(-(currentProjectile.CenterPoint.Y - CenterPoint.Y),
-                    (currentProjectile.CenterPoint.X - screenCenter.X));
+                float projectileAngle = MathF.Atan2(
+                    -(currentProjectile.CenterPoint.Y - CenterPoint.Y),
+                    (currentProjectile.CenterPoint.X - CenterPoint.X));
 
                 //caluclates if enemy is in range
                 if (distance <= _shotgunRadius & // only if the projectile is within the radius
