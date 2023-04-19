@@ -288,6 +288,7 @@ namespace ShotgunBoomerang
             
             player.Score = 0;
             player.Kills = 0;
+            player.Timer = 0;
 
             _levelEnd._inContactWithPlayer = false;
 

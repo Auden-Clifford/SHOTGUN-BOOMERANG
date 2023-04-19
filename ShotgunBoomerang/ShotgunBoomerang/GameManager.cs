@@ -590,6 +590,9 @@ namespace ShotgunBoomerang
                     _spriteBatch.DrawString(arial12, "Kills: " + player.Kills, new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Kills: " + player.Kills).X / 2,
                          (graphics.PreferredBackBufferHeight / 2) - 130), Color.Black);
 
+                    _spriteBatch.DrawString(arial12, "Time: " + (int)player.Timer + " seconds", new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Time: " + (int)player.Timer + " seconds").X / 2,
+                        (graphics.PreferredBackBufferHeight / 2) - 110), Color.Black);
+
                     break;
             }
 
