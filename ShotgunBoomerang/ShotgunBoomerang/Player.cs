@@ -468,7 +468,9 @@ namespace ShotgunBoomerang
                     break;
             }
 
+            // Updating the current time and score
             timer += gameTime.ElapsedGameTime.TotalSeconds;
+            score = (kills * 200) + (1200 - timer * 10); // 200 points per kill and score is lost the more time is spent
 
             // the player's isCollidingWithGround variable must always
             // be set to false at the end of Update, it will be detected again in ResolveCollisions
