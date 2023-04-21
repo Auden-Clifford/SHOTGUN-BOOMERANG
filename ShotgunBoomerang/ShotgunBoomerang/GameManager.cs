@@ -526,7 +526,7 @@ namespace ShotgunBoomerang
 
                     // Text at the bottom that changes depending on hover
                     if (pauseButtonDebug.Contains(ms.Position))
-                    { pauseText = "Enable debug text (position, velocity, etc.)"; }
+                    { pauseText = "Enable debug mode (displays position, velocity, hitboxes, etc.)"; }
                     else if (pauseButtonAmmo.Contains(ms.Position))
                     { pauseText = "Enable infinite health"; }
                     else if (pauseButtonHP.Contains(ms.Position))
@@ -584,11 +584,14 @@ namespace ShotgunBoomerang
                     _spriteBatch.DrawString(arial12, "Press Enter to return to menu", new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Press Enter to return to menu").X / 2,
                          (graphics.PreferredBackBufferHeight / 2) - 200), Color.Black);
 
-                    _spriteBatch.DrawString(arial12, "Score: " + player.Score, new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Score: " + player.Score).X / 2,
+                    _spriteBatch.DrawString(arial12, "Score: " + (int)player.Score, new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Score: " + (int)player.Score).X / 2,
                          (graphics.PreferredBackBufferHeight / 2) - 150), Color.Black);
 
                     _spriteBatch.DrawString(arial12, "Kills: " + player.Kills, new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Kills: " + player.Kills).X / 2,
                          (graphics.PreferredBackBufferHeight / 2) - 130), Color.Black);
+
+                    _spriteBatch.DrawString(arial12, "Time: " + (int)player.Timer + " seconds", new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Time: " + (int)player.Timer + " seconds").X / 2,
+                        (graphics.PreferredBackBufferHeight / 2) - 110), Color.Black);
 
                     break;
             }
@@ -636,7 +639,7 @@ namespace ShotgunBoomerang
         */
 
         /// <summary>
-        /// Draws the debug text. Helper Method!
+        /// Draws the debug text and hitboxes. Helper Method!
         /// </summary>
         public void DrawDebug()
         {
@@ -653,14 +656,16 @@ namespace ShotgunBoomerang
             // print the player's Velocity
             _spriteBatch.DrawString(arial12, $"Player Velocity: {player.Velocity.X}, {player.Velocity.Y}", new Vector2(10, 90), Color.White);
 
-            // print the player's state
+            // print the player's state and direction
             _spriteBatch.DrawString(arial12, $"Player state: {player.CurrentState}", new Vector2(10, 110), Color.White);
-
             _spriteBatch.DrawString(arial12, $"Player direction: {player.CurrentDirection}", new Vector2(10, 130), Color.White);
 
-            // print the player's health and ammo
-            _spriteBatch.DrawString(arial12, $"Player health: {player.Health}", new Vector2(10, 150), Color.White);
-            _spriteBatch.DrawString(arial12, $"Player ammo: {player.Ammo}", new Vector2(10, 170), Color.White);
+            // print the player's health, ammo, and other stats
+            _spriteBatch.DrawString(arial12, $"Player health: {player.Health}", new Vector2(10, 170), Color.White);
+            _spriteBatch.DrawString(arial12, $"Player ammo: {player.Ammo}", new Vector2(10, 190), Color.White);
+            _spriteBatch.DrawString(arial12, $"Kills: {player.Kills}", new Vector2(10, 210), Color.White);
+            _spriteBatch.DrawString(arial12, $"Time: {(int)player.Timer}", new Vector2(10, 230), Color.White);
+            _spriteBatch.DrawString(arial12, $"Score: {(int)player.Score}", new Vector2(10, 250), Color.White);
 
             // draw hitboxes
 

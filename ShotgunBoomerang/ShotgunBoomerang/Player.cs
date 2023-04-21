@@ -49,6 +49,7 @@ namespace ShotgunBoomerang
 
         private double score;
         private int kills;
+        private double timer;
         private double dmgTimer; //this might not be handled here. won't implement until it's clear
 
         private Color drawColor;
@@ -111,6 +112,15 @@ namespace ShotgunBoomerang
         {
             get { return _ammo; }
             set { _ammo = value; }
+        }
+
+        /// <summary>
+        /// retrieves/sets the timer
+        /// </summary>
+        public double Timer
+        {
+            get { return timer; }
+            set { timer = value; }
         }
 
         /// <summary>
@@ -473,7 +483,11 @@ namespace ShotgunBoomerang
                     }
                     break;
             }
-            
+
+            // Updating the current time and score
+            timer += gameTime.ElapsedGameTime.TotalSeconds;
+            score = (kills * 200) + (1200 - timer * 10); // 200 points per kill and score is lost the more time is spent
+
             // the player's isCollidingWithGround variable must always
             // be set to false at the end of Update, it will be detected again in ResolveCollisions
             _isCollidingWithGround = false;
