@@ -333,8 +333,24 @@ namespace ShotgunBoomerang
                         BoomerangAttack(ms, graphics, projectiles);
                     }
 
-                    // appky air friction to velocity
+                    // while A or D are pressed, increase the player's velocity (1/2 of normal)
+                    if (kb.IsKeyDown(Keys.A))
+                    {
+                        _velocity.X -= _acceleration.X;
+                        // apply greater friction to x movement when moving
+                        _velocity.X *= runFriction;
+                    }
+
+                    if (kb.IsKeyDown(Keys.D))
+                    {
+                        _velocity.X += _acceleration.X;
+                        // apply greater friction to x movement when moving
+                        _velocity.X *= runFriction;
+                    }
+
+                    // appky air friction to velocity (more friction on x)
                     _velocity *= airFriction;
+             
 
                     // this state ends once the player hits the ground
                     if(_isCollidingWithGround)
