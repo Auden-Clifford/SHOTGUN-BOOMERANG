@@ -269,7 +269,8 @@ namespace ShotgunBoomerang
 
 
         /// <summary>
-        /// THIS DOES NOT WORK YET, DO 
+        /// parrys boomerang
+        /// forcing it away from player
         /// </summary>
         /// <param name="mausPos"></param>
         /// <param name="graphics"></param>
