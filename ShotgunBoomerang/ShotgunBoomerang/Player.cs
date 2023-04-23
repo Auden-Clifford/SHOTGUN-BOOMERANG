@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
 using System.Threading;
+using Microsoft.Xna.Framework.Media;
 
 namespace ShotgunBoomerang
 {
@@ -53,6 +54,8 @@ namespace ShotgunBoomerang
         private int kills;
         private double timer;
         private double dmgTimer; //this might not be handled here. won't implement until it's clear
+
+        private List<Song> _playerSounds;
 
         private Color drawColor;
 
@@ -140,7 +143,7 @@ namespace ShotgunBoomerang
         /// <param name="shotgunArmSprite">The player's arm texture/spritesheet</param>
         /// <param name="position">The player's starting position</param>
         /// <param name="health">The player's starting health</param>
-        public Player(Texture2D sprite, Texture2D boomerangSprite, Texture2D shotgunArmSprite, Vector2 position, float health)
+        public Player(Texture2D sprite, Texture2D boomerangSprite, Texture2D shotgunArmSprite, Vector2 position, float health, List<Song> playerSounds)
         {
             _sprite = sprite;
             _boomerangSprite = boomerangSprite;
@@ -163,6 +166,8 @@ namespace ShotgunBoomerang
             _shotgunAngle = MathF.PI / 4;
             _isCollidingWithGround = false;
             _jumpForce = 32;
+
+            _playerSounds = playerSounds;
 
             dmgTimer = .5;
             drawColor = Color.White;
@@ -766,6 +771,12 @@ namespace ShotgunBoomerang
 
         private void ShotgunAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameEnemy> enemies, List<IGameProjectile> projectiles)
         {
+            // SFX
+            Random rng = new Random();
+            int randSound = rng.Next(0, 3);
+            MediaPlayer.Play(_playerSounds[randSound]);
+            
+
             // need the mouse's position to be a Vector2 for math
             Vector2 mousePos = new Vector2(ms.Position.X, ms.Position.Y);
 

@@ -9,6 +9,12 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using ShapeUtils;
 
+// Images from:
+// https://wallpaperaccess.com/australian-desert
+// https://stock.adobe.com/search?k=flaming+skull&asset_id=550288691
+//
+
+
 namespace ShotgunBoomerang
 {
     // Enumerator for major program states
@@ -44,11 +50,19 @@ namespace ShotgunBoomerang
         private static GraphicsDeviceManager graphics;
         private SpriteBatch _spriteBatch;
 
+        // Death Screen
         private int skullSize = 1;
         private bool skullGrow = true;
         private Texture2D awesomeFlamingSkull;
-        private Song deathSound;
 
+        // Sound Effects
+        private Song deathSound;
+        private Song gunFireA;
+        private Song gunFireB;
+        private Song gunFireC;
+        private List<Song> playerSounds;
+
+        // Textures
         private Texture2D menuBackground;
         private Texture2D blankRectangleSprite;
         private Texture2D darkFilter;
@@ -64,19 +78,22 @@ namespace ShotgunBoomerang
 
         private List<Texture2D> demoLevelTexturepack;
 
+        // Fonts
         private SpriteFont arial12;
         private SpriteFont arial36;
 
+        // Level and Player objects
         private Level currentLevel;
+        private Player player;
 
         private Level demoLevel;
         private Level levelOne;
         private Level levelTwo;
         private Level levelThree;
-        private Player player;
 
-        GameState gameState = GameState.MainMenu; // enum for managing gamestate (this is what starts the game on the menu screen)
-        private bool debugOn = false; // boolean to toggle debug mode
+        // Game state and debug tools
+        GameState gameState = GameState.MainMenu;
+        private bool debugOn = false;
         private bool infiniteHP = false;
         private bool infiniteAmmo = false;
 
@@ -150,8 +167,13 @@ namespace ShotgunBoomerang
             };
 
             deathSound = this.Content.Load<Song>("BadToTheBones");
+            
+            gunFireA = this.Content.Load<Song>("gunA");
+            gunFireB = this.Content.Load<Song>("gunB");
+            gunFireC = this.Content.Load<Song>("gunC");
+            playerSounds = new List<Song>() { gunFireA, gunFireB, gunFireC };
 
-            levelSprite = demoDisplay;
+            levelSprite = demoDisplay; // Sets the preview image in level select to show the demo level by default. It has to show something
 
             // Load fonts
             arial12 = this.Content.Load<SpriteFont>("Arial12");
@@ -169,7 +191,7 @@ namespace ShotgunBoomerang
 
             demoLevel = new Level(demoLevelTexturepack, "../../../../Levels/testLevel3.level");
             // set up the player
-            player = new Player(playerSpriteSheet, boomerangSprite, playerShotgunArm, demoLevel.PlayerStart, 100);
+            player = new Player(playerSpriteSheet, boomerangSprite, playerShotgunArm, demoLevel.PlayerStart, 100, playerSounds);
 
             //Test enemy
             /*

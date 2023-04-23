@@ -129,6 +129,24 @@
 /processorParam:TextureFormat=Color
 /build:endFlag.png
 
+#begin gunA.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:gunA.mp3
+
+#begin gunB.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:gunB.mp3
+
+#begin gunC.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:gunC.mp3
+
 #begin pixeldesertback.png
 /importer:TextureImporter
 /processor:TextureProcessor
