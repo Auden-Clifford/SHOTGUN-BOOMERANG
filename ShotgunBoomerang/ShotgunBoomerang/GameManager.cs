@@ -191,6 +191,8 @@ namespace ShotgunBoomerang
 
             demoLevel = new Level(demoLevelTexturepack, "../../../../Levels/testLevel3.level");
             levelOne = new Level(demoLevelTexturepack, "../../../../Levels/Level1_V1.level"); //remember to replace the default textures
+
+
             // set up the player
             player = new Player(playerSpriteSheet, boomerangSprite, playerShotgunArm, demoLevel.PlayerStart, 100, playerSounds);
 
@@ -248,6 +250,7 @@ namespace ShotgunBoomerang
 
                     // Turning off debug outside of the levels
                     debugOn = false;
+                    
 
                     // "Press any button to continue" (or user can click)
                     if  ((kb != prevKb && kb.IsKeyUp(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
@@ -275,6 +278,7 @@ namespace ShotgunBoomerang
                     if (buttonPlayDemo.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
                         currentLevel = demoLevel;
+                        player.Position = currentLevel.PlayerStart;
                         gameState = GameState.Gameplay;
                     }
 
@@ -282,6 +286,7 @@ namespace ShotgunBoomerang
                     if (buttonPlayOne.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
                         currentLevel = levelOne;
+                        player.Position = currentLevel.PlayerStart;
                         gameState = GameState.Gameplay;
                     }
 
@@ -289,6 +294,7 @@ namespace ShotgunBoomerang
                     if (buttonPlayTwo.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
                         currentLevel = levelTwo;
+                        player.Position = currentLevel.PlayerStart;
                         gameState = GameState.Gameplay;
                     }
 
@@ -296,6 +302,7 @@ namespace ShotgunBoomerang
                     if (buttonPlayThree.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
                         currentLevel = levelThree;
+                        player.Position = currentLevel.PlayerStart;
                         gameState = GameState.Gameplay;
                     }
 
