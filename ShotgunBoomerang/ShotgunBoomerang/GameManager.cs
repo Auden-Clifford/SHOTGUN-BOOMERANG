@@ -190,6 +190,7 @@ namespace ShotgunBoomerang
             */
 
             demoLevel = new Level(demoLevelTexturepack, "../../../../Levels/testLevel3.level");
+            levelOne = new Level(demoLevelTexturepack, "../../../../Levels/Level1_V1.level"); //remember to replace the default textures
             // set up the player
             player = new Player(playerSpriteSheet, boomerangSprite, playerShotgunArm, demoLevel.PlayerStart, 100, playerSounds);
 
