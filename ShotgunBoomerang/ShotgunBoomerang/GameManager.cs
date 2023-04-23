@@ -146,7 +146,7 @@ namespace ShotgunBoomerang
             {
                 this.Content.Load<Texture2D>("TestTile"),
                 this.Content.Load<Texture2D>("Snek"),
-                this.Content.Load<Texture2D>("endFlag")
+                this.Content.Load<Texture2D>("ausFlag")
             };
 
             deathSound = this.Content.Load<Song>("BadToTheBones");

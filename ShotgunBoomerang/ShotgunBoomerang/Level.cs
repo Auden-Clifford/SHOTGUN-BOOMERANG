@@ -31,6 +31,8 @@ namespace ShotgunBoomerang
 
         private Vector2 _playerStart;
         private LevelEnd _levelEnd;
+
+        private Vector2 _levelSize;
         
         // Properties
         /// <summary>
@@ -77,12 +79,14 @@ namespace ShotgunBoomerang
         /// Creates a new level with a given tile map
         /// </summary>
         /// <param name="tileMap">The list of tiles the level will have</param>
-        public Level(List<Tile> tileMap, List<IGameEnemy> enemies, List <IGameProjectile> projectiles, Vector2 playerStart)
+        public Level(List<Tile> tileMap, Vector2 levelSize, List<IGameEnemy> enemies, List <IGameProjectile> projectiles, Vector2 playerStart)
         {
             // current and original start off equal
             // but they will be copies of eachother (not references)
             _startTileMap = tileMap;
             _currentTileMap = new List<Tile>();
+
+            _levelSize = levelSize;
 
             foreach(Tile tile in _startTileMap)
             {
@@ -125,6 +129,9 @@ namespace ShotgunBoomerang
             string[] dimentions = reader.ReadLine().Split(',');
             int height = int.Parse(dimentions[0]);
             int width = int.Parse(dimentions[1]);
+
+            // set the size of the level
+            _levelSize = new Vector2(width, height);
 
             // create new empty object lists
             _startTileMap = new List<Tile>();
@@ -253,6 +260,11 @@ namespace ShotgunBoomerang
             for(int i = _currentProjectiles.Count- 1; i >= 0; i--)
             {
                 _currentProjectiles[i].Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player, gameTime);
+            }
+
+            if(player.Position.Y > _levelSize.Y * 64)
+            {
+                player.Health = 0;
             }
 
             _levelEnd.Update(kb,prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player, gameTime);
