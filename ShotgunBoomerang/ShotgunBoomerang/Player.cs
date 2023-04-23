@@ -391,9 +391,7 @@ namespace ShotgunBoomerang
                 case PlayerState.Idle:
                     // if the player presses the spacebar or w (only once) jump
                     if(kb.IsKeyDown(Keys.Space) && 
-                        prevKb.IsKeyUp(Keys.Space) || 
-                        kb.IsKeyDown(Keys.W) && 
-                        prevKb.IsKeyUp(Keys.W))
+                        prevKb.IsKeyUp(Keys.Space))
                     {
                         _velocity.Y -= _jumpForce;
                     }
@@ -431,9 +429,7 @@ namespace ShotgunBoomerang
                 case PlayerState.Run:
                     // if the player presses the spacebar or w jump
                     if (kb.IsKeyDown(Keys.Space) &&
-                        prevKb.IsKeyUp(Keys.Space) ||
-                        kb.IsKeyDown(Keys.W) &&
-                        prevKb.IsKeyUp(Keys.W))
+                        prevKb.IsKeyUp(Keys.Space))
                     {
                         _velocity.Y -= _jumpForce;
                     }
@@ -545,9 +541,7 @@ namespace ShotgunBoomerang
                 case PlayerState.Slide:
                     // if the player presses the spacebar or W (only once), jump
                     if (kb.IsKeyDown(Keys.Space) &&
-                        prevKb.IsKeyUp(Keys.Space) ||
-                        kb.IsKeyDown(Keys.W) &&
-                        prevKb.IsKeyUp(Keys.W))
+                        prevKb.IsKeyUp(Keys.Space))
                     {
                         _velocity.Y -= _jumpForce;
                     }
@@ -583,9 +577,7 @@ namespace ShotgunBoomerang
                 case PlayerState.Skid:
                     // if the player presses the spacebar or W (only once), jump
                     if (kb.IsKeyDown(Keys.Space) &&
-                        prevKb.IsKeyUp(Keys.Space) ||
-                        kb.IsKeyDown(Keys.W) &&
-                        prevKb.IsKeyUp(Keys.W))
+                        prevKb.IsKeyUp(Keys.Space))
                     {
                         _velocity.Y -= _jumpForce;
                     }
