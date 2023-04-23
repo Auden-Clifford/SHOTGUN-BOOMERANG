@@ -9,6 +9,10 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 using ShapeUtils;
 
+// Images from:
+// https://wallpaperaccess.com/australian-desert
+// https://stock.adobe.com/search?k=flaming+skull&asset_id=550288691
+
 namespace ShotgunBoomerang
 {
     // Enumerator for major program states
@@ -44,11 +48,19 @@ namespace ShotgunBoomerang
         private static GraphicsDeviceManager graphics;
         private SpriteBatch _spriteBatch;
 
+        // Death Screen
         private int skullSize = 1;
         private bool skullGrow = true;
         private Texture2D awesomeFlamingSkull;
-        private Song deathSound;
 
+        // Sound Effects
+        private Song deathSound;
+        private Song gunFireA;
+        private Song gunFireB;
+        private Song gunFireC;
+        private List<Song> playerSounds;
+
+        // Textures
         private Texture2D menuBackground;
         private Texture2D blankRectangleSprite;
         private Texture2D darkFilter;
@@ -66,19 +78,22 @@ namespace ShotgunBoomerang
 
         private List<Texture2D> demoLevelTexturepack;
 
+        // Fonts
         private SpriteFont arial12;
         private SpriteFont arial36;
 
+        // Level and Player objects
         private Level currentLevel;
+        private Player player;
 
         private Level demoLevel;
         private Level levelOne;
         private Level levelTwo;
         private Level levelThree;
-        private Player player;
 
-        GameState gameState = GameState.MainMenu; // enum for managing gamestate (this is what starts the game on the menu screen)
-        private bool debugOn = false; // boolean to toggle debug mode
+        // Game state and debug tools
+        GameState gameState = GameState.MainMenu;
+        private bool debugOn = false;
         private bool infiniteHP = false;
         private bool infiniteAmmo = false;
 
@@ -132,7 +147,8 @@ namespace ShotgunBoomerang
             // Load textures
             menuBackground = this.Content.Load<Texture2D>("pixeldesertback");
             //testTileSprite = this.Content.Load<Texture2D>("TestTile");
-            playerSprite = this.Content.Load<Texture2D>("PlayerTestSprite");
+            playerSpriteSheet = this.Content.Load<Texture2D>("Player_sheet");
+            playerShotgunArm = this.Content.Load<Texture2D>("player_sgArm");
             blankRectangleSprite = this.Content.Load<Texture2D>("blankRectangle");
             boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
             snakeSprite = this.Content.Load<Texture2D>("Snek");
@@ -144,12 +160,15 @@ namespace ShotgunBoomerang
             bulletSprite = this.Content.Load<Texture2D>("Bullet");
             demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
             awesomeFlamingSkull = this.Content.Load<Texture2D>("awesomeflamingskull");
+            muzzleSprite = this.Content.Load<Texture2D>("muzzle");
 
             // These are the textures the test level will need to display prperly
             demoLevelTexturepack = new List<Texture2D>()
             {
                 this.Content.Load<Texture2D>("TestTile"),
                 this.Content.Load<Texture2D>("Snek"),
+                this.Content.Load<Texture2D>("ausFlag")
+            };
                 this.Content.Load<Texture2D>("endFlag"),
                 this.Content.Load<Texture2D>("scorpin_Right"),
                 this.Content.Load<Texture2D>("scorpin_Left"),
@@ -157,8 +176,13 @@ namespace ShotgunBoomerang
         };
 
             deathSound = this.Content.Load<Song>("BadToTheBones");
+            
+            gunFireA = this.Content.Load<Song>("gunA");
+            gunFireB = this.Content.Load<Song>("gunB");
+            gunFireC = this.Content.Load<Song>("gunC");
+            playerSounds = new List<Song>() { gunFireA, gunFireB, gunFireC };
 
-            levelSprite = demoDisplay;
+            levelSprite = demoDisplay; // Sets the preview image in level select to show the demo level by default. It has to show something
 
             // Load fonts
             arial12 = this.Content.Load<SpriteFont>("Arial12");
@@ -175,8 +199,14 @@ namespace ShotgunBoomerang
             */
 
             demoLevel = new Level(demoLevelTexturepack, "../../../../Levels/testLevel3.level");
+            levelOne = new Level(demoLevelTexturepack, "../../../../Levels/Level1_V1.level"); //remember to replace the default textures
+
+            //NOT level 2. just a test alt for level 1
+            levelTwo = new Level(demoLevelTexturepack, "../../../../Levels/Level1_V1Alt.level");
+
+
             // set up the player
-            player = new Player(playerSprite, boomerangSprite, demoLevel.PlayerStart, 100);
+            player = new Player(playerSpriteSheet, boomerangSprite, playerShotgunArm, muzzleSprite, demoLevel.PlayerStart, 100, playerSounds);
 
             //Test enemy
             /*
@@ -232,6 +262,7 @@ namespace ShotgunBoomerang
 
                     // Turning off debug outside of the levels
                     debugOn = false;
+                    
 
                     // "Press any button to continue" (or user can click)
                     if  ((kb != prevKb && kb.IsKeyUp(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
@@ -259,6 +290,7 @@ namespace ShotgunBoomerang
                     if (buttonPlayDemo.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
                         currentLevel = demoLevel;
+                        player.Position = currentLevel.PlayerStart;
                         gameState = GameState.Gameplay;
                     }
 
@@ -266,6 +298,7 @@ namespace ShotgunBoomerang
                     if (buttonPlayOne.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
                         currentLevel = levelOne;
+                        player.Position = currentLevel.PlayerStart;
                         gameState = GameState.Gameplay;
                     }
 
@@ -273,6 +306,7 @@ namespace ShotgunBoomerang
                     if (buttonPlayTwo.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
                         currentLevel = levelTwo;
+                        player.Position = currentLevel.PlayerStart;
                         gameState = GameState.Gameplay;
                     }
 
@@ -280,6 +314,7 @@ namespace ShotgunBoomerang
                     if (buttonPlayThree.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
                         currentLevel = levelThree;
+                        player.Position = currentLevel.PlayerStart;
                         gameState = GameState.Gameplay;
                     }
 
@@ -440,9 +475,9 @@ namespace ShotgunBoomerang
 
             screenOffset = player.Position -
                 new Vector2(graphics.PreferredBackBufferWidth / 2 
-                - player.Sprite.Width / 2,
+                - player.Width / 2,
                 graphics.PreferredBackBufferHeight / 2 
-                - player.Sprite.Height / 2);
+                - player.Height / 2);
 
             base.Update(gameTime);
         }
@@ -533,7 +568,7 @@ namespace ShotgunBoomerang
                 case GameState.PauseMenu:
 
                     currentLevel.Draw(_spriteBatch, screenOffset);
-                    player.Draw(_spriteBatch, graphics);
+                    player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
                     _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
@@ -571,7 +606,7 @@ namespace ShotgunBoomerang
                 case GameState.Gameplay:
 
                     currentLevel.Draw(_spriteBatch, screenOffset);
-                    player.Draw(_spriteBatch, graphics);
+                    player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
 
                     break;
@@ -580,7 +615,7 @@ namespace ShotgunBoomerang
                 case GameState.Dead:
 
                     currentLevel.Draw(_spriteBatch, screenOffset);
-                    player.Draw(_spriteBatch, graphics);
+                    player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
                     _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
@@ -598,7 +633,7 @@ namespace ShotgunBoomerang
                 case GameState.Victory:
 
                     currentLevel.Draw(_spriteBatch, screenOffset);
-                    player.Draw(_spriteBatch, graphics);
+                    player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
                     _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
@@ -695,9 +730,9 @@ namespace ShotgunBoomerang
 
             // player hitbox
             ShapeBatch.BoxOutline(
-                graphics.PreferredBackBufferWidth / 2 - player.Sprite.Width / 2,
-                graphics.PreferredBackBufferHeight / 2 - player.Sprite.Height / 2,
-                player.Sprite.Width, player.Sprite.Height, Color.White);
+                graphics.PreferredBackBufferWidth / 2 - player.Width / 2,
+                graphics.PreferredBackBufferHeight / 2 - player.Height / 2,
+                player.Width, player.Height, Color.White);
 
             // player shotgun radius
             ShapeBatch.CircleOutline(

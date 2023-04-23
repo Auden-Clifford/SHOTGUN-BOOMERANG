@@ -8,6 +8,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System.Diagnostics;
 using System.Threading;
+using Microsoft.Xna.Framework.Media;
 
 namespace ShotgunBoomerang
 {
@@ -38,6 +39,9 @@ namespace ShotgunBoomerang
         // Fields
 
         private Texture2D _boomerangSprite;
+        private Texture2D _ShotgunArmSprite;
+        private Texture2D _muzzleSprite;
+
         private int _ammo;
         private bool _isHoldingBoomerang;
         private PlayerState _currentState;
@@ -51,6 +55,8 @@ namespace ShotgunBoomerang
         private int kills;
         private double timer;
         private double dmgTimer; //this might not be handled here. won't implement until it's clear
+
+        private List<Song> _playerSounds;
 
         private Color drawColor;
 
@@ -127,21 +133,28 @@ namespace ShotgunBoomerang
         /// Gets the player's shotgun damage radius
         /// </summary>
         public float ShotgunRadius { get { return _shotgunRadius; } }
-        
+
         // Constructors
 
         /// <summary>
         /// Creates a new player with given texture, position, and health
         /// </summary>
         /// <param name="sprite">The player's texture/spritesheet</param>
-        /// /// <param name="sprite">The boomerang's texture/spritesheet</param>
+        /// <param name="boomerangSprite">The boomerang's texture/spritesheet</param>
+        /// <param name="shotgunArmSprite">The player's arm texture/spritesheet</param>
         /// <param name="position">The player's starting position</param>
         /// <param name="health">The player's starting health</param>
-        public Player(Texture2D sprite, Texture2D boomerangSprite, Vector2 position, float health)
+        public Player(Texture2D sprite, Texture2D boomerangSprite, Texture2D shotgunArmSprite, Texture2D muzzleSprite, Vector2 position, float health, List<Song> playerSounds)
         {
             _sprite = sprite;
             _boomerangSprite = boomerangSprite;
+            _ShotgunArmSprite = shotgunArmSprite;
+            _muzzleSprite = muzzleSprite;
+
             _position = position;
+            _width = _sprite.Width; // the spritesheet is 1 sprites long
+            _height = _sprite.Height / 2; // the spritesheet is 2 sprites tall
+
             _health = health;
 
             _velocity = new Vector2(0, 0);
@@ -156,6 +169,8 @@ namespace ShotgunBoomerang
             _isCollidingWithGround = false;
             _jumpForce = 32;
 
+            _playerSounds = playerSounds;
+
             dmgTimer = .5;
             drawColor = Color.White;
         }
@@ -166,8 +181,9 @@ namespace ShotgunBoomerang
         /// Draws the player with animations based on FSM
         /// </summary>
         /// <param name="sb"></param>
-        public void Draw(SpriteBatch sb, GraphicsDeviceManager graphics)
+        public void Draw(SpriteBatch sb, GraphicsDeviceManager graphics, MouseState ms)
         {
+            /*
             sb.Draw(
                 _sprite,
                 new Vector2(
@@ -176,6 +192,153 @@ namespace ShotgunBoomerang
                     graphics.PreferredBackBufferHeight / 2 
                     - _sprite.Height / 2), 
                 drawColor);
+            */
+
+            // player shotgun angles
+            Vector2 screenCenter = new Vector2(
+                graphics.PreferredBackBufferWidth / 2,
+                    graphics.PreferredBackBufferHeight / 2);
+
+            // normal of the vector between mouse and screen center
+            Vector2 mouseCenterNormal = Vector2.Normalize(new Vector2(ms.Position.X, ms.Position.Y) - screenCenter);
+
+            float angle = MathF.Atan2(mouseCenterNormal.Y, mouseCenterNormal.X);
+
+            switch(_currentDirection)
+            {
+                case Direction.Left:
+                    sb.Draw(
+                        _ShotgunArmSprite,
+                        new Vector2(
+                            graphics.PreferredBackBufferWidth / 2,
+                            graphics.PreferredBackBufferHeight / 2),
+                        null,
+                        Color.White,
+                        angle,
+                        // rotate around the texture's center
+                        new Vector2(_width / 2, _height / 2),
+                        1, // same scale
+                        SpriteEffects.None,
+                        0.0f);
+
+                    if (_isHoldingBoomerang)
+                    {
+                        sb.Draw(
+                            _sprite,
+                            new Vector2(
+                            graphics.PreferredBackBufferWidth / 2
+                            - _width / 2,
+                            graphics.PreferredBackBufferHeight / 2
+                            - _height / 2),
+                            new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
+                            Color.White);
+                    }
+                    else
+                    {
+                        sb.Draw(
+                            _sprite,
+                            new Vector2(
+                            graphics.PreferredBackBufferWidth / 2
+                            - _width / 2,
+                            graphics.PreferredBackBufferHeight / 2
+                            - _height / 2),
+                            new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
+                            Color.White);
+                    }
+                    break;
+
+                case Direction.Right:
+                    // flip the sprite when the player looks right
+                    sb.Draw(
+                        _ShotgunArmSprite,
+                        new Vector2(
+                            graphics.PreferredBackBufferWidth / 2,
+                            graphics.PreferredBackBufferHeight / 2),
+                        null,
+                        Color.White,
+                        angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
+                        // rotate around the texture's center
+                        new Vector2(_width / 2, _height / 2),
+                        1, // same scale
+                        SpriteEffects.FlipHorizontally,
+                        0.0f);
+
+                    if (_isHoldingBoomerang)
+                    {
+                        sb.Draw(
+                            _sprite,
+                            new Vector2(
+                            graphics.PreferredBackBufferWidth / 2
+                            - _width / 2,
+                            graphics.PreferredBackBufferHeight / 2
+                            - _height / 2),
+                            new Rectangle(0, 0, _width, _height), // will print the bottom-right sprite in the sheet
+                            Color.White,
+                            0,
+                            new Vector2(0, 0),
+                            1,
+                            SpriteEffects.FlipHorizontally,
+                            0);
+                    }
+                    else
+                    {
+                        sb.Draw(
+                            _sprite,
+                            new Vector2(
+                            graphics.PreferredBackBufferWidth / 2
+                            - _width / 2,
+                            graphics.PreferredBackBufferHeight / 2
+                            - _height / 2),
+                            new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
+                            Color.White,
+                            0,
+                            new Vector2(0,0),
+                            1,
+                            SpriteEffects.FlipHorizontally,
+                            0);
+                    }
+                    break;
+            }
+            /*
+            sb.Draw(
+                _ShotgunArmSprite,
+                 new Vector2(
+                    graphics.PreferredBackBufferWidth / 2,
+                    graphics.PreferredBackBufferHeight / 2),
+                 null,
+                 Color.White,
+                 angle,
+                 // rotate around the texture's center
+                 new Vector2(_width / 2, _height / 2),
+                 1, // same scale
+                 SpriteEffects.None,
+                 0.0f);
+
+            if (_isHoldingBoomerang)
+            {
+                sb.Draw(
+                    _sprite,
+                    new Vector2(
+                    graphics.PreferredBackBufferWidth / 2
+                    - _width / 2,
+                    graphics.PreferredBackBufferHeight / 2
+                    - _height / 2),
+                    new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
+                    Color.White);
+            }
+            else
+            {
+                sb.Draw(
+                    _sprite,
+                    new Vector2(
+                    graphics.PreferredBackBufferWidth / 2
+                    - _width / 2,
+                    graphics.PreferredBackBufferHeight / 2
+                    - _height / 2),
+                    new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
+                    Color.White);
+            }
+            */
         }
 
         /// <summary>
@@ -228,9 +391,7 @@ namespace ShotgunBoomerang
                 case PlayerState.Idle:
                     // if the player presses the spacebar or w (only once) jump
                     if(kb.IsKeyDown(Keys.Space) && 
-                        prevKb.IsKeyUp(Keys.Space) || 
-                        kb.IsKeyDown(Keys.W) && 
-                        prevKb.IsKeyUp(Keys.W))
+                        prevKb.IsKeyUp(Keys.Space))
                     {
                         _velocity.Y -= _jumpForce;
                     }
@@ -268,9 +429,7 @@ namespace ShotgunBoomerang
                 case PlayerState.Run:
                     // if the player presses the spacebar or w jump
                     if (kb.IsKeyDown(Keys.Space) &&
-                        prevKb.IsKeyUp(Keys.Space) ||
-                        kb.IsKeyDown(Keys.W) &&
-                        prevKb.IsKeyUp(Keys.W))
+                        prevKb.IsKeyUp(Keys.Space))
                     {
                         _velocity.Y -= _jumpForce;
                     }
@@ -343,8 +502,24 @@ namespace ShotgunBoomerang
                         BoomerangAttack(ms, graphics, projectiles);
                     }
 
-                    // appky air friction to velocity
+                    // while A or D are pressed, increase the player's velocity (1/2 of normal)
+                    if (kb.IsKeyDown(Keys.A))
+                    {
+                        _velocity.X -= _acceleration.X;
+                        // apply greater friction to x movement when moving
+                        _velocity.X *= runFriction;
+                    }
+
+                    if (kb.IsKeyDown(Keys.D))
+                    {
+                        _velocity.X += _acceleration.X;
+                        // apply greater friction to x movement when moving
+                        _velocity.X *= runFriction;
+                    }
+
+                    // appky air friction to velocity (more friction on x)
                     _velocity *= airFriction;
+             
 
                     // this state ends once the player hits the ground
                     if(_isCollidingWithGround)
@@ -366,9 +541,7 @@ namespace ShotgunBoomerang
                 case PlayerState.Slide:
                     // if the player presses the spacebar or W (only once), jump
                     if (kb.IsKeyDown(Keys.Space) &&
-                        prevKb.IsKeyUp(Keys.Space) ||
-                        kb.IsKeyDown(Keys.W) &&
-                        prevKb.IsKeyUp(Keys.W))
+                        prevKb.IsKeyUp(Keys.Space))
                     {
                         _velocity.Y -= _jumpForce;
                     }
@@ -404,9 +577,7 @@ namespace ShotgunBoomerang
                 case PlayerState.Skid:
                     // if the player presses the spacebar or W (only once), jump
                     if (kb.IsKeyDown(Keys.Space) &&
-                        prevKb.IsKeyUp(Keys.Space) ||
-                        kb.IsKeyDown(Keys.W) &&
-                        prevKb.IsKeyUp(Keys.W))
+                        prevKb.IsKeyUp(Keys.Space))
                     {
                         _velocity.Y -= _jumpForce;
                     }
@@ -594,6 +765,11 @@ namespace ShotgunBoomerang
 
         private void ShotgunAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameEnemy> enemies, List<IGameProjectile> projectiles)
         {
+            // SFX (chooses one of three random sounds)
+            Random rng = new Random();
+            int randSound = rng.Next(0, 3);
+            MediaPlayer.Play(_playerSounds[randSound]);
+
             // need the mouse's position to be a Vector2 for math
             Vector2 mousePos = new Vector2(ms.Position.X, ms.Position.Y);
 
@@ -652,7 +828,6 @@ namespace ShotgunBoomerang
                     currentProjectile.ShotgunHit(mouseCenterNormal, graphics, _damage);
                 }
             }
-            
         }
 
         private void BoomerangAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameProjectile> projectiles)

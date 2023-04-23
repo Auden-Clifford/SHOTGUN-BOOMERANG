@@ -27,9 +27,9 @@ namespace ShotgunBoomerang
         /// <summary>
         /// Constructor for damaging tile. Damage value is currently fixed at 10.
         /// </summary>
-        /// <param name="_sprite">Sprite (uses base)</param>
-        /// <param name="_position">Position (uses base)</param>
-        public DamageTile(Texture2D _sprite, Vector2 _position) : base(_sprite, _position)
+        /// <param name="sprite">Sprite (uses base)</param>
+        /// <param name="position">Position (uses base)</param>
+        public DamageTile(Texture2D sprite, Vector2 position) : base(sprite, position)
         {
             _damage = 10;
         }

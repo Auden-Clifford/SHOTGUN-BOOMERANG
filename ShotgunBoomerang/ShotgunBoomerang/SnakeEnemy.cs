@@ -18,6 +18,7 @@ namespace ShotgunBoomerang
         private Vector2 startPos;
         private float timer;
         private bool damaged;
+        private enemyState snakeState;
 
         
 
@@ -30,11 +31,15 @@ namespace ShotgunBoomerang
             this._health = maxHealth;
             this._damage = damage;
 
+            snakeState = enemyState.Run;
+
             _acceleration = new Vector2(2, 0);
 
             startPos = new Vector2(position.X, position.Y);
 
             _velocity = new Vector2(moveSpeed, 0);
+            _width = _sprite.Width;
+            _height = _sprite.Height;
 
             //Default speed is used to reset the velocity X value after it is clamped
             //during collision resolution
@@ -97,6 +102,7 @@ namespace ShotgunBoomerang
         /// <param name="player">The player</param>
         public void Update(List<Tile> tileMap, List<IGameProjectile> projectiles, Player player, GameTime gameTime)
         {
+            
             Attack(player);
             //Move();
 
@@ -165,6 +171,7 @@ namespace ShotgunBoomerang
                 }
 
                 _velocity += bump * 3;
+                //_position += bump * 3;
                 bump.X = 2;
             }
         }

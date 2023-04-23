@@ -19,6 +19,9 @@ namespace ShotgunBoomerang
         protected Texture2D _sprite;
         protected Vector2 _position;
 
+        protected int _width;
+        protected int _height;
+
         // Properties
 
         /// <summary>
@@ -31,8 +34,8 @@ namespace ShotgunBoomerang
                 return new Rectangle(
                     (int)_position.X, 
                     (int)_position.Y, 
-                    _sprite.Width, 
-                    _sprite.Height); 
+                    _width, 
+                    _height); 
             } 
         }
 
@@ -55,6 +58,16 @@ namespace ShotgunBoomerang
         public virtual Vector2 Position { get { return _position; } set { _position = value; } }
 
         public Texture2D Sprite { get { return _sprite; } }
+
+        /// <summary>
+        /// Gets the object's width
+        /// </summary>
+        public int Width { get { return _width; } }
+
+        /// <summary>
+        /// Get's the object's height
+        /// </summary>
+        public int Height { get { return _height; } }
 
 
         // Methods

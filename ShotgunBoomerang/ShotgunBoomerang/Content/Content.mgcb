@@ -39,6 +39,18 @@
 /processorParam:TextureFormat=Compressed
 /build:Arial36.spritefont
 
+#begin ausFlag.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:ausFlag.png
+
 #begin awesomeflamingskull.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -129,6 +141,36 @@
 /processorParam:TextureFormat=Color
 /build:endFlag.png
 
+#begin gunA.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:gunA.mp3
+
+#begin gunB.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:gunB.mp3
+
+#begin gunC.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:gunC.mp3
+
+#begin muzzle.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:muzzle.png
+
 #begin pixeldesertback.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -140,6 +182,30 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:pixeldesertback.png
+
+#begin player_sgArm.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:player_sgArm.png
+
+#begin player_sheet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:player_sheet.png
 
 #begin playerTestSprite.png
 /importer:TextureImporter
