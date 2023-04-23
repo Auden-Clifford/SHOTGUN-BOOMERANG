@@ -12,8 +12,6 @@ using ShapeUtils;
 // Images from:
 // https://wallpaperaccess.com/australian-desert
 // https://stock.adobe.com/search?k=flaming+skull&asset_id=550288691
-//
-
 
 namespace ShotgunBoomerang
 {

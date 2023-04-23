@@ -771,11 +771,10 @@ namespace ShotgunBoomerang
 
         private void ShotgunAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameEnemy> enemies, List<IGameProjectile> projectiles)
         {
-            // SFX
+            // SFX (chooses one of three random sounds)
             Random rng = new Random();
             int randSound = rng.Next(0, 3);
-            MediaPlayer.Play(_playerSounds[randSound]);
-            
+            MediaPlayer.Play(_playerSounds[randSound]);     
 
             // need the mouse's position to be a Vector2 for math
             Vector2 mousePos = new Vector2(ms.Position.X, ms.Position.Y);
