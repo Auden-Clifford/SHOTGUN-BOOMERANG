@@ -73,6 +73,7 @@ namespace ShotgunBoomerang
         private Texture2D playerShotgunArm;
         //private Texture2D snakeSprite;
         private Texture2D boomerangSprite;
+        private Texture2D muzzleSprite;
 
         private List<Texture2D> demoLevelTexturepack;
 
@@ -155,6 +156,7 @@ namespace ShotgunBoomerang
             ammoBar = this.Content.Load<Texture2D>("ammoui");
             demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
             awesomeFlamingSkull = this.Content.Load<Texture2D>("awesomeflamingskull");
+            muzzleSprite = this.Content.Load<Texture2D>("muzzle");
 
             // These are the textures the test level will need to display prperly
             demoLevelTexturepack = new List<Texture2D>()
@@ -190,7 +192,7 @@ namespace ShotgunBoomerang
             demoLevel = new Level(demoLevelTexturepack, "../../../../Levels/testLevel3.level");
             levelOne = new Level(demoLevelTexturepack, "../../../../Levels/Level1_V1.level"); //remember to replace the default textures
             // set up the player
-            player = new Player(playerSpriteSheet, boomerangSprite, playerShotgunArm, demoLevel.PlayerStart, 100, playerSounds);
+            player = new Player(playerSpriteSheet, boomerangSprite, playerShotgunArm, muzzleSprite, demoLevel.PlayerStart, 100, playerSounds);
 
             //Test enemy
             /*

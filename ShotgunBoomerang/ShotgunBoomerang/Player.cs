@@ -40,6 +40,7 @@ namespace ShotgunBoomerang
 
         private Texture2D _boomerangSprite;
         private Texture2D _ShotgunArmSprite;
+        private Texture2D _muzzleSprite;
 
         private int _ammo;
         private bool _isHoldingBoomerang;
@@ -143,11 +144,12 @@ namespace ShotgunBoomerang
         /// <param name="shotgunArmSprite">The player's arm texture/spritesheet</param>
         /// <param name="position">The player's starting position</param>
         /// <param name="health">The player's starting health</param>
-        public Player(Texture2D sprite, Texture2D boomerangSprite, Texture2D shotgunArmSprite, Vector2 position, float health, List<Song> playerSounds)
+        public Player(Texture2D sprite, Texture2D boomerangSprite, Texture2D shotgunArmSprite, Texture2D muzzleSprite, Vector2 position, float health, List<Song> playerSounds)
         {
             _sprite = sprite;
             _boomerangSprite = boomerangSprite;
             _ShotgunArmSprite = shotgunArmSprite;
+            _muzzleSprite = muzzleSprite;
 
             _position = position;
             _width = _sprite.Width; // the spritesheet is 1 sprites long
@@ -774,7 +776,7 @@ namespace ShotgunBoomerang
             // SFX (chooses one of three random sounds)
             Random rng = new Random();
             int randSound = rng.Next(0, 3);
-            MediaPlayer.Play(_playerSounds[randSound]);     
+            MediaPlayer.Play(_playerSounds[randSound]);
 
             // need the mouse's position to be a Vector2 for math
             Vector2 mousePos = new Vector2(ms.Position.X, ms.Position.Y);
@@ -833,7 +835,6 @@ namespace ShotgunBoomerang
                     currentProjectile.ShotgunHit(mouseCenterNormal, graphics, _damage);
                 }
             }
-            
         }
 
         private void BoomerangAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameProjectile> projectiles)
