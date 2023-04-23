@@ -13,7 +13,7 @@ namespace ShotgunBoomerang
     {
         private Vector2 bump;
         private bool isAlive;
-        private bool onGround;
+
         private float defaultSpeed;
         private Vector2 startPos;
         private float timer;

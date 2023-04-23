@@ -63,6 +63,9 @@ namespace ShotgunBoomerang
         /// </summary>
         public void Attack(Player player);
 
+
+
+
         /// <summary>
         /// Checks the health of the enemy to trigger it's death
         /// </summary>

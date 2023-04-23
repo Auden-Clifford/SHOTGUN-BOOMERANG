@@ -35,24 +35,16 @@ namespace ShotgunBoomerang
         /// <param name="enemies">The current level's enemies</param>
         /// <param name="projectiles">The projectiles currently in play</param>
         public void Update(
-            KeyboardState kb,
-            KeyboardState prevKb,
-            MouseState ms,
-            MouseState prevMs,
             List<Tile> tileMap,
             List<IGameEnemy> enemies,
             List<IGameProjectile> projectiles,
             Player player,
             GameTime gameTime);
 
-        /// <summary>
-        /// Should Resolve Collisions with Tiles
-        /// </summary>
-        protected void ResolveTileCollisions(List<Tile> tilemap);
 
         /// <summary>
         /// Should contain logic for what to do when the projectile hits a player or enemy
         /// </summary>
-        public void hit();
+        public void Hit(Player player, float damage);
     }
 }

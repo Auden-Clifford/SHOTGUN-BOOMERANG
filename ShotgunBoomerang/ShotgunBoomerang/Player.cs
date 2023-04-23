@@ -636,6 +636,7 @@ namespace ShotgunBoomerang
 
             for(int i = 0; i < projectiles.Count; i++)
             {
+
                 Boomerang currentProjectile = (Boomerang)projectiles[i];
 
                 float distance = Vector2.Distance(CenterPoint, currentProjectile.CenterPoint);

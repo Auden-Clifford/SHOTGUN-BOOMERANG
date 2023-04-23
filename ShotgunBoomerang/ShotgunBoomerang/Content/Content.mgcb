@@ -81,6 +81,18 @@
 /processorParam:TextureFormat=Color
 /build:Boomerang.png
 
+#begin Bullet.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Bullet.png
+
 #begin darkfilter.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -153,7 +165,7 @@
 /processorParam:TextureFormat=Color
 /build:redsquare.png
 
-#begin scorpin.png
+#begin scorpin_Left.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -163,7 +175,19 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:scorpin.png
+/build:scorpin_Left.png
+
+#begin scorpin_Right.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:scorpin_Right.png
 
 #begin Snek.png
 /importer:TextureImporter
@@ -176,6 +200,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Snek.png
+
+#begin Test_Square.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Test_Square.png
 
 #begin TestTile.png
 /importer:TextureImporter

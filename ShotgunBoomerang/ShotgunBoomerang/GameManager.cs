@@ -58,8 +58,11 @@ namespace ShotgunBoomerang
 
         //private Texture2D testTileSprite;
         private Texture2D playerSprite;
-        //private Texture2D snakeSprite;
+        private Texture2D snakeSprite;
+        private Texture2D scorpionRight;
+        private Texture2D scorpionLeft;
         private Texture2D boomerangSprite;
+        private Texture2D bulletSprite;
 
         private List<Texture2D> demoLevelTexturepack;
 
@@ -132,10 +135,13 @@ namespace ShotgunBoomerang
             playerSprite = this.Content.Load<Texture2D>("PlayerTestSprite");
             blankRectangleSprite = this.Content.Load<Texture2D>("blankRectangle");
             boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
-            //snakeSprite = this.Content.Load<Texture2D>("Snek");
+            snakeSprite = this.Content.Load<Texture2D>("Snek");
+            scorpionLeft = this.Content.Load<Texture2D>("scorpin_Left");
+            scorpionRight = this.Content.Load<Texture2D>("scorpin_Right");
             darkFilter = this.Content.Load<Texture2D>("darkfilter");
             healthBar = this.Content.Load<Texture2D>("redsquare");
             ammoBar = this.Content.Load<Texture2D>("ammoui");
+            bulletSprite = this.Content.Load<Texture2D>("Bullet");
             demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
             awesomeFlamingSkull = this.Content.Load<Texture2D>("awesomeflamingskull");
 
@@ -144,8 +150,11 @@ namespace ShotgunBoomerang
             {
                 this.Content.Load<Texture2D>("TestTile"),
                 this.Content.Load<Texture2D>("Snek"),
-                this.Content.Load<Texture2D>("endFlag")
-            };
+                this.Content.Load<Texture2D>("endFlag"),
+                this.Content.Load<Texture2D>("scorpin_Right"),
+                this.Content.Load<Texture2D>("scorpin_Left"),
+                this.Content.Load<Texture2D>("Bullet")
+        };
 
             deathSound = this.Content.Load<Song>("BadToTheBones");
 
@@ -333,8 +342,23 @@ namespace ShotgunBoomerang
                     if (currentLevel.LevelEnd.IncidentWithPlayer)
                     { gameState = GameState.Victory; }
 
-                    //Update the test snake
                     
+                    //
+
+
+
+                    //Spawns in a scorpion at your mouse
+                    //Should also work for anything else really
+                    /*
+                    if (kb.IsKeyDown(Keys.I) && prevKb.IsKeyUp(Keys.I))
+                    {
+                        currentLevel.CurrentEnemies.Add(new ScorpionEnemy(scorpionLeft, scorpionRight, new Vector2(ms.X, ms.Y) + screenOffset, 50, 25, 3, 9, bulletSprite));
+
+                    }
+                    */
+
+
+
                     //snek.Update(kb, prevKb, testLevel.CurrentTileMap, testLevel.CurrentProjectiles, player);
 
                     // Update elements of the level

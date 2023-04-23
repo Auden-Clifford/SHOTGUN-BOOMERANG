@@ -154,9 +154,14 @@ namespace ShotgunBoomerang
         }
         
 
-        public void hit()
+        public void Hit(Player player, float damage)
         {
             throw new NotImplementedException();
+        }
+
+        public void Update(List<Tile> tileMap, List<IGameEnemy> enemies, List<IGameProjectile> projectiles, Player player, GameTime gameTime)
+        {
+
         }
 
         public override void Update(
@@ -258,11 +263,13 @@ namespace ShotgunBoomerang
             _velocity += _acceleration;
             _position += _velocity;
         }
-
-        void IGameProjectile.ResolveTileCollisions(List<Tile> tilemap)
+        
+        /*
+        private void IGameProjectile.ResolveTileCollisions(List<Tile> tilemap)
         {
             throw new NotImplementedException();
         }
+        */
 
 
         /// <summary>
