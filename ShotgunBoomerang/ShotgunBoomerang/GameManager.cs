@@ -57,7 +57,8 @@ namespace ShotgunBoomerang
         private Texture2D demoDisplay;
 
         //private Texture2D testTileSprite;
-        private Texture2D playerSprite;
+        private Texture2D playerSpriteSheet;
+        private Texture2D playerShotgunArm;
         //private Texture2D snakeSprite;
         private Texture2D boomerangSprite;
 
@@ -129,7 +130,8 @@ namespace ShotgunBoomerang
             // Load textures
             menuBackground = this.Content.Load<Texture2D>("pixeldesertback");
             //testTileSprite = this.Content.Load<Texture2D>("TestTile");
-            playerSprite = this.Content.Load<Texture2D>("PlayerTestSprite");
+            playerSpriteSheet = this.Content.Load<Texture2D>("Player_sheet");
+            playerShotgunArm = this.Content.Load<Texture2D>("player_sgArm");
             blankRectangleSprite = this.Content.Load<Texture2D>("blankRectangle");
             boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
             //snakeSprite = this.Content.Load<Texture2D>("Snek");
@@ -167,7 +169,7 @@ namespace ShotgunBoomerang
 
             demoLevel = new Level(demoLevelTexturepack, "../../../../Levels/testLevel3.level");
             // set up the player
-            player = new Player(playerSprite, boomerangSprite, demoLevel.PlayerStart, 100);
+            player = new Player(playerSpriteSheet, boomerangSprite, playerShotgunArm, demoLevel.PlayerStart, 100);
 
             //Test enemy
             /*
@@ -416,9 +418,9 @@ namespace ShotgunBoomerang
 
             screenOffset = player.Position -
                 new Vector2(graphics.PreferredBackBufferWidth / 2 
-                - player.Sprite.Width / 2,
+                - player.Width / 2,
                 graphics.PreferredBackBufferHeight / 2 
-                - player.Sprite.Height / 2);
+                - player.Height / 2);
 
             base.Update(gameTime);
         }
@@ -509,7 +511,7 @@ namespace ShotgunBoomerang
                 case GameState.PauseMenu:
 
                     currentLevel.Draw(_spriteBatch, screenOffset);
-                    player.Draw(_spriteBatch, graphics);
+                    player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
                     _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
@@ -547,7 +549,7 @@ namespace ShotgunBoomerang
                 case GameState.Gameplay:
 
                     currentLevel.Draw(_spriteBatch, screenOffset);
-                    player.Draw(_spriteBatch, graphics);
+                    player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
 
                     break;
@@ -556,7 +558,7 @@ namespace ShotgunBoomerang
                 case GameState.Dead:
 
                     currentLevel.Draw(_spriteBatch, screenOffset);
-                    player.Draw(_spriteBatch, graphics);
+                    player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
                     _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
@@ -574,7 +576,7 @@ namespace ShotgunBoomerang
                 case GameState.Victory:
 
                     currentLevel.Draw(_spriteBatch, screenOffset);
-                    player.Draw(_spriteBatch, graphics);
+                    player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
                     _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
@@ -671,9 +673,9 @@ namespace ShotgunBoomerang
 
             // player hitbox
             ShapeBatch.BoxOutline(
-                graphics.PreferredBackBufferWidth / 2 - player.Sprite.Width / 2,
-                graphics.PreferredBackBufferHeight / 2 - player.Sprite.Height / 2,
-                player.Sprite.Width, player.Sprite.Height, Color.White);
+                graphics.PreferredBackBufferWidth / 2 - player.Width / 2,
+                graphics.PreferredBackBufferHeight / 2 - player.Height / 2,
+                player.Width, player.Height, Color.White);
 
             // player shotgun radius
             ShapeBatch.CircleOutline(

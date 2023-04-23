@@ -27,6 +27,9 @@ namespace ShotgunBoomerang
         {
             _sprite = sprite;
             _position = position;
+            _width = _sprite.Width;
+            _height = _sprite.Height;
+
             _inContactWithPlayer = false;
         }
 

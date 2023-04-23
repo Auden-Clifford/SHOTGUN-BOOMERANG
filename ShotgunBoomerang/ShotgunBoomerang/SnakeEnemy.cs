@@ -35,6 +35,8 @@ namespace ShotgunBoomerang
             startPos = new Vector2(position.X, position.Y);
 
             _velocity = new Vector2(moveSpeed, 0);
+            _width = _sprite.Width;
+            _height = _sprite.Height;
 
             //Default speed is used to reset the velocity X value after it is clamped
             //during collision resolution

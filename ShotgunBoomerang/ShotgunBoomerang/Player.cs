@@ -38,6 +38,8 @@ namespace ShotgunBoomerang
         // Fields
 
         private Texture2D _boomerangSprite;
+        private Texture2D _ShotgunArmSprite;
+
         private int _ammo;
         private bool _isHoldingBoomerang;
         private PlayerState _currentState;
@@ -127,21 +129,27 @@ namespace ShotgunBoomerang
         /// Gets the player's shotgun damage radius
         /// </summary>
         public float ShotgunRadius { get { return _shotgunRadius; } }
-        
+
         // Constructors
 
         /// <summary>
         /// Creates a new player with given texture, position, and health
         /// </summary>
         /// <param name="sprite">The player's texture/spritesheet</param>
-        /// /// <param name="sprite">The boomerang's texture/spritesheet</param>
+        /// <param name="boomerangSprite">The boomerang's texture/spritesheet</param>
+        /// <param name="shotgunArmSprite">The player's arm texture/spritesheet</param>
         /// <param name="position">The player's starting position</param>
         /// <param name="health">The player's starting health</param>
-        public Player(Texture2D sprite, Texture2D boomerangSprite, Vector2 position, float health)
+        public Player(Texture2D sprite, Texture2D boomerangSprite, Texture2D shotgunArmSprite, Vector2 position, float health)
         {
             _sprite = sprite;
             _boomerangSprite = boomerangSprite;
+            _ShotgunArmSprite = shotgunArmSprite;
+
             _position = position;
+            _width = _sprite.Width; // the spritesheet is 1 sprites long
+            _height = _sprite.Height / 2; // the spritesheet is 2 sprites tall
+
             _health = health;
 
             _velocity = new Vector2(0, 0);
@@ -166,8 +174,9 @@ namespace ShotgunBoomerang
         /// Draws the player with animations based on FSM
         /// </summary>
         /// <param name="sb"></param>
-        public void Draw(SpriteBatch sb, GraphicsDeviceManager graphics)
+        public void Draw(SpriteBatch sb, GraphicsDeviceManager graphics, MouseState ms)
         {
+            /*
             sb.Draw(
                 _sprite,
                 new Vector2(
@@ -176,6 +185,153 @@ namespace ShotgunBoomerang
                     graphics.PreferredBackBufferHeight / 2 
                     - _sprite.Height / 2), 
                 drawColor);
+            */
+
+            // player shotgun angles
+            Vector2 screenCenter = new Vector2(
+                graphics.PreferredBackBufferWidth / 2,
+                    graphics.PreferredBackBufferHeight / 2);
+
+            // normal of the vector between mouse and screen center
+            Vector2 mouseCenterNormal = Vector2.Normalize(new Vector2(ms.Position.X, ms.Position.Y) - screenCenter);
+
+            float angle = MathF.Atan2(mouseCenterNormal.Y, mouseCenterNormal.X);
+
+            switch(_currentDirection)
+            {
+                case Direction.Left:
+                    sb.Draw(
+                        _ShotgunArmSprite,
+                        new Vector2(
+                            graphics.PreferredBackBufferWidth / 2,
+                            graphics.PreferredBackBufferHeight / 2),
+                        null,
+                        Color.White,
+                        angle,
+                        // rotate around the texture's center
+                        new Vector2(_width / 2, _height / 2),
+                        1, // same scale
+                        SpriteEffects.None,
+                        0.0f);
+
+                    if (_isHoldingBoomerang)
+                    {
+                        sb.Draw(
+                            _sprite,
+                            new Vector2(
+                            graphics.PreferredBackBufferWidth / 2
+                            - _width / 2,
+                            graphics.PreferredBackBufferHeight / 2
+                            - _height / 2),
+                            new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
+                            Color.White);
+                    }
+                    else
+                    {
+                        sb.Draw(
+                            _sprite,
+                            new Vector2(
+                            graphics.PreferredBackBufferWidth / 2
+                            - _width / 2,
+                            graphics.PreferredBackBufferHeight / 2
+                            - _height / 2),
+                            new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
+                            Color.White);
+                    }
+                    break;
+
+                case Direction.Right:
+                    // flip the sprite when the player looks right
+                    sb.Draw(
+                        _ShotgunArmSprite,
+                        new Vector2(
+                            graphics.PreferredBackBufferWidth / 2,
+                            graphics.PreferredBackBufferHeight / 2),
+                        null,
+                        Color.White,
+                        angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
+                        // rotate around the texture's center
+                        new Vector2(_width / 2, _height / 2),
+                        1, // same scale
+                        SpriteEffects.FlipHorizontally,
+                        0.0f);
+
+                    if (_isHoldingBoomerang)
+                    {
+                        sb.Draw(
+                            _sprite,
+                            new Vector2(
+                            graphics.PreferredBackBufferWidth / 2
+                            - _width / 2,
+                            graphics.PreferredBackBufferHeight / 2
+                            - _height / 2),
+                            new Rectangle(0, 0, _width, _height), // will print the bottom-right sprite in the sheet
+                            Color.White,
+                            0,
+                            new Vector2(0, 0),
+                            1,
+                            SpriteEffects.FlipHorizontally,
+                            0);
+                    }
+                    else
+                    {
+                        sb.Draw(
+                            _sprite,
+                            new Vector2(
+                            graphics.PreferredBackBufferWidth / 2
+                            - _width / 2,
+                            graphics.PreferredBackBufferHeight / 2
+                            - _height / 2),
+                            new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
+                            Color.White,
+                            0,
+                            new Vector2(0,0),
+                            1,
+                            SpriteEffects.FlipHorizontally,
+                            0);
+                    }
+                    break;
+            }
+            /*
+            sb.Draw(
+                _ShotgunArmSprite,
+                 new Vector2(
+                    graphics.PreferredBackBufferWidth / 2,
+                    graphics.PreferredBackBufferHeight / 2),
+                 null,
+                 Color.White,
+                 angle,
+                 // rotate around the texture's center
+                 new Vector2(_width / 2, _height / 2),
+                 1, // same scale
+                 SpriteEffects.None,
+                 0.0f);
+
+            if (_isHoldingBoomerang)
+            {
+                sb.Draw(
+                    _sprite,
+                    new Vector2(
+                    graphics.PreferredBackBufferWidth / 2
+                    - _width / 2,
+                    graphics.PreferredBackBufferHeight / 2
+                    - _height / 2),
+                    new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
+                    Color.White);
+            }
+            else
+            {
+                sb.Draw(
+                    _sprite,
+                    new Vector2(
+                    graphics.PreferredBackBufferWidth / 2
+                    - _width / 2,
+                    graphics.PreferredBackBufferHeight / 2
+                    - _height / 2),
+                    new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
+                    Color.White);
+            }
+            */
         }
 
         /// <summary>
