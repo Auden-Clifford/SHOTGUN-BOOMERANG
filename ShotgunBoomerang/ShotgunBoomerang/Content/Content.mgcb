@@ -147,6 +147,18 @@
 /processorParam:Quality=Best
 /build:gunC.mp3
 
+#begin levelOneBack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:levelOneBack.png
+
 #begin muzzle.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -158,6 +170,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:muzzle.png
+
+#begin oneDisplay.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:oneDisplay.png
 
 #begin pixeldesertback.png
 /importer:TextureImporter
