@@ -439,7 +439,7 @@ namespace ShotgunBoomerang
                     }
 
                     // Transition to Slide when CTRL is pressed
-                    if(kb.IsKeyDown(Keys.LeftControl))
+                    if(kb.IsKeyDown(Keys.LeftShift))
                     {
                         
                         _currentState = PlayerState.Slide;
@@ -535,7 +535,7 @@ namespace ShotgunBoomerang
                     }
 
                     // Transition to Run when CTRL is released
-                    if (kb.IsKeyUp(Keys.LeftControl))
+                    if (kb.IsKeyUp(Keys.LeftShift))
                     {
                         _currentState = PlayerState.Run;
                     }
