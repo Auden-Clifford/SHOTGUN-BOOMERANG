@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
@@ -82,6 +83,7 @@ namespace ShotgunBoomerang
         //private Texture2D snakeSprite;
         private Texture2D boomerangSprite;
         private Texture2D muzzleSprite;
+        private Texture2D controls;
 
         private List<Texture2D> demoLevelTexturepack;
 
@@ -167,6 +169,7 @@ namespace ShotgunBoomerang
             muzzleSprite = this.Content.Load<Texture2D>("muzzle");
             levelOneBack = this.Content.Load<Texture2D>("levelOneBack");
             oneDisplay = this.Content.Load<Texture2D>("oneDisplay");
+            controls = this.Content.Load<Texture2D>("controls");
 
             // These are the textures the test level will need to display prperly
             demoLevelTexturepack = new List<Texture2D>()
@@ -225,12 +228,12 @@ namespace ShotgunBoomerang
             */
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
-            pauseButtonDebug = new Rectangle(graphics.PreferredBackBufferWidth /2 - 264, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);
-            pauseButtonHP = new Rectangle(graphics.PreferredBackBufferWidth / 2 - 81, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);
-            pauseButtonAmmo = new Rectangle(graphics.PreferredBackBufferWidth / 2 + 102, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);
+            pauseButtonDebug = new Rectangle(graphics.PreferredBackBufferWidth / 2 - 264 + 350, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);
+            pauseButtonHP = new Rectangle(graphics.PreferredBackBufferWidth / 2 - 81 + 350, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);
+            pauseButtonAmmo = new Rectangle(graphics.PreferredBackBufferWidth / 2 + 102 + 350, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);
 
-            pauseButtonReset = new Rectangle(graphics.PreferredBackBufferWidth / 2 - 173, graphics.PreferredBackBufferHeight / 2 + 10, 163, 100);
-            pauseButtonQuit = new Rectangle(graphics.PreferredBackBufferWidth / 2 + 10, graphics.PreferredBackBufferHeight / 2 + 10, 163, 100);
+            pauseButtonReset = new Rectangle(graphics.PreferredBackBufferWidth / 2 - 173 + 350, graphics.PreferredBackBufferHeight / 2 + 10, 163, 100);
+            pauseButtonQuit = new Rectangle(graphics.PreferredBackBufferWidth / 2 + 10 + 350, graphics.PreferredBackBufferHeight / 2 + 10, 163, 100);
 
             // Rectangles for level select screen
             buttonPlayDemo = new Rectangle(510, 300, 163, 50);
@@ -569,6 +572,9 @@ namespace ShotgunBoomerang
                     DrawButton(ms, pauseButtonAmmo, "Inf. Ammo : " + infiniteAmmo);
                     DrawButton(ms, pauseButtonReset, "Reset Stage");
                     DrawButton(ms, pauseButtonQuit, "Quit to Menu");
+
+                    // Controls chart
+                    _spriteBatch.Draw(controls, new Rectangle(200, 200, 600, 600), Color.White);
 
                     // Text at the bottom that changes depending on hover
                     if (pauseButtonDebug.Contains(ms.Position))
