@@ -349,7 +349,7 @@ namespace LevelEditor
                     //this should set the boxes edge-to-edge with each other
                     // y is given a margin of 15 with the map border
                     // x is given a margin of 6 with the map border
-                    pb.Location = new Point(x * _tileSize + 6, y * _tileSize + 15);
+                    //pb.Location = new Point(x * _tileSize + 6, y * _tileSize + 15);
 
                     // set the pictureboxes to resize the textures
                     pb.SizeMode = PictureBoxSizeMode.StretchImage;
