@@ -62,11 +62,19 @@ namespace ShotgunBoomerang
 
         // Textures
         private Texture2D menuBackground;
+        private Texture2D levelOneBack;
+        private Texture2D levelTwoBack;
+        private Texture2D levelThreeBack;
+
         private Texture2D blankRectangleSprite;
         private Texture2D darkFilter;
         private Texture2D healthBar;
         private Texture2D ammoBar;
+
         private Texture2D demoDisplay;
+        private Texture2D oneDisplay;
+        private Texture2D twoDisplay;
+        private Texture2D threeDisplay;
 
         //private Texture2D testTileSprite;
         private Texture2D playerSpriteSheet;
@@ -157,6 +165,8 @@ namespace ShotgunBoomerang
             demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
             awesomeFlamingSkull = this.Content.Load<Texture2D>("awesomeflamingskull");
             muzzleSprite = this.Content.Load<Texture2D>("muzzle");
+            levelOneBack = this.Content.Load<Texture2D>("levelOneBack");
+            oneDisplay = this.Content.Load<Texture2D>("oneDisplay");
 
             // These are the textures the test level will need to display prperly
             demoLevelTexturepack = new List<Texture2D>()
@@ -166,7 +176,7 @@ namespace ShotgunBoomerang
                 this.Content.Load<Texture2D>("ausFlag")
             };
 
-            deathSound = this.Content.Load<Song>("BadToTheBones");
+            deathSound = this.Content.Load<Song>("BTBRiff");
             
             gunFireA = this.Content.Load<Song>("gunA");
             gunFireB = this.Content.Load<Song>("gunB");
@@ -379,8 +389,8 @@ namespace ShotgunBoomerang
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
                     { gameState = GameState.PauseMenu; }
 
-                    // Pressing R is a quick restart
-                    if (kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R))
+                    // Pressing Tilde is a quick restart
+                    if (kb.IsKeyDown(Keys.OemTilde) && prevKb.IsKeyUp(Keys.OemTilde))
                     {
                         currentLevel.ResetLevel(player);
                     }
@@ -503,8 +513,8 @@ namespace ShotgunBoomerang
                     // Level Buttons
                     DrawButton(ms, buttonPlayDemo, "Demo");
                     DrawButton(ms, buttonPlayOne, "Stage One");
-                    DrawButton(ms, buttonPlayTwo, "Stage Two");
-                    DrawButton(ms, buttonPlayThree, "Stage Three");
+                    DrawButton(ms, buttonPlayTwo, "COMING SOON"); // SHOULD SAY "Stage Two"
+                    DrawButton(ms, buttonPlayThree, "COMING SOON"); // SHOULD SAY "Stage Three"
 
                     // Changes text and sprite depending on hover
                     if (buttonPlayDemo.Contains(ms.Position))
@@ -514,17 +524,17 @@ namespace ShotgunBoomerang
                     }
                     else if (buttonPlayOne.Contains(ms.Position))
                     {
-                        levelText = "level one desc goes here, image will change upon hover";
-                        //levelSprite = oneDisplay;
+                        levelText = "Play stage one.";
+                        levelSprite = oneDisplay;
                     }
                     else if (buttonPlayTwo.Contains(ms.Position))
                     {
-                        levelText = "level two desc goes here, image will change upon hover";
+                        levelText = "COMING SOON";
                         //levelSprite = twoDisplay;
                     }
                     else if (buttonPlayThree.Contains(ms.Position))
                     {
-                        levelText = "level three desc goes here, image will change upon hover";
+                        levelText = "COMING SOON";
                         //levelSprite = threeDisplay;
                     }
                     else // Note that level sprite will remain the same as whatever was last hovered over
@@ -536,13 +546,14 @@ namespace ShotgunBoomerang
                     _spriteBatch.Draw(blankRectangleSprite, new Rectangle(780, 300, 615, 500), Color.White);
                     _spriteBatch.Draw(levelSprite, new Rectangle(783, 303, 609, 494), Color.White);
                     _spriteBatch.DrawString(arial12, levelText, new Vector2(1087 - arial12.MeasureString(levelText).X / 2,
-                        790 - arial12.MeasureString(levelText).Y), Color.Black);
+                        790 - arial12.MeasureString(levelText).Y), Color.White);
 
                     break;
 
                 // Drawing for pause menu
                 case GameState.PauseMenu:
 
+                    DrawBackground();
                     currentLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
@@ -567,7 +578,7 @@ namespace ShotgunBoomerang
                     else if (pauseButtonHP.Contains(ms.Position))
                     { pauseText = "Enable infinite ammo"; }
                     else if (pauseButtonReset.Contains(ms.Position))
-                    { pauseText = "Reset and restart the current stage (you can also do this by pressing R during gameplay)"; }
+                    { pauseText = "Reset and restart the current stage (you can also do this by pressing Tilde during gameplay)"; }
                     else if (pauseButtonQuit.Contains(ms.Position))
                     { pauseText = "Quit to the main menu"; }
                     else
@@ -581,6 +592,7 @@ namespace ShotgunBoomerang
                 // Drawing for gameplay
                 case GameState.Gameplay:
 
+                    DrawBackground();
                     currentLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
@@ -590,6 +602,7 @@ namespace ShotgunBoomerang
                 // Drawing for death screen
                 case GameState.Dead:
 
+                    DrawBackground();
                     currentLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
@@ -608,6 +621,7 @@ namespace ShotgunBoomerang
                 // Drawing for victory screen
                 case GameState.Victory:
 
+                    DrawBackground();
                     currentLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
@@ -823,6 +837,19 @@ namespace ShotgunBoomerang
             {
                 _spriteBatch.Draw(ammoBar, new Rectangle(80 + 48 * (i - 1), graphics.PreferredBackBufferHeight - 200, 32, 64), Color.White);
             }
+        }
+
+        /// <summary>
+        /// Draws the background image depending on the stage. Helper Method!
+        /// </summary>
+        public void DrawBackground()
+        {
+            if (currentLevel == levelOne)
+            { _spriteBatch.Draw(levelOneBack, new Rectangle(0, 0,
+                graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White); }
+
+            else if (currentLevel == levelTwo) { }
+            else if (currentLevel == levelThree) { }
         }
     }
 }
