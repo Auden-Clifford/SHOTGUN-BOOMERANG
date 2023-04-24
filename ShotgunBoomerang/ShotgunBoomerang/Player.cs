@@ -53,8 +53,12 @@ namespace ShotgunBoomerang
 
         private double score;
         private int kills;
-        private double timer;
+
+        private double levelTimer;
         private double dmgTimer; //this might not be handled here. won't implement until it's clear
+
+        private double _reloadTimer;
+        private bool _reloading;
 
         private List<Song> _playerSounds;
 
@@ -125,8 +129,8 @@ namespace ShotgunBoomerang
         /// </summary>
         public double Timer
         {
-            get { return timer; }
-            set { timer = value; }
+            get { return levelTimer; }
+            set { levelTimer = value; }
         }
 
         /// <summary>
@@ -172,7 +176,10 @@ namespace ShotgunBoomerang
             _playerSounds = playerSounds;
 
             dmgTimer = .5;
+            _reloadTimer = 1;
             drawColor = Color.White;
+
+            _reloading = false;
         }
 
 
@@ -183,16 +190,6 @@ namespace ShotgunBoomerang
         /// <param name="sb"></param>
         public void Draw(SpriteBatch sb, GraphicsDeviceManager graphics, MouseState ms)
         {
-            /*
-            sb.Draw(
-                _sprite,
-                new Vector2(
-                    graphics.PreferredBackBufferWidth / 2 
-                    - _sprite.Width / 2,
-                    graphics.PreferredBackBufferHeight / 2 
-                    - _sprite.Height / 2), 
-                drawColor);
-            */
 
             // player shotgun angles
             Vector2 screenCenter = new Vector2(
@@ -299,46 +296,6 @@ namespace ShotgunBoomerang
                     }
                     break;
             }
-            /*
-            sb.Draw(
-                _ShotgunArmSprite,
-                 new Vector2(
-                    graphics.PreferredBackBufferWidth / 2,
-                    graphics.PreferredBackBufferHeight / 2),
-                 null,
-                 Color.White,
-                 angle,
-                 // rotate around the texture's center
-                 new Vector2(_width / 2, _height / 2),
-                 1, // same scale
-                 SpriteEffects.None,
-                 0.0f);
-
-            if (_isHoldingBoomerang)
-            {
-                sb.Draw(
-                    _sprite,
-                    new Vector2(
-                    graphics.PreferredBackBufferWidth / 2
-                    - _width / 2,
-                    graphics.PreferredBackBufferHeight / 2
-                    - _height / 2),
-                    new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
-                    Color.White);
-            }
-            else
-            {
-                sb.Draw(
-                    _sprite,
-                    new Vector2(
-                    graphics.PreferredBackBufferWidth / 2
-                    - _width / 2,
-                    graphics.PreferredBackBufferHeight / 2
-                    - _height / 2),
-                    new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
-                    Color.White);
-            }
-            */
         }
 
         /// <summary>
@@ -412,6 +369,12 @@ namespace ShotgunBoomerang
                         BoomerangAttack(ms, graphics, projectiles);
                     }
 
+                    // player reloads if they run out or press R
+                    if ((kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R)) || _ammo == 0)
+                    {
+                        _reloading = true;
+                    }
+
                     // Transition to Airborne when no longer colliding with the ground
                     if (!_isCollidingWithGround)
                     {
@@ -463,6 +426,12 @@ namespace ShotgunBoomerang
                     // apply ground friction
                     _velocity *= runFriction;
 
+                    // player reloads if they run out or press R
+                    if ((kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R)) || _ammo == 0)
+                    {
+                        _reloading = true;
+                    }
+
                     // Transition to Airborne when no longer colliding with the ground
                     if (!_isCollidingWithGround)
                     {
@@ -488,10 +457,9 @@ namespace ShotgunBoomerang
                 case PlayerState.Airborne:
                     // if the player left clicks (only once), perform a shotgun attack
                     if (ms.LeftButton == ButtonState.Pressed &&
-                        prevMs.LeftButton == ButtonState.Released && _ammo > 0)
+                        prevMs.LeftButton == ButtonState.Released)
                     {
                         ShotgunAttack(ms, graphics, enemies, projectiles);
-                        _ammo--;
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -517,14 +485,13 @@ namespace ShotgunBoomerang
                         _velocity.X *= runFriction;
                     }
 
-                    // appky air friction to velocity (more friction on x)
+                    // apply air friction to velocity (more friction on x)
                     _velocity *= airFriction;
              
 
                     // this state ends once the player hits the ground
                     if(_isCollidingWithGround)
                     {
-                        _ammo = 2;
                         // if the horizontal velocity is 0, transition to idle
                         if(_velocity.X == 0)
                         {
@@ -559,6 +526,12 @@ namespace ShotgunBoomerang
                         _isHoldingBoomerang)
                     {
                         BoomerangAttack(ms, graphics, projectiles);
+                    }
+
+                    // player reloads if they run out or press R
+                    if ((kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R)) || _ammo == 0)
+                    {
+                        _reloading = true;
                     }
 
                     // Transition to Run when CTRL is released
@@ -606,8 +579,14 @@ namespace ShotgunBoomerang
                         _velocity.X = 0;
                     }
 
+                    // player reloads if they run out or press R
+                    if ((kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R)) || _ammo == 0)
+                    {
+                        _reloading = true;
+                    }
+
                     // Transition to Idle when there is no horizontal velocity
-                    if(_velocity.X == 0)
+                    if (_velocity.X == 0)
                     {
                         _currentState = PlayerState.Idle;
                     }
@@ -639,9 +618,22 @@ namespace ShotgunBoomerang
                     break;
             }
 
+            // separate state that allows for realoading in other states
+            if(_reloading)
+            {
+                _reloadTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+
+                if(_reloadTimer <= 0)
+                {
+                    _reloadTimer = 1;
+                    _reloading = false;
+                    Ammo = 2;
+                }
+            }
+
             // Updating the current time and score
-            timer += gameTime.ElapsedGameTime.TotalSeconds;
-            score = (kills * 200) + (1200 - timer * 10); // 200 points per kill and score is lost the more time is spent
+            levelTimer += gameTime.ElapsedGameTime.TotalSeconds;
+            score = (kills * 200) + (1200 - levelTimer * 10); // 200 points per kill and score is lost the more time is spent
 
             // the player's isCollidingWithGround variable must always
             // be set to false at the end of Update, it will be detected again in ResolveCollisions
@@ -765,68 +757,74 @@ namespace ShotgunBoomerang
 
         private void ShotgunAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameEnemy> enemies, List<IGameProjectile> projectiles)
         {
-            // SFX (chooses one of three random sounds)
-            Random rng = new Random();
-            int randSound = rng.Next(0, 3);
-            MediaPlayer.Play(_playerSounds[randSound]);
-
-            // need the mouse's position to be a Vector2 for math
-            Vector2 mousePos = new Vector2(ms.Position.X, ms.Position.Y);
-
-            //caluclates screen center
-            Vector2 screenCenter = new Vector2(graphics.PreferredBackBufferWidth / 2,
-                graphics.PreferredBackBufferHeight / 2);
-
-            // velocity normal between the mouse and the player's centerpoint
-            Vector2 mouseCenterNormal = Vector2.Normalize(mousePos - screenCenter);
-
-            // throw the player back in the opposite direction of the blast
-            _velocity -= mouseCenterNormal * (_damage / 2);
-
-            //calculates the lines which bound the blast
-            float angle = MathF.Atan2(-mouseCenterNormal.Y, mouseCenterNormal.X);
-
-            //Caluclates shotgun hits on enemies
-            for (int i = 0; i < enemies.Count; i++)
+            if(_ammo > 0)
             {
-                MobileEntity currentEnemy = (MobileEntity)enemies[i];
-                
-                float distance = Vector2.Distance(CenterPoint, currentEnemy.CenterPoint);
-                float enemyAngle = MathF.Atan2(
-                    -(currentEnemy.CenterPoint.Y - CenterPoint.Y),
-                    (currentEnemy.CenterPoint.X - CenterPoint.X));
-                /*
-                if(angle < MathF.PI && enemyAngle > 180)
+                // SFX (chooses one of three random sounds)
+                Random rng = new Random();
+                int randSound = rng.Next(0, 3);
+                MediaPlayer.Play(_playerSounds[randSound]);
+
+                // need the mouse's position to be a Vector2 for math
+                Vector2 mousePos = new Vector2(ms.Position.X, ms.Position.Y);
+
+                //caluclates screen center
+                Vector2 screenCenter = new Vector2(graphics.PreferredBackBufferWidth / 2,
+                    graphics.PreferredBackBufferHeight / 2);
+
+                // velocity normal between the mouse and the player's centerpoint
+                Vector2 mouseCenterNormal = Vector2.Normalize(mousePos - screenCenter);
+
+                // throw the player back in the opposite direction of the blast
+                _velocity -= mouseCenterNormal * (_damage / 2);
+
+                //calculates the lines which bound the blast
+                float angle = MathF.Atan2(-mouseCenterNormal.Y, mouseCenterNormal.X);
+
+                //Caluclates shotgun hits on enemies
+                for (int i = 0; i < enemies.Count; i++)
                 {
-                    enemyAngle -= 2 * MathF.PI;
+                    MobileEntity currentEnemy = (MobileEntity)enemies[i];
+
+                    float distance = Vector2.Distance(CenterPoint, currentEnemy.CenterPoint);
+                    float enemyAngle = MathF.Atan2(
+                        -(currentEnemy.CenterPoint.Y - CenterPoint.Y),
+                        (currentEnemy.CenterPoint.X - CenterPoint.X));
+                    /*
+                    if(angle < MathF.PI && enemyAngle > 180)
+                    {
+                        enemyAngle -= 2 * MathF.PI;
+                    }
+                    */
+                    if (distance <= _shotgunRadius && // only if the enemy is within the radius
+                        enemyAngle <= angle + _shotgunAngle / 2 && // and the angle between the enemy and the player is less than the max spread angle
+                        enemyAngle >= angle - _shotgunAngle / 2)  // and the angle between the enemy and the player is greater than the min spread angle
+                    {
+                        enemies[i].TakeDamage(_damage, this);
+                    }
+
                 }
-                */
-                if (distance <= _shotgunRadius && // only if the enemy is within the radius
-                    enemyAngle <= angle + _shotgunAngle / 2 && // and the angle between the enemy and the player is less than the max spread angle
-                    enemyAngle >= angle - _shotgunAngle / 2)  // and the angle between the enemy and the player is greater than the min spread angle
+
+                for (int i = 0; i < projectiles.Count; i++)
                 {
-                    enemies[i].TakeDamage(_damage, this);
+                    Boomerang currentProjectile = (Boomerang)projectiles[i];
+
+                    float distance = Vector2.Distance(CenterPoint, currentProjectile.CenterPoint);
+                    float projectileAngle = MathF.Atan2(
+                        -(currentProjectile.CenterPoint.Y - CenterPoint.Y),
+                        (currentProjectile.CenterPoint.X - CenterPoint.X));
+
+                    //caluclates if enemy is in range
+                    if (distance <= _shotgunRadius & // only if the projectile is within the radius
+                        projectileAngle <= angle + _shotgunAngle / 2 && // and the angle between the projectile and the player is less than the max spread angle
+                        projectileAngle >= angle - _shotgunAngle / 2)  // and the angle between the projectile and the player is greater than the min spread angle
+                    {
+                        currentProjectile.ShotgunHit(mouseCenterNormal, graphics, _damage);
+                    }
                 }
-                
+
+                Ammo--;
             }
-
-            for(int i = 0; i < projectiles.Count; i++)
-            {
-                Boomerang currentProjectile = (Boomerang)projectiles[i];
-
-                float distance = Vector2.Distance(CenterPoint, currentProjectile.CenterPoint);
-                float projectileAngle = MathF.Atan2(
-                    -(currentProjectile.CenterPoint.Y - CenterPoint.Y),
-                    (currentProjectile.CenterPoint.X - CenterPoint.X));
-
-                //caluclates if enemy is in range
-                if (distance <= _shotgunRadius & // only if the projectile is within the radius
-                    projectileAngle <= angle + _shotgunAngle / 2 && // and the angle between the projectile and the player is less than the max spread angle
-                    projectileAngle >= angle - _shotgunAngle / 2)  // and the angle between the projectile and the player is greater than the min spread angle
-                {
-                    currentProjectile.ShotgunHit(mouseCenterNormal, graphics, _damage);
-                }
-            }
+            
         }
 
         private void BoomerangAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameProjectile> projectiles)
