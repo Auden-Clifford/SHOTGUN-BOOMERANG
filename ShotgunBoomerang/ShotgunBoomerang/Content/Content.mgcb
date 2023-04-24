@@ -261,6 +261,12 @@
 /processorParam:TextureFormat=Color
 /build:redsquare.png
 
+#begin reload.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:reload.mp3
+
 #begin scorpin.png
 /importer:TextureImporter
 /processor:TextureProcessor

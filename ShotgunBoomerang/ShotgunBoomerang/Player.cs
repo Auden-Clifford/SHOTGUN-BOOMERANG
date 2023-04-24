@@ -40,7 +40,6 @@ namespace ShotgunBoomerang
 
         private Texture2D _boomerangSprite;
         private Texture2D _ShotgunArmSprite;
-        private Texture2D _muzzleSprite;
 
         private int _ammo;
         private bool _isHoldingBoomerang;
@@ -56,6 +55,9 @@ namespace ShotgunBoomerang
 
         private double levelTimer;
         private double dmgTimer; //this might not be handled here. won't implement until it's clear
+
+        private double muzzleDrawTimer;
+        private float muzzleDrawAngle;
 
         private double _reloadTimer;
         private bool _reloading;
@@ -134,6 +136,23 @@ namespace ShotgunBoomerang
         }
 
         /// <summary>
+        /// retrieves/sets muzzle draw timer
+        /// </summary>
+        public double MuzzleDrawTimer
+        {
+            get { return muzzleDrawTimer; }
+            set { muzzleDrawTimer = value; }
+        }
+
+        /// <summary>
+        /// read-only muzzle draw angle
+        /// </summary>
+        public double MuzzleDrawAngle
+        {
+            get { return muzzleDrawAngle; }
+        }
+
+        /// <summary>
         /// Gets the player's shotgun damage radius
         /// </summary>
         public float ShotgunRadius { get { return _shotgunRadius; } }
@@ -148,12 +167,11 @@ namespace ShotgunBoomerang
         /// <param name="shotgunArmSprite">The player's arm texture/spritesheet</param>
         /// <param name="position">The player's starting position</param>
         /// <param name="health">The player's starting health</param>
-        public Player(Texture2D sprite, Texture2D boomerangSprite, Texture2D shotgunArmSprite, Texture2D muzzleSprite, Vector2 position, float health, List<Song> playerSounds)
+        public Player(Texture2D sprite, Texture2D boomerangSprite, Texture2D shotgunArmSprite, Vector2 position, float health, List<Song> playerSounds)
         {
             _sprite = sprite;
             _boomerangSprite = boomerangSprite;
             _ShotgunArmSprite = shotgunArmSprite;
-            _muzzleSprite = muzzleSprite;
 
             _position = position;
             _width = _sprite.Width; // the spritesheet is 1 sprites long
@@ -180,6 +198,8 @@ namespace ShotgunBoomerang
             drawColor = Color.White;
 
             _reloading = false;
+
+            muzzleDrawTimer = 0;
         }
 
 
@@ -357,7 +377,7 @@ namespace ShotgunBoomerang
                     if(ms.LeftButton == ButtonState.Pressed && 
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies, projectiles);  
+                        ShotgunAttack(ms, graphics, enemies, projectiles, gameTime);  
                     }
 
                     // if the player right clicks (only once) and
@@ -401,7 +421,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies, projectiles);
+                        ShotgunAttack(ms, graphics, enemies, projectiles, gameTime);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -459,7 +479,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies, projectiles);
+                        ShotgunAttack(ms, graphics, enemies, projectiles, gameTime);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -517,7 +537,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies, projectiles);
+                        ShotgunAttack(ms, graphics, enemies, projectiles, gameTime);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -559,7 +579,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies, projectiles);
+                        ShotgunAttack(ms, graphics, enemies, projectiles, gameTime);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -622,18 +642,22 @@ namespace ShotgunBoomerang
             if(_reloading)
             {
                 _reloadTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+                MediaPlayer.Play(_playerSounds[3]);
 
-                if(_reloadTimer <= 0)
+                if (_reloadTimer <= 0)
                 {
                     _reloadTimer = 1;
                     _reloading = false;
                     Ammo = 2;
+                    //MediaPlayer.Play(_playerSounds[3]);
                 }
             }
 
             // Updating the current time and score
             levelTimer += gameTime.ElapsedGameTime.TotalSeconds;
             score = (kills * 200) + (1200 - levelTimer * 10); // 200 points per kill and score is lost the more time is spent
+
+            muzzleDrawTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
             // the player's isCollidingWithGround variable must always
             // be set to false at the end of Update, it will be detected again in ResolveCollisions
@@ -755,7 +779,7 @@ namespace ShotgunBoomerang
             }
         }
 
-        private void ShotgunAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameEnemy> enemies, List<IGameProjectile> projectiles)
+        private void ShotgunAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameEnemy> enemies, List<IGameProjectile> projectiles, GameTime gameTime)
         {
             if(_ammo > 0)
             {
@@ -821,6 +845,10 @@ namespace ShotgunBoomerang
                         currentProjectile.ShotgunHit(mouseCenterNormal, graphics, _damage);
                     }
                 }
+
+                // VFX
+                muzzleDrawTimer = 0.1;
+                muzzleDrawAngle = angle;
 
                 Ammo--;
             }

@@ -59,6 +59,7 @@ namespace ShotgunBoomerang
         private Song gunFireA;
         private Song gunFireB;
         private Song gunFireC;
+        private Song reload;
         private List<Song> playerSounds;
 
         // Textures
@@ -179,12 +180,14 @@ namespace ShotgunBoomerang
                 this.Content.Load<Texture2D>("ausFlag")
             };
 
+            // Load SFX
             deathSound = this.Content.Load<Song>("BTBRiff");
             
             gunFireA = this.Content.Load<Song>("gunA");
             gunFireB = this.Content.Load<Song>("gunB");
             gunFireC = this.Content.Load<Song>("gunC");
-            playerSounds = new List<Song>() { gunFireA, gunFireB, gunFireC };
+            reload = this.Content.Load<Song>("reload");
+            playerSounds = new List<Song>() { gunFireA, gunFireB, gunFireC , reload};
 
             levelSprite = demoDisplay; // Sets the preview image in level select to show the demo level by default. It has to show something
 
@@ -210,7 +213,7 @@ namespace ShotgunBoomerang
 
 
             // set up the player
-            player = new Player(playerSpriteSheet, boomerangSprite, playerShotgunArm, muzzleSprite, demoLevel.PlayerStart, 100, playerSounds);
+            player = new Player(playerSpriteSheet, boomerangSprite, playerShotgunArm, demoLevel.PlayerStart, 100, playerSounds);
 
             //Test enemy
             /*
@@ -604,6 +607,12 @@ namespace ShotgunBoomerang
                     currentLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
+
+                    // muzzle flare oh my
+                    if (player.MuzzleDrawTimer > 0)
+                    {
+                        _spriteBatch.Draw(muzzleSprite, new Vector2(graphics.PreferredBackBufferWidth/2, graphics.PreferredBackBufferHeight/2 - 32 ), null, Color.White, -(float)player.MuzzleDrawAngle, new Vector2(player.Width/2, player.Height/2), 1, SpriteEffects.None, 0.0f);
+                    }
 
                     break;
 
