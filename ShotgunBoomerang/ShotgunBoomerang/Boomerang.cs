@@ -276,11 +276,6 @@ namespace ShotgunBoomerang
         /// <param name="graphics"></param>
         public void ShotgunHit(Vector2 shotgunNormal, GraphicsDeviceManager graphics, float damage)
         {
-            
-            
-            //Vector2 velocityNormal = _velocity*-2;
-            
-            
 
             // throw the player back in the opposite direction of the blast
             _velocity = shotgunNormal * _velocity.Length() * 2;
