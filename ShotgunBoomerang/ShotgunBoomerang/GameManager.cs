@@ -306,6 +306,7 @@ namespace ShotgunBoomerang
                         gameState = GameState.Gameplay;
                     }
 
+                    /*
                     // Play level two
                     if (buttonPlayTwo.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
@@ -321,6 +322,7 @@ namespace ShotgunBoomerang
                         player.Position = currentLevel.PlayerStart;
                         gameState = GameState.Gameplay;
                     }
+                    */
 
                     break;
 
