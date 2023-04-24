@@ -166,7 +166,7 @@ namespace ShotgunBoomerang
                 this.Content.Load<Texture2D>("ausFlag")
             };
 
-            deathSound = this.Content.Load<Song>("BadToTheBones");
+            deathSound = this.Content.Load<Song>("BTBRiff");
             
             gunFireA = this.Content.Load<Song>("gunA");
             gunFireB = this.Content.Load<Song>("gunB");

@@ -93,6 +93,12 @@
 /processorParam:TextureFormat=Color
 /build:Boomerang.png
 
+#begin BTBRiff.mp3
+/importer:Mp3Importer
+/processor:SongProcessor
+/processorParam:Quality=Best
+/build:BTBRiff.mp3
+
 #begin darkfilter.png
 /importer:TextureImporter
 /processor:TextureProcessor
