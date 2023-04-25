@@ -58,6 +58,15 @@
             this.groupBox_MapView = new System.Windows.Forms.GroupBox();
             this.ScrollBarX = new System.Windows.Forms.HScrollBar();
             this.ScrollBarY = new System.Windows.Forms.VScrollBar();
+            this.tilePicker_CaveTopLeft = new System.Windows.Forms.PictureBox();
+            this.tilePicker_CaveTopCenter = new System.Windows.Forms.PictureBox();
+            this.tilePicker_CaveTopRight = new System.Windows.Forms.PictureBox();
+            this.tilePicker_CaveCenterLeft = new System.Windows.Forms.PictureBox();
+            this.tilePicker_CaveCenterCenter = new System.Windows.Forms.PictureBox();
+            this.tilePicker_CaveCenterRight = new System.Windows.Forms.PictureBox();
+            this.tilePicker_CaveBottomLeft = new System.Windows.Forms.PictureBox();
+            this.tilePicker_CaveBottomCenter = new System.Windows.Forms.PictureBox();
+            this.tilePicker_CaveBottomRight = new System.Windows.Forms.PictureBox();
             this.groupBox_TileSelector.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_Vegemite)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_GrassBottomRight)).BeginInit();
@@ -81,10 +90,28 @@
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_TestTile)).BeginInit();
             this.groupBox_CurrentTile.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_CurrentTile)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveTopLeft)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveTopCenter)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveTopRight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveCenterLeft)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveCenterCenter)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveCenterRight)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveBottomLeft)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveBottomCenter)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveBottomRight)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox_TileSelector
             // 
+            this.groupBox_TileSelector.Controls.Add(this.tilePicker_CaveBottomRight);
+            this.groupBox_TileSelector.Controls.Add(this.tilePicker_CaveBottomCenter);
+            this.groupBox_TileSelector.Controls.Add(this.tilePicker_CaveBottomLeft);
+            this.groupBox_TileSelector.Controls.Add(this.tilePicker_CaveCenterRight);
+            this.groupBox_TileSelector.Controls.Add(this.tilePicker_CaveCenterCenter);
+            this.groupBox_TileSelector.Controls.Add(this.tilePicker_CaveCenterLeft);
+            this.groupBox_TileSelector.Controls.Add(this.tilePicker_CaveTopRight);
+            this.groupBox_TileSelector.Controls.Add(this.tilePicker_CaveTopCenter);
+            this.groupBox_TileSelector.Controls.Add(this.tilePicker_CaveTopLeft);
             this.groupBox_TileSelector.Controls.Add(this.tilePicker_Vegemite);
             this.groupBox_TileSelector.Controls.Add(this.tilePicker_GrassBottomRight);
             this.groupBox_TileSelector.Controls.Add(this.tilePicker_GrassBottomCenter);
@@ -322,7 +349,8 @@
             this.comboBox_TilePickerCatagories.Items.AddRange(new object[] {
             "Misc",
             "Entities",
-            "Grass"});
+            "Grass",
+            "Cave"});
             this.comboBox_TilePickerCatagories.Location = new System.Drawing.Point(6, 22);
             this.comboBox_TilePickerCatagories.Name = "comboBox_TilePickerCatagories";
             this.comboBox_TilePickerCatagories.Size = new System.Drawing.Size(121, 23);
@@ -447,6 +475,123 @@
             this.ScrollBarY.TabIndex = 0;
             this.ScrollBarY.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ScrollBar_Scroll);
             // 
+            // tilePicker_CaveTopLeft
+            // 
+            this.tilePicker_CaveTopLeft.BackColor = System.Drawing.Color.Transparent;
+            this.tilePicker_CaveTopLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tilePicker_CaveTopLeft.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_CaveTopLeft.Image")));
+            this.tilePicker_CaveTopLeft.Location = new System.Drawing.Point(6, 53);
+            this.tilePicker_CaveTopLeft.Name = "tilePicker_CaveTopLeft";
+            this.tilePicker_CaveTopLeft.Size = new System.Drawing.Size(50, 50);
+            this.tilePicker_CaveTopLeft.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tilePicker_CaveTopLeft.TabIndex = 28;
+            this.tilePicker_CaveTopLeft.TabStop = false;
+            this.tilePicker_CaveTopLeft.Click += new System.EventHandler(this.tilePicker_Click);
+            // 
+            // tilePicker_CaveTopCenter
+            // 
+            this.tilePicker_CaveTopCenter.BackColor = System.Drawing.Color.Transparent;
+            this.tilePicker_CaveTopCenter.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tilePicker_CaveTopCenter.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_CaveTopCenter.Image")));
+            this.tilePicker_CaveTopCenter.Location = new System.Drawing.Point(62, 53);
+            this.tilePicker_CaveTopCenter.Name = "tilePicker_CaveTopCenter";
+            this.tilePicker_CaveTopCenter.Size = new System.Drawing.Size(50, 50);
+            this.tilePicker_CaveTopCenter.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tilePicker_CaveTopCenter.TabIndex = 29;
+            this.tilePicker_CaveTopCenter.TabStop = false;
+            this.tilePicker_CaveTopCenter.Click += new System.EventHandler(this.tilePicker_Click);
+            // 
+            // tilePicker_CaveTopRight
+            // 
+            this.tilePicker_CaveTopRight.BackColor = System.Drawing.Color.Transparent;
+            this.tilePicker_CaveTopRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tilePicker_CaveTopRight.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_CaveTopRight.Image")));
+            this.tilePicker_CaveTopRight.Location = new System.Drawing.Point(118, 53);
+            this.tilePicker_CaveTopRight.Name = "tilePicker_CaveTopRight";
+            this.tilePicker_CaveTopRight.Size = new System.Drawing.Size(50, 50);
+            this.tilePicker_CaveTopRight.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tilePicker_CaveTopRight.TabIndex = 30;
+            this.tilePicker_CaveTopRight.TabStop = false;
+            this.tilePicker_CaveTopRight.Click += new System.EventHandler(this.tilePicker_Click);
+            // 
+            // tilePicker_CaveCenterLeft
+            // 
+            this.tilePicker_CaveCenterLeft.BackColor = System.Drawing.Color.Transparent;
+            this.tilePicker_CaveCenterLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tilePicker_CaveCenterLeft.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_CaveCenterLeft.Image")));
+            this.tilePicker_CaveCenterLeft.Location = new System.Drawing.Point(6, 109);
+            this.tilePicker_CaveCenterLeft.Name = "tilePicker_CaveCenterLeft";
+            this.tilePicker_CaveCenterLeft.Size = new System.Drawing.Size(50, 50);
+            this.tilePicker_CaveCenterLeft.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tilePicker_CaveCenterLeft.TabIndex = 31;
+            this.tilePicker_CaveCenterLeft.TabStop = false;
+            this.tilePicker_CaveCenterLeft.Click += new System.EventHandler(this.tilePicker_Click);
+            // 
+            // tilePicker_CaveCenterCenter
+            // 
+            this.tilePicker_CaveCenterCenter.BackColor = System.Drawing.Color.Transparent;
+            this.tilePicker_CaveCenterCenter.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tilePicker_CaveCenterCenter.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_CaveCenterCenter.Image")));
+            this.tilePicker_CaveCenterCenter.Location = new System.Drawing.Point(62, 109);
+            this.tilePicker_CaveCenterCenter.Name = "tilePicker_CaveCenterCenter";
+            this.tilePicker_CaveCenterCenter.Size = new System.Drawing.Size(50, 50);
+            this.tilePicker_CaveCenterCenter.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tilePicker_CaveCenterCenter.TabIndex = 32;
+            this.tilePicker_CaveCenterCenter.TabStop = false;
+            this.tilePicker_CaveCenterCenter.Click += new System.EventHandler(this.tilePicker_Click);
+            // 
+            // tilePicker_CaveCenterRight
+            // 
+            this.tilePicker_CaveCenterRight.BackColor = System.Drawing.Color.Transparent;
+            this.tilePicker_CaveCenterRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tilePicker_CaveCenterRight.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_CaveCenterRight.Image")));
+            this.tilePicker_CaveCenterRight.Location = new System.Drawing.Point(118, 109);
+            this.tilePicker_CaveCenterRight.Name = "tilePicker_CaveCenterRight";
+            this.tilePicker_CaveCenterRight.Size = new System.Drawing.Size(50, 50);
+            this.tilePicker_CaveCenterRight.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tilePicker_CaveCenterRight.TabIndex = 33;
+            this.tilePicker_CaveCenterRight.TabStop = false;
+            this.tilePicker_CaveCenterRight.Click += new System.EventHandler(this.tilePicker_Click);
+            // 
+            // tilePicker_CaveBottomLeft
+            // 
+            this.tilePicker_CaveBottomLeft.BackColor = System.Drawing.Color.Transparent;
+            this.tilePicker_CaveBottomLeft.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tilePicker_CaveBottomLeft.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_CaveBottomLeft.Image")));
+            this.tilePicker_CaveBottomLeft.Location = new System.Drawing.Point(6, 165);
+            this.tilePicker_CaveBottomLeft.Name = "tilePicker_CaveBottomLeft";
+            this.tilePicker_CaveBottomLeft.Size = new System.Drawing.Size(50, 50);
+            this.tilePicker_CaveBottomLeft.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tilePicker_CaveBottomLeft.TabIndex = 34;
+            this.tilePicker_CaveBottomLeft.TabStop = false;
+            this.tilePicker_CaveBottomLeft.Click += new System.EventHandler(this.tilePicker_Click);
+            // 
+            // tilePicker_CaveBottomCenter
+            // 
+            this.tilePicker_CaveBottomCenter.BackColor = System.Drawing.Color.Transparent;
+            this.tilePicker_CaveBottomCenter.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tilePicker_CaveBottomCenter.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_CaveBottomCenter.Image")));
+            this.tilePicker_CaveBottomCenter.Location = new System.Drawing.Point(62, 165);
+            this.tilePicker_CaveBottomCenter.Name = "tilePicker_CaveBottomCenter";
+            this.tilePicker_CaveBottomCenter.Size = new System.Drawing.Size(50, 50);
+            this.tilePicker_CaveBottomCenter.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tilePicker_CaveBottomCenter.TabIndex = 35;
+            this.tilePicker_CaveBottomCenter.TabStop = false;
+            this.tilePicker_CaveBottomCenter.Click += new System.EventHandler(this.tilePicker_Click);
+            // 
+            // tilePicker_CaveBottomRight
+            // 
+            this.tilePicker_CaveBottomRight.BackColor = System.Drawing.Color.Transparent;
+            this.tilePicker_CaveBottomRight.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tilePicker_CaveBottomRight.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_CaveBottomRight.Image")));
+            this.tilePicker_CaveBottomRight.Location = new System.Drawing.Point(118, 165);
+            this.tilePicker_CaveBottomRight.Name = "tilePicker_CaveBottomRight";
+            this.tilePicker_CaveBottomRight.Size = new System.Drawing.Size(50, 50);
+            this.tilePicker_CaveBottomRight.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tilePicker_CaveBottomRight.TabIndex = 36;
+            this.tilePicker_CaveBottomRight.TabStop = false;
+            this.tilePicker_CaveBottomRight.Click += new System.EventHandler(this.tilePicker_Click);
+            // 
             // LevelEditorForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -486,6 +631,15 @@
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_TestTile)).EndInit();
             this.groupBox_CurrentTile.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_CurrentTile)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveTopLeft)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveTopCenter)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveTopRight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveCenterLeft)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveCenterCenter)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveCenterRight)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveBottomLeft)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveBottomCenter)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveBottomRight)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -521,5 +675,14 @@
         private PictureBox tilePicker_GrassTopCenter;
         private PictureBox tilePicker_GrassTopLeft;
         private PictureBox tilePicker_Vegemite;
+        private PictureBox tilePicker_CaveBottomRight;
+        private PictureBox tilePicker_CaveBottomCenter;
+        private PictureBox tilePicker_CaveBottomLeft;
+        private PictureBox tilePicker_CaveCenterRight;
+        private PictureBox tilePicker_CaveCenterCenter;
+        private PictureBox tilePicker_CaveCenterLeft;
+        private PictureBox tilePicker_CaveTopRight;
+        private PictureBox tilePicker_CaveTopCenter;
+        private PictureBox tilePicker_CaveTopLeft;
     }
 }

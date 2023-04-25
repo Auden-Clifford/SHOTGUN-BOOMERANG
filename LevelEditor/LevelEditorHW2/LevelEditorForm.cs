@@ -48,6 +48,7 @@ namespace LevelEditor
         private List<PictureBox> _miscTiles;
         private List<PictureBox> _entities;
         private List<PictureBox> _grass;
+        private List<PictureBox> _cave;
 
 
         // constructors
@@ -315,6 +316,43 @@ namespace LevelEditor
                         {
                             writer.Write("grassTopRight,");
                         }
+                        // save cave tiles
+                        else if (i == tilePicker_CaveBottomCenter.Image)
+                        {
+                            writer.Write("caveBottomCenter,");
+                        }
+                        else if (i == tilePicker_CaveBottomLeft.Image)
+                        {
+                            writer.Write("caveBottomLeft,");
+                        }
+                        else if (i == tilePicker_CaveBottomRight.Image)
+                        {
+                            writer.Write("caveBottomRight,");
+                        }
+                        else if (i == tilePicker_CaveCenterCenter.Image)
+                        {
+                            writer.Write("caveCenterCenter,");
+                        }
+                        else if (i == tilePicker_CaveCenterLeft.Image)
+                        {
+                            writer.Write("caveCenterLeft,");
+                        }
+                        else if (i == tilePicker_CaveCenterRight.Image)
+                        {
+                            writer.Write("caveCenterRight,");
+                        }
+                        else if (i == tilePicker_CaveTopCenter.Image)
+                        {
+                            writer.Write("caveTopCenter,");
+                        }
+                        else if (i == tilePicker_CaveTopLeft.Image)
+                        {
+                            writer.Write("caveTopLeft,");
+                        }
+                        else if (i == tilePicker_CaveTopRight.Image)
+                        {
+                            writer.Write("caveTopRight,");
+                        }
                         // if it doesn't match any image, it must be empty
                         else
                         {
@@ -410,6 +448,13 @@ namespace LevelEditor
                 tilePicker_GrassTopLeft, tilePicker_GrassTopCenter, tilePicker_GrassTopRight,
                 tilePicker_GrassCenterLeft, tilePicker_GrassCenterCenter, tilePicker_GrassCenterRight,
                 tilePicker_GrassBottomLeft, tilePicker_GrassBottomCenter, tilePicker_GrassBottomRight,
+            };
+
+            _cave = new List<PictureBox>()
+            {
+                tilePicker_CaveTopLeft, tilePicker_CaveTopCenter, tilePicker_CaveTopRight,
+                tilePicker_CaveCenterLeft, tilePicker_CaveCenterCenter, tilePicker_CaveCenterRight,
+                tilePicker_CaveBottomLeft, tilePicker_CaveBottomCenter, tilePicker_CaveBottomRight,
             };
 
             // set the selected catagory to the first index
@@ -607,6 +652,43 @@ namespace LevelEditor
                     {
                         i = tilePicker_GrassTopRight.Image;
                     }
+                    // load cave tiles
+                    else if (currentLine[x] == "caveBottomCenter")
+                    {
+                        i = tilePicker_CaveBottomCenter.Image;
+                    }
+                    else if (currentLine[x] == "caveBottomLeft")
+                    {
+                        i = tilePicker_CaveBottomLeft.Image;
+                    }
+                    else if (currentLine[x] == "caveBottomRight")
+                    {
+                        i = tilePicker_CaveBottomRight.Image;
+                    }
+                    else if (currentLine[x] == "caveCenterCenter")
+                    {
+                        i = tilePicker_CaveCenterCenter.Image;
+                    }
+                    else if (currentLine[x] == "caveCenterLeft")
+                    {
+                        i = tilePicker_CaveCenterLeft.Image;
+                    }
+                    else if (currentLine[x] == "caveCenterRight")
+                    {
+                        i = tilePicker_CaveCenterRight.Image;
+                    }
+                    else if (currentLine[x] == "caveTopCenter")
+                    {
+                        i = tilePicker_CaveTopCenter.Image;
+                    }
+                    else if (currentLine[x] == "caveTopLeft")
+                    {
+                        i = tilePicker_CaveTopLeft.Image;
+                    }
+                    else if (currentLine[x] == "caveTopRight")
+                    {
+                        i = tilePicker_CaveTopRight.Image;
+                    }
 
                     // place the new image in the grid
                     grid[y, x] = i;
@@ -687,6 +769,10 @@ namespace LevelEditor
                 {
                     tilePicker.Hide();
                 }
+                foreach (PictureBox tilePicker in _cave)
+                {
+                    tilePicker.Hide();
+                }
             }
 
             // index 1 should be entities
@@ -707,10 +793,13 @@ namespace LevelEditor
                 {
                     tilePicker.Hide();
                 }
+                foreach (PictureBox tilePicker in _cave)
+                {
+                    tilePicker.Hide();
+                }
             }
 
             // index 2 should be grass
-            // index 0 should be the misc tiles
             if (comboBox_TilePickerCatagories.SelectedIndex == 2)
             {
                 // show all the tile pickers in the list 
@@ -725,6 +814,34 @@ namespace LevelEditor
                     tilePicker.Hide();
                 }
                 foreach (PictureBox tilePicker in _entities)
+                {
+                    tilePicker.Hide();
+                }
+                foreach (PictureBox tilePicker in _cave)
+                {
+                    tilePicker.Hide();
+                }
+            }
+
+            // index 3 should be grass
+            if (comboBox_TilePickerCatagories.SelectedIndex == 3)
+            {
+                // show all the tile pickers in the list 
+                foreach (PictureBox tilePicker in _cave)
+                {
+                    tilePicker.Show();
+                }
+
+                // hide all other tile pickers
+                foreach (PictureBox tilePicker in _miscTiles)
+                {
+                    tilePicker.Hide();
+                }
+                foreach (PictureBox tilePicker in _entities)
+                {
+                    tilePicker.Hide();
+                }
+                foreach (PictureBox tilePicker in _grass)
                 {
                     tilePicker.Hide();
                 }
