@@ -44,6 +44,10 @@ namespace LevelEditor
         private int _largeMargin;
         private int _smallMargin;
 
+        // tile catagories
+        private List<PictureBox> _miscTiles;
+        private List<PictureBox> _entities;
+
 
         // constructors
 
@@ -61,7 +65,7 @@ namespace LevelEditor
             Image[,] grid = new Image[height, width];
 
             // build the map from the new grid
-            BuildMap(grid);
+            BuildMapEditor(grid);
         }
 
         /// <summary>
@@ -73,7 +77,7 @@ namespace LevelEditor
         {
             InitializeComponent();
 
-            BuildMap(LoadMapGrid(filepath));
+            BuildMapEditor(LoadMapGrid(filepath));
         }
 
 
@@ -248,7 +252,23 @@ namespace LevelEditor
                         {
                             writer.Write("levelEnd,");
                         }
-                        // if it doesn't match either image, it must be empty
+                        else if(i == tilePicker_PlanksLeft.Image)
+                        {
+                            writer.Write("planksLeft,");
+                        }
+                        else if (i == tilePicker_PlanksCenter.Image)
+                        {
+                            writer.Write("planksCenter,");
+                        }
+                        else if (i == tilePicker_PlanksRight.Image)
+                        {
+                            writer.Write("planksRight,");
+                        }
+                        else if (i == tilePicker_Bricks.Image)
+                        {
+                            writer.Write("bricks");
+                        }
+                        // if it doesn't match any image, it must be empty
                         else
                         {
                             writer.Write("air,");
@@ -291,7 +311,7 @@ namespace LevelEditor
                 groupBox_MapView.Controls.Clear();
 
                 // build the map stored in the specified file
-                BuildMap(LoadMapGrid(openMapFile.FileName));
+                BuildMapEditor(LoadMapGrid(openMapFile.FileName));
             }
         }
 
@@ -314,12 +334,32 @@ namespace LevelEditor
         }
 
         /// <summary>
-        /// Takes a grid of Pictureboxes as 
-        /// input and displays them on screen
+        /// sets up and initializes most of the pieces required for the level editor
+        /// takes an array of images as input to build the level
         /// </summary>
-        /// <param name="grid">the 2D array of PictureBoxes which will be placed on screen</param>
-        private void BuildMap(Image[,] grid)
+        /// <param name="grid">the 2D array of images which will be placed on screen</param>
+        private void BuildMapEditor(Image[,] grid)
         {
+            // initialize the catagory lists and add the proper tile pickers
+            _miscTiles = new List<PictureBox>()
+            {
+                tilePicker_TestTile,
+                tilePicker_PlanksLeft,
+                tilePicker_PlanksCenter,
+                tilePicker_PlanksRight,
+                tilePicker_Bricks
+            };
+
+            _entities = new List<PictureBox>()
+            {
+                tilePicker_LevelEnd,
+                tilePicker_PlayerStart,
+                tilePicker_Snek
+            };
+
+            // set the selected catagory to the first index
+            comboBox_TilePickerCatagories.SelectedIndex = 0;
+
             // set up formatting things
             _largeMargin = 12;
             _smallMargin = 6;
@@ -452,6 +492,22 @@ namespace LevelEditor
                     {
                         i = tilePicker_LevelEnd.Image;
                     }
+                    else if (currentLine[x] == "planksLeft")
+                    {
+                        i = tilePicker_PlanksLeft.Image;
+                    }
+                    else if (currentLine[x] == "planksCenter")
+                    {
+                        i = tilePicker_PlanksCenter.Image;
+                    }
+                    else if (currentLine[x] == "planksRight")
+                    {
+                        i = tilePicker_PlanksRight.Image;
+                    }
+                    else if (currentLine[x] == "bricks")
+                    {
+                        i = tilePicker_Bricks.Image;
+                    }
 
                     // place the new image in the grid
                     grid[y, x] = i;
@@ -510,6 +566,41 @@ namespace LevelEditor
             */
 
             groupBox_MapView.ResumeLayout();
+        }
+
+        private void comboBox_TilePickerCatagories_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // index 0 should be the misc tiles
+            if(comboBox_TilePickerCatagories.SelectedIndex == 0)
+            {
+                // show all the tile pickers inj the list 
+                foreach(PictureBox tilePicker in _miscTiles)
+                {
+                    tilePicker.Show();
+                }
+
+                // hide all other tile pickers
+                foreach (PictureBox tilePicker in _entities)
+                {
+                    tilePicker.Hide();
+                }
+            }
+
+            // index 1 should be entities
+            if(comboBox_TilePickerCatagories.SelectedIndex == 1)
+            {
+                // show all the tile pickers in the list 
+                foreach (PictureBox tilePicker in _entities)
+                {
+                    tilePicker.Show();
+                }
+
+                // hide all other tile pickers
+                foreach (PictureBox tilePicker in _miscTiles)
+                {
+                    tilePicker.Hide();
+                }
+            }
         }
     }
 }
