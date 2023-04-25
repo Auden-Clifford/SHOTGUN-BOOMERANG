@@ -47,6 +47,7 @@ namespace LevelEditor
         // tile catagories
         private List<PictureBox> _miscTiles;
         private List<PictureBox> _entities;
+        private List<PictureBox> _grass;
 
 
         // constructors
@@ -236,10 +237,13 @@ namespace LevelEditor
 
                         // write the names of the images in the grid
                         // (each line of the file = a line of picture boxes in the grid)
+
+                        // save test tiles
                         if(i == tilePicker_TestTile.Image)
                         {
                             writer.Write("testTile,");
                         }
+                        // save entities
                         else if(i == tilePicker_Snek.Image)
                         {
                             writer.Write("snek,");
@@ -252,6 +256,7 @@ namespace LevelEditor
                         {
                             writer.Write("levelEnd,");
                         }
+                        // save plank tiles
                         else if(i == tilePicker_PlanksLeft.Image)
                         {
                             writer.Write("planksLeft,");
@@ -264,9 +269,47 @@ namespace LevelEditor
                         {
                             writer.Write("planksRight,");
                         }
+                        // save brick tiles
                         else if (i == tilePicker_Bricks.Image)
                         {
-                            writer.Write("bricks");
+                            writer.Write("bricks,");
+                        }
+                        // save grass tiles
+                        else if(i == tilePicker_GrassBottomCenter.Image)
+                        {
+                            writer.Write("grassBottomCenter,");
+                        }
+                        else if (i == tilePicker_GrassBottomLeft.Image)
+                        {
+                            writer.Write("grassBottomLeft,");
+                        }
+                        else if (i == tilePicker_GrassBottomRight.Image)
+                        {
+                            writer.Write("grassBottomRight,");
+                        }
+                        else if (i == tilePicker_GrassCenterCenter.Image)
+                        {
+                            writer.Write("grassCenterCenter,");
+                        }
+                        else if (i == tilePicker_GrassCenterLeft.Image)
+                        {
+                            writer.Write("grassCenterLeft,");
+                        }
+                        else if (i == tilePicker_GrassCenterRight.Image)
+                        {
+                            writer.Write("grassCenterRight,");
+                        }
+                        else if (i == tilePicker_GrassTopCenter.Image)
+                        {
+                            writer.Write("grassTopCenter,");
+                        }
+                        else if (i == tilePicker_GrassTopLeft.Image)
+                        {
+                            writer.Write("grassTopLeft,");
+                        }
+                        else if (i == tilePicker_GrassTopRight.Image)
+                        {
+                            writer.Write("grassTopRight,");
                         }
                         // if it doesn't match any image, it must be empty
                         else
@@ -355,6 +398,13 @@ namespace LevelEditor
                 tilePicker_LevelEnd,
                 tilePicker_PlayerStart,
                 tilePicker_Snek
+            };
+
+            _grass = new List<PictureBox>()
+            {
+                tilePicker_GrassTopLeft, tilePicker_GrassTopCenter, tilePicker_GrassTopRight,
+                tilePicker_GrassCenterLeft, tilePicker_GrassCenterCenter, tilePicker_GrassCenterRight,
+                tilePicker_GrassBottomLeft, tilePicker_GrassBottomCenter, tilePicker_GrassBottomRight,
             };
 
             // set the selected catagory to the first index
@@ -476,10 +526,12 @@ namespace LevelEditor
                     // at the location in the saved file the image will be null
                     Image i = null;
 
+                    // load test tiles
                     if (currentLine[x] == "testTile")
                     {
                         i = tilePicker_TestTile.Image;
                     }
+                    // load entities
                     else if (currentLine[x] == "snek")
                     {
                         i = tilePicker_Snek.Image;
@@ -492,6 +544,7 @@ namespace LevelEditor
                     {
                         i = tilePicker_LevelEnd.Image;
                     }
+                    // load plank tiles
                     else if (currentLine[x] == "planksLeft")
                     {
                         i = tilePicker_PlanksLeft.Image;
@@ -507,6 +560,43 @@ namespace LevelEditor
                     else if (currentLine[x] == "bricks")
                     {
                         i = tilePicker_Bricks.Image;
+                    }
+                    // load grass tiles
+                    else if (currentLine[x] == "grassBottomCenter")
+                    {
+                        i = tilePicker_GrassBottomCenter.Image;
+                    }
+                    else if (currentLine[x] == "grassBottomLeft")
+                    {
+                        i = tilePicker_GrassBottomLeft.Image;
+                    }
+                    else if (currentLine[x] == "grassBottomRight")
+                    {
+                        i = tilePicker_GrassBottomRight.Image;
+                    }
+                    else if (currentLine[x] == "grassCenterCenter")
+                    {
+                        i = tilePicker_GrassCenterCenter.Image;
+                    }
+                    else if (currentLine[x] == "grassCenterLeft")
+                    {
+                        i = tilePicker_GrassCenterLeft.Image;
+                    }
+                    else if (currentLine[x] == "grassCenterRight")
+                    {
+                        i = tilePicker_GrassCenterRight.Image;
+                    }
+                    else if (currentLine[x] == "grassTopCenter")
+                    {
+                        i = tilePicker_GrassTopCenter.Image;
+                    }
+                    else if (currentLine[x] == "grassTopLeft")
+                    {
+                        i = tilePicker_GrassTopLeft.Image;
+                    }
+                    else if (currentLine[x] == "grassTopRight")
+                    {
+                        i = tilePicker_GrassTopRight.Image;
                     }
 
                     // place the new image in the grid
@@ -573,7 +663,7 @@ namespace LevelEditor
             // index 0 should be the misc tiles
             if(comboBox_TilePickerCatagories.SelectedIndex == 0)
             {
-                // show all the tile pickers inj the list 
+                // show all the tile pickers in the list 
                 foreach(PictureBox tilePicker in _miscTiles)
                 {
                     tilePicker.Show();
@@ -581,6 +671,10 @@ namespace LevelEditor
 
                 // hide all other tile pickers
                 foreach (PictureBox tilePicker in _entities)
+                {
+                    tilePicker.Hide();
+                }
+                foreach (PictureBox tilePicker in _grass)
                 {
                     tilePicker.Hide();
                 }
@@ -600,7 +694,31 @@ namespace LevelEditor
                 {
                     tilePicker.Hide();
                 }
+                foreach (PictureBox tilePicker in _grass)
+                {
+                    tilePicker.Hide();
+                }
             }
-        }
+
+            // index 2 should be grass
+            // index 0 should be the misc tiles
+            if (comboBox_TilePickerCatagories.SelectedIndex == 2)
+            {
+                // show all the tile pickers in the list 
+                foreach (PictureBox tilePicker in _grass)
+                {
+                    tilePicker.Show();
+                }
+
+                // hide all other tile pickers
+                foreach (PictureBox tilePicker in _miscTiles)
+                {
+                    tilePicker.Hide();
+                }
+                foreach (PictureBox tilePicker in _entities)
+                {
+                    tilePicker.Hide();
+                }
+            }
     }
 }
