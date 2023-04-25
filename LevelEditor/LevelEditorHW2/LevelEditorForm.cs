@@ -256,6 +256,10 @@ namespace LevelEditor
                         {
                             writer.Write("levelEnd,");
                         }
+                        else if(i == tilePicker_Vegemite.Image)
+                        {
+                            writer.Write("vegemite");
+                        }
                         // save plank tiles
                         else if(i == tilePicker_PlanksLeft.Image)
                         {
@@ -397,7 +401,8 @@ namespace LevelEditor
             {
                 tilePicker_LevelEnd,
                 tilePicker_PlayerStart,
-                tilePicker_Snek
+                tilePicker_Snek,
+                tilePicker_Vegemite
             };
 
             _grass = new List<PictureBox>()
@@ -544,6 +549,10 @@ namespace LevelEditor
                     {
                         i = tilePicker_LevelEnd.Image;
                     }
+                    else if (currentLine[x] == "vegemite")
+                    {
+                        i = tilePicker_Vegemite.Image;
+                    }
                     // load plank tiles
                     else if (currentLine[x] == "planksLeft")
                     {
@@ -661,10 +670,10 @@ namespace LevelEditor
         private void comboBox_TilePickerCatagories_SelectedIndexChanged(object sender, EventArgs e)
         {
             // index 0 should be the misc tiles
-            if(comboBox_TilePickerCatagories.SelectedIndex == 0)
+            if (comboBox_TilePickerCatagories.SelectedIndex == 0)
             {
                 // show all the tile pickers in the list 
-                foreach(PictureBox tilePicker in _miscTiles)
+                foreach (PictureBox tilePicker in _miscTiles)
                 {
                     tilePicker.Show();
                 }
@@ -681,7 +690,7 @@ namespace LevelEditor
             }
 
             // index 1 should be entities
-            if(comboBox_TilePickerCatagories.SelectedIndex == 1)
+            if (comboBox_TilePickerCatagories.SelectedIndex == 1)
             {
                 // show all the tile pickers in the list 
                 foreach (PictureBox tilePicker in _entities)
@@ -720,5 +729,6 @@ namespace LevelEditor
                     tilePicker.Hide();
                 }
             }
+        }
     }
 }

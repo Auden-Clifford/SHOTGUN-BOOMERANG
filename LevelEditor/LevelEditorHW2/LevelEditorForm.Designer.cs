@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LevelEditorForm));
             this.groupBox_TileSelector = new System.Windows.Forms.GroupBox();
+            this.tilePicker_Vegemite = new System.Windows.Forms.PictureBox();
             this.tilePicker_GrassBottomRight = new System.Windows.Forms.PictureBox();
             this.tilePicker_GrassBottomCenter = new System.Windows.Forms.PictureBox();
             this.tilePicker_GrassBottomLeft = new System.Windows.Forms.PictureBox();
@@ -58,6 +59,7 @@
             this.ScrollBarX = new System.Windows.Forms.HScrollBar();
             this.ScrollBarY = new System.Windows.Forms.VScrollBar();
             this.groupBox_TileSelector.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_Vegemite)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_GrassBottomRight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_GrassBottomCenter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_GrassBottomLeft)).BeginInit();
@@ -83,6 +85,7 @@
             // 
             // groupBox_TileSelector
             // 
+            this.groupBox_TileSelector.Controls.Add(this.tilePicker_Vegemite);
             this.groupBox_TileSelector.Controls.Add(this.tilePicker_GrassBottomRight);
             this.groupBox_TileSelector.Controls.Add(this.tilePicker_GrassBottomCenter);
             this.groupBox_TileSelector.Controls.Add(this.tilePicker_GrassBottomLeft);
@@ -108,6 +111,19 @@
             this.groupBox_TileSelector.TabIndex = 0;
             this.groupBox_TileSelector.TabStop = false;
             this.groupBox_TileSelector.Text = "Tiles";
+            // 
+            // tilePicker_Vegemite
+            // 
+            this.tilePicker_Vegemite.BackColor = System.Drawing.Color.Transparent;
+            this.tilePicker_Vegemite.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tilePicker_Vegemite.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_Vegemite.Image")));
+            this.tilePicker_Vegemite.Location = new System.Drawing.Point(6, 109);
+            this.tilePicker_Vegemite.Name = "tilePicker_Vegemite";
+            this.tilePicker_Vegemite.Size = new System.Drawing.Size(50, 50);
+            this.tilePicker_Vegemite.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tilePicker_Vegemite.TabIndex = 27;
+            this.tilePicker_Vegemite.TabStop = false;
+            this.tilePicker_Vegemite.Click += new System.EventHandler(this.tilePicker_Click);
             // 
             // tilePicker_GrassBottomRight
             // 
@@ -281,7 +297,7 @@
             // groupBox1
             // 
             this.groupBox1.Controls.Add(this.tilePicker_BlankGrey);
-            this.groupBox1.Location = new System.Drawing.Point(62, 224);
+            this.groupBox1.Location = new System.Drawing.Point(6, 224);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(62, 79);
             this.groupBox1.TabIndex = 13;
@@ -448,6 +464,7 @@
             this.Text = "Level Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LevelEditorForm_FormClosing);
             this.groupBox_TileSelector.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_Vegemite)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_GrassBottomRight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_GrassBottomCenter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_GrassBottomLeft)).EndInit();
@@ -503,5 +520,6 @@
         private PictureBox tilePicker_GrassTopRight;
         private PictureBox tilePicker_GrassTopCenter;
         private PictureBox tilePicker_GrassTopLeft;
+        private PictureBox tilePicker_Vegemite;
     }
 }
