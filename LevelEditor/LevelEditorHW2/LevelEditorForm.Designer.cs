@@ -173,14 +173,15 @@
             // 
             this.groupBox_MapView.Location = new System.Drawing.Point(197, 15);
             this.groupBox_MapView.Name = "groupBox_MapView";
-            this.groupBox_MapView.Size = new System.Drawing.Size(1277, 896);
+            this.groupBox_MapView.Padding = new System.Windows.Forms.Padding(0);
+            this.groupBox_MapView.Size = new System.Drawing.Size(1277, 908);
             this.groupBox_MapView.TabIndex = 4;
             this.groupBox_MapView.TabStop = false;
             this.groupBox_MapView.Text = "Map";
             // 
             // ScrollBarX
             // 
-            this.ScrollBarX.Location = new System.Drawing.Point(197, 914);
+            this.ScrollBarX.Location = new System.Drawing.Point(197, 926);
             this.ScrollBarX.Name = "ScrollBarX";
             this.ScrollBarX.Size = new System.Drawing.Size(1277, 17);
             this.ScrollBarX.TabIndex = 5;
@@ -198,7 +199,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1518, 943);
+            this.ClientSize = new System.Drawing.Size(1518, 949);
             this.Controls.Add(this.ScrollBarY);
             this.Controls.Add(this.ScrollBarX);
             this.Controls.Add(this.groupBox_MapView);

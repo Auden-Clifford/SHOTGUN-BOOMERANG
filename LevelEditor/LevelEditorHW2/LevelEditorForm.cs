@@ -40,6 +40,10 @@ namespace LevelEditor
         // store the tile size
         private int _tileSize;
 
+        // formatting
+        private int _largeMargin;
+        private int _smallMargin;
+
 
         // constructors
 
@@ -55,21 +59,6 @@ namespace LevelEditor
 
             //create a new grid of the specified dimentions
             Image[,] grid = new Image[height, width];
-            
-            /*
-            for(int y = 0; y < height; y++)
-            {
-                for(int x = 0; x < width; x++)
-                {
-                    //create a blue picturebox to put at each index of the array
-                    PictureBox pb = new PictureBox();
-                    pb.BackColor = Color.Gray;
-
-                    // place that picture box in the correct spot in the grid
-                    grid[y, x] = pb;
-                }
-            }
-            */
 
             // build the map from the new grid
             BuildMap(grid);
@@ -331,20 +320,24 @@ namespace LevelEditor
         /// <param name="grid">the 2D array of PictureBoxes which will be placed on screen</param>
         private void BuildMap(Image[,] grid)
         {
+            // set up formatting things
+            _largeMargin = 12;
+            _smallMargin = 6;
+
             // create the display grid (y, x) coordinate format
             _displayGrid = new PictureBox[32, 48];
 
             // set the tile size so that the display grid's height fits within the height of the map view
-            _tileSize = (groupBox_MapView.Height) / _displayGrid.GetLength(0);
+            _tileSize = (groupBox_MapView.Height - _largeMargin * 2) / _displayGrid.GetLength(0);
 
             // set the map view box's width to fit the full display grid
-            groupBox_MapView.Width = _tileSize * _displayGrid.GetLength(1);
+            groupBox_MapView.Width = _tileSize * _displayGrid.GetLength(1) + _largeMargin * 2;
 
             // set the X scrollbar's width to match the view box
             ScrollBarX.Width = groupBox_MapView.Width;
 
             // set the Y scrollbar's location to be 6 pixels after the edge of the view box
-            ScrollBarY.Location = new Point(groupBox_MapView.Location.X + groupBox_MapView.Width + 6, ScrollBarY.Location.Y);
+            ScrollBarY.Location = new Point(groupBox_MapView.Location.X + groupBox_MapView.Width + _smallMargin, ScrollBarY.Location.Y);
 
             // set the current grid equal to the grid being built
             _currentMapGrid = grid;
@@ -370,7 +363,7 @@ namespace LevelEditor
             ScrollBarX.LargeChange = 1;
 
             // set the window size to fit the map view window (with a margin of 30)
-            this.Width = groupBox_MapView.Location.X + groupBox_MapView.Width + ScrollBarY.Width + 30;
+            this.Width = groupBox_MapView.Location.X + groupBox_MapView.Width + ScrollBarY.Width + _largeMargin * 2;
 
             for(int y = 0; y < _displayGrid.GetLength(0); y++)
             {
@@ -386,7 +379,7 @@ namespace LevelEditor
                     _displayGrid[y, x].Size = new Size(_tileSize, _tileSize);
 
                     // this should set the boxes' edge-to-edge with eachother within the map view
-                    _displayGrid[y, x].Location = new Point(x * _tileSize, y * _tileSize);
+                    _displayGrid[y, x].Location = new Point(x * _tileSize + _largeMargin, y * _tileSize + _largeMargin * 2);
 
                     _displayGrid[y, x].SizeMode = PictureBoxSizeMode.StretchImage;
 
