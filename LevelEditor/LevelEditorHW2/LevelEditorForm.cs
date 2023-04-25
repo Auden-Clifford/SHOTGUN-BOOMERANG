@@ -5,6 +5,7 @@ using System.Data;
 using System.Drawing;
 using System.Drawing.Design;
 using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Numerics;
 using System.Text;
@@ -29,7 +30,9 @@ namespace LevelEditor
         private int _viewHeight;
 
         // stores all the picture boxes in the current map
-        private PictureBox[,] _currentMapGrid;
+        private Image[,] _currentMapGrid;
+
+        private PictureBox[,] _displayGrid;
 
         // tracks whether there are unsaved changes
         private bool _unsavedChanges;
@@ -51,8 +54,9 @@ namespace LevelEditor
             InitializeComponent();
 
             //create a new grid of the specified dimentions
-            PictureBox[,] grid = new PictureBox[height, width];
-
+            Image[,] grid = new Image[height, width];
+            
+            /*
             for(int y = 0; y < height; y++)
             {
                 for(int x = 0; x < width; x++)
@@ -65,6 +69,7 @@ namespace LevelEditor
                     grid[y, x] = pb;
                 }
             }
+            */
 
             // build the map from the new grid
             BuildMap(grid);
@@ -107,12 +112,25 @@ namespace LevelEditor
             // do not capture the mouse input, allows other tiles to pick up on input
             tileThatWasClicked.Capture = false;
 
-            // set the color of the tile to the selected color
+            // set the tile to the selected one
             tileThatWasClicked.Image = pictureBox_CurrentTile.Image;
+
+            // find the index of the tile
+            for (int y = 0; y < _displayGrid.GetLength(0); y++)
+            {
+                for (int x = 0; x < _displayGrid.GetLength(1); x++)
+                {
+                    if (_displayGrid[y, x] == tileThatWasClicked)
+                    {
+                        // set the position in the image grid equal to the image of the picturebox
+                        _currentMapGrid[y + ScrollBarY.Value, x + ScrollBarX.Value] = _displayGrid[y, x].Image;
+                    }
+                }
+            }
 
             // report that there are unsaved changes in title bar
             // set _unsavedChanges to true
-            if(_unsavedChanges == false)
+            if (_unsavedChanges == false)
             {
                 this.Text += " *";
                 _unsavedChanges = true;
@@ -144,6 +162,19 @@ namespace LevelEditor
             {
                 // set the color of the tile to the selected color
                 tileThatWasClicked.Image = pictureBox_CurrentTile.Image;
+
+                // find the index of the tile
+                for (int y = 0; y < _displayGrid.GetLength(0); y++)
+                {
+                    for (int x = 0; x < _displayGrid.GetLength(1); x++)
+                    {
+                        if (_displayGrid[y, x] == tileThatWasClicked)
+                        {
+                            // set the position in the image grid equal to the image of the picturebox
+                            _currentMapGrid[y + ScrollBarY.Value, x + ScrollBarX.Value] = _displayGrid[y, x].Image;
+                        }
+                    }
+                }
 
                 // report that there are unsaved changes in title bar
                 // set _unsavedChanges to true
@@ -208,23 +239,23 @@ namespace LevelEditor
                 {
                     for(int x = 0; x < _currentMapGrid.GetLength(1); x++)
                     {
-                        PictureBox pb = _currentMapGrid[y, x];
+                        Image i = _currentMapGrid[y, x];
 
-                        // write the names of the pictureboxs' images
+                        // write the names of the images in the grid
                         // (each line of the file = a line of picture boxes in the grid)
-                        if(pb.Image == tilePicker_TestTile.Image)
+                        if(i == tilePicker_TestTile.Image)
                         {
                             writer.Write("testTile,");
                         }
-                        else if(pb.Image == tilePicker_Snek.Image)
+                        else if(i == tilePicker_Snek.Image)
                         {
                             writer.Write("snek,");
                         }
-                        else if(pb.Image == tilePicker_PlayerStart.Image)
+                        else if(i == tilePicker_PlayerStart.Image)
                         {
                             writer.Write("playerStart,");
                         }
-                        else if(pb.Image == tilePicker_LevelEnd.Image)
+                        else if(i == tilePicker_LevelEnd.Image)
                         {
                             writer.Write("levelEnd,");
                         }
@@ -298,8 +329,23 @@ namespace LevelEditor
         /// input and displays them on screen
         /// </summary>
         /// <param name="grid">the 2D array of PictureBoxes which will be placed on screen</param>
-        private void BuildMap(PictureBox[,] grid)
+        private void BuildMap(Image[,] grid)
         {
+            // create the display grid (y, x) coordinate format
+            _displayGrid = new PictureBox[32, 48];
+
+            // set the tile size so that the display grid's height fits within the height of the map view
+            _tileSize = (groupBox_MapView.Height) / _displayGrid.GetLength(0);
+
+            // set the map view box's width to fit the full display grid
+            groupBox_MapView.Width = _tileSize * _displayGrid.GetLength(1);
+
+            // set the X scrollbar's width to match the view box
+            ScrollBarX.Width = groupBox_MapView.Width;
+
+            // set the Y scrollbar's location to be 6 pixels after the edge of the view box
+            ScrollBarY.Location = new Point(groupBox_MapView.Location.X + groupBox_MapView.Width + 6, ScrollBarY.Location.Y);
+
             // set the current grid equal to the grid being built
             _currentMapGrid = grid;
 
@@ -310,70 +356,58 @@ namespace LevelEditor
             int height = grid.GetLength(0);
             int width = grid.GetLength(1);
 
-            // set the tile size so 32 tiles fit within the height of the map view (with a margin of 12; 6 on each side)
-            _tileSize = (groupBox_MapView.Height - 12) / 32;
-
-            // set the map view box's width to fit the tiles (with a margin of 12; 6 on each side)
-            groupBox_MapView.Width = _tileSize * 48 + 12;
-
-            // set the X scrollbar's width to match the view box
-            ScrollBarX.Width = groupBox_MapView.Width;
-
-            // set the Y scrollbar's cocation to be just after the edge of the view box
-            ScrollBarY.Location = new Point(groupBox_MapView.Location.X + groupBox_MapView.Width + 6, ScrollBarY.Location.Y);
-
             // set the max values of the scrollbars to match the grid size
             // add 8 to account for the size of the scrollbar
-            ScrollBarX.Maximum = width - 48;
-            ScrollBarY.Maximum = height - 32;
+            ScrollBarY.Maximum = height - _displayGrid.GetLength(0);
+            ScrollBarX.Maximum = width - _displayGrid.GetLength(1);
+            
 
             // the Y scrollbar starts at the bottom (the scrollbar cannot reach the maximum)
             ScrollBarY.Value = ScrollBarY.Maximum;
 
+            // set the length of the scrollbar to value 1
             ScrollBarY.LargeChange = 1;
             ScrollBarX.LargeChange = 1;
 
             // set the window size to fit the map view window (with a margin of 30)
             this.Width = groupBox_MapView.Location.X + groupBox_MapView.Width + ScrollBarY.Width + 30;
 
-            for(int y = 0; y < height; y++)
+            for(int y = 0; y < _displayGrid.GetLength(0); y++)
             {
-                for(int x = 0; x < width; x++)
+                for(int x = 0; x < _displayGrid.GetLength(1); x++)
                 {
-                    // use the picturebox already in the grid
-                    PictureBox pb = grid[y, x];
+                    // create a new picturebox at the correct place in the grid
+                    _displayGrid[y, x] = new PictureBox();
 
-                    //set it's size
-                    pb.Size = new Size(_tileSize, _tileSize);
+                    // set the background to gray
+                    _displayGrid[y, x].BackColor = Color.Gray;
 
-                    //this should set the boxes edge-to-edge with each other
-                    // y is given a margin of 15 with the map border
-                    // x is given a margin of 6 with the map border
-                    //pb.Location = new Point(x * _tileSize + 6, y * _tileSize + 15);
+                    // set the picturebox to the correct size
+                    _displayGrid[y, x].Size = new Size(_tileSize, _tileSize);
 
-                    // set the pictureboxes to resize the textures
-                    pb.SizeMode = PictureBoxSizeMode.StretchImage;
+                    // this should set the boxes' edge-to-edge with eachother within the map view
+                    _displayGrid[y, x].Location = new Point(x * _tileSize, y * _tileSize);
+
+                    _displayGrid[y, x].SizeMode = PictureBoxSizeMode.StretchImage;
 
                     // add tile_click to the click event
-                    pb.MouseDown += tile_Click;
-                    pb.MouseEnter += tile_MouseEnter;
+                    _displayGrid[y, x].MouseDown += tile_Click;
+                    _displayGrid[y, x].MouseEnter += tile_MouseEnter;
 
                     // add the picturebox to the controls list
-                    groupBox_MapView.Controls.Add(pb);
-
-                    // hide all tiles t first
-                    pb.Hide();
+                    // add the picturebox to the controls list
+                    groupBox_MapView.Controls.Add(_displayGrid[y, x]);
                 }
             }
 
             // show only tiles within the first 48 x or the last 32 y (y is the first dimetion)
             // all shown tiles will be positioned edge-to edge in the window
-            for (int y = 0; y < 32; y++)
+            for (int y = 0; y < _displayGrid.GetLength(0); y++)
             {
-                for(int x = 0; x < 48; x++)
+                for(int x = 0; x < _displayGrid.GetLength(1); x++)
                 {
-                    grid[y + grid.GetLength(0) - 32, x].Location = new Point(x * _tileSize + 6, y * _tileSize + 15);
-                    grid[y + grid.GetLength(0) - 32, x].Show();
+                    // display the first 48 images in the x direction and the last 32 in the y
+                    _displayGrid[y, x].Image = grid[y + grid.GetLength(0) - 32, x];
                 }
             }
         }
@@ -384,7 +418,7 @@ namespace LevelEditor
         /// </summary>
         /// <param name="filePath">The path to the .level file</param>
         /// <returns>A grid of pictureboxes with colors loaded from a file</returns>
-        private PictureBox[,] LoadMapGrid(string filePath)
+        private Image[,] LoadMapGrid(string filePath)
         {
             // open the specified file for reading.
             StreamReader reader = new StreamReader(File.OpenRead(filePath));
@@ -395,7 +429,7 @@ namespace LevelEditor
             int width = int.Parse(dimentions[1]);
 
             // create the empty grid
-            PictureBox[,] grid = new PictureBox[height, width];
+            Image[,] grid = new Image[height, width];
 
             for(int y = 0; y < height; y++)
             {
@@ -405,31 +439,29 @@ namespace LevelEditor
 
                 for(int x = 0; x < width; x++)
                 {
-                    // create a new picturebox and give
-                    // it a color from the saved file
-                    PictureBox pb = new PictureBox();
-                    pb.BackColor = Color.Gray;
-                    //pb.BackColor = Color.FromArgb(int.Parse(currentLine[x]));
+                    // set up an image to add to the grid, if there is nothing
+                    // at the location in the saved file the image will be null
+                    Image i = null;
 
                     if (currentLine[x] == "testTile")
                     {
-                        pb.Image = Image.FromFile("../../../../textures/testTile.png");
+                        i = tilePicker_TestTile.Image;
                     }
                     else if (currentLine[x] == "snek")
                     {
-                        pb.Image = Image.FromFile("../../../../textures/snek.png");
+                        i = tilePicker_Snek.Image;
                     }
                     else if (currentLine[x] == "playerStart")
                     {
-                        pb.Image = Image.FromFile("../../../../textures/playerStart.png");
+                        i = tilePicker_PlayerStart.Image;
                     }
                     else if (currentLine[x] == "levelEnd")
                     {
-                        pb.Image = Image.FromFile("../../../../textures/endFlag_1t.png");
+                        i = tilePicker_LevelEnd.Image;
                     }
 
-                    // place the new picturebox in the grid
-                    grid[y, x] = pb;
+                    // place the new image in the grid
+                    grid[y, x] = i;
                 }
             }
 
@@ -454,17 +486,25 @@ namespace LevelEditor
         {
             groupBox_MapView.SuspendLayout();
 
-            // loop through all tiles
+            // loop through all display tiles
+            for(int y = 0; y < _displayGrid.GetLength(0); y++)
+            {
+                for(int x = 0; x < _displayGrid.GetLength(1); x++)
+                {
+                    _displayGrid[y, x].Image = _currentMapGrid[y + ScrollBarY.Value, x + ScrollBarX.Value];
+                }
+            }
+
+            /*
             for(int y = 0; y < _currentMapGrid.GetLength(0); y++)
             {
                 for(int x = 0; x < _currentMapGrid.GetLength(1); x++)
                 {
-                    // if theyre within the scrollbar value range, show them and position them
-                    // so that they properly fill the screen and sit edge-to-edge
+                    // if theyre within the scrollbar value range, display them on the display grid
                     if((y >= ScrollBarY.Value && y < ScrollBarY.Value + 32) &&
                         (x >= ScrollBarX.Value && x < ScrollBarX.Value + 48))
                     {
-                        _currentMapGrid[y, x].Location = new Point((x - ScrollBarX.Value) * _tileSize + 6, (y - ScrollBarY.Value) * _tileSize + 15);
+                        _displayGrid[ _currentMapGrid[y, x].Location = new Point((x - ScrollBarX.Value) * _tileSize + 6, (y - ScrollBarY.Value) * _tileSize + 15);
                         _currentMapGrid[y, x].Show();
                     }
                     // otherwise hide them
@@ -474,6 +514,7 @@ namespace LevelEditor
                     }
                 }
             }
+            */
 
             groupBox_MapView.ResumeLayout();
         }
