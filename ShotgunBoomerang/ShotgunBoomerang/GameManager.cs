@@ -86,7 +86,7 @@ namespace ShotgunBoomerang
         private Texture2D muzzleSprite;
         private Texture2D controls;
 
-        private List<Texture2D> demoLevelTexturepack;
+        private List<Texture2D> levelTexturepack;
 
         // Fonts
         private SpriteFont arial12;
@@ -173,11 +173,37 @@ namespace ShotgunBoomerang
             controls = this.Content.Load<Texture2D>("controls");
 
             // These are the textures the test level will need to display prperly
-            demoLevelTexturepack = new List<Texture2D>()
+            levelTexturepack = new List<Texture2D>()
             {
                 this.Content.Load<Texture2D>("TestTile"),
+                this.Content.Load<Texture2D>("bricks"),
+                this.Content.Load<Texture2D>("planksCenter"),
+                this.Content.Load<Texture2D>("planksLeft"),
+                this.Content.Load<Texture2D>("planksRight"),
+
                 this.Content.Load<Texture2D>("Snek"),
-                this.Content.Load<Texture2D>("ausFlag")
+                this.Content.Load<Texture2D>("ausFlag"),
+                this.Content.Load<Texture2D>("vegemite"),
+
+                this.Content.Load<Texture2D>("caveBottomCenter"),
+                this.Content.Load<Texture2D>("caveBottomLeft"),
+                this.Content.Load<Texture2D>("caveBottomRight"),
+                this.Content.Load<Texture2D>("caveCenterCenter"),
+                this.Content.Load<Texture2D>("caveCenterLeft"),
+                this.Content.Load<Texture2D>("caveCenterRight"),
+                this.Content.Load<Texture2D>("caveTopCenter"),
+                this.Content.Load<Texture2D>("caveTopLeft"),
+                this.Content.Load<Texture2D>("caveTopRight"),
+
+                this.Content.Load<Texture2D>("grassBottomCenter"),
+                this.Content.Load<Texture2D>("grassBottomLeft"),
+                this.Content.Load<Texture2D>("grassBottomRight"),
+                this.Content.Load<Texture2D>("grassCenterCenter"),
+                this.Content.Load<Texture2D>("grassCenterLeft"),
+                this.Content.Load<Texture2D>("grassCenterRight"),
+                this.Content.Load<Texture2D>("grassTopCenter"),
+                this.Content.Load<Texture2D>("grassTopLeft"),
+                this.Content.Load<Texture2D>("grassTopRight")
             };
 
             // Load SFX
@@ -205,8 +231,8 @@ namespace ShotgunBoomerang
                 -testTileSprite.Width * 3));
             */
 
-            demoLevel = new Level(demoLevelTexturepack, "Levels/testLevel3.level");
-            levelOne = new Level(demoLevelTexturepack, "Levels/Level1_V1Alt.level"); //remember to replace the default textures
+            demoLevel = new Level(levelTexturepack, "Levels/testLevel3.level");
+            levelOne = new Level(levelTexturepack, "Levels/Level1_V1Alt.level"); //remember to replace the default textures
 
             //NOT level 2. just a test alt for level 1
             //levelTwo = new Level(demoLevelTexturepack, "../../../../Levels/Level1_V1Alt.level");
