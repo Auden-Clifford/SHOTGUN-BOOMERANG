@@ -65,6 +65,8 @@ namespace ShotgunBoomerang
             startPos = new Vector2(_position.X, _position.Y);
             bulletSpeed = new Vector2(4, 0);
             counter = 0f;
+            _height = _sprite.Height;
+            _width = _sprite.Width;
 
             damaged = false;
             defaultSpeed = new Vector2(moveSpeed, 0);
@@ -510,6 +512,7 @@ namespace ShotgunBoomerang
                 if (intersectRect.Width <= intersectRect.Height)
                 {
 
+                    //Fixes problem where very small and brief horizontal collisions cause reversal
                     if (intersectRect.Height >= 16)
                     {
                         if (direction == directionState.Left)
@@ -538,9 +541,7 @@ namespace ShotgunBoomerang
                         
 
 
-                        //I implemented this conditional because I was concerned that the snake was getting caught
-                        //on the lip of the next tile.
-                        //It wasn't, but the limit doesn't affect the desired behaviour. Removing it makes no difference
+                        
 
 
                         if (intersectRect.Height >= 16)

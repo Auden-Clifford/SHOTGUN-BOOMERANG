@@ -67,6 +67,9 @@ namespace ShotgunBoomerang
         private Texture2D healthBar;
         private Texture2D ammoBar;
         private Texture2D demoDisplay;
+        private Texture2D playerSpriteSheet;
+        private Texture2D playerShotgunArm;
+        private Texture2D muzzleSprite;
 
         //private Texture2D testTileSprite;
         private Texture2D playerSprite;
@@ -167,13 +170,14 @@ namespace ShotgunBoomerang
             {
                 this.Content.Load<Texture2D>("TestTile"),
                 this.Content.Load<Texture2D>("Snek"),
-                this.Content.Load<Texture2D>("ausFlag")
-            };
+                this.Content.Load<Texture2D>("ausFlag"),
                 this.Content.Load<Texture2D>("endFlag"),
                 this.Content.Load<Texture2D>("scorpin_Right"),
                 this.Content.Load<Texture2D>("scorpin_Left"),
                 this.Content.Load<Texture2D>("Bullet")
-        };
+            };
+                
+        
 
             deathSound = this.Content.Load<Song>("BadToTheBones");
             
@@ -384,13 +388,13 @@ namespace ShotgunBoomerang
 
                     //Spawns in a scorpion at your mouse
                     //Should also work for anything else really
-                    /*
+                    
                     if (kb.IsKeyDown(Keys.I) && prevKb.IsKeyUp(Keys.I))
                     {
                         currentLevel.CurrentEnemies.Add(new ScorpionEnemy(scorpionLeft, scorpionRight, new Vector2(ms.X, ms.Y) + screenOffset, 50, 25, 3, 9, bulletSprite));
 
                     }
-                    */
+                    
 
 
 
