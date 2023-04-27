@@ -48,7 +48,6 @@ namespace ShotgunBoomerang
         private Direction _currentDirection;
         private bool _isHoldingBoomerang;
         private bool _isCollidingWithGround;
-        private bool _reloading;
 
         private int _ammo;
         private float _shotgunRadius;
@@ -60,10 +59,10 @@ namespace ShotgunBoomerang
 
         private double levelTimer;
         
-        private float muzzleDrawAngle;
+        //private float muzzleDrawAngle;
 
         private double _reloadTimer;
-        private double _muzzleFlashTimer;
+        private double _shotgunBlastTimer;
         private double dmgTimer; //this might not be handled here. won't implement until it's clear
 
         private List<Song> _playerSounds;
@@ -140,23 +139,6 @@ namespace ShotgunBoomerang
         }
 
         /// <summary>
-        /// retrieves/sets muzzle draw timer
-        /// </summary>
-        public double MuzzleDrawTimer
-        {
-            get { return _muzzleFlashTimer; }
-            set { _muzzleFlashTimer = value; }
-        }
-
-        /// <summary>
-        /// read-only muzzle draw angle
-        /// </summary>
-        public double MuzzleDrawAngle
-        {
-            get { return muzzleDrawAngle; }
-        }
-
-        /// <summary>
         /// Gets the player's shotgun damage radius
         /// </summary>
         public float ShotgunRadius { get { return _shotgunRadius; } }
@@ -207,14 +189,12 @@ namespace ShotgunBoomerang
             _playerSounds = playerSounds;
 
             dmgTimer = .5;
-            _reloadTimer = 1;
-            _muzzleFlashTimer = 0;
+            _reloadTimer = 0;
+            _shotgunBlastTimer = 0;
 
             drawColor = Color.White;
 
-            _reloading = false;
-
-            _muzzleFlashTimer = 0;
+            _shotgunBlastTimer = 0;
         }
 
 
@@ -236,28 +216,27 @@ namespace ShotgunBoomerang
 
             float angle = MathF.Atan2(mouseCenterNormal.Y, mouseCenterNormal.X);
 
-            if(_muzzleFlashTimer > 0)
-            {
-                sb.Draw(
-                    _shotgunBlastSprite,
-                    new Vector2(
-                        graphics.PreferredBackBufferWidth / 2,
-                        graphics.PreferredBackBufferHeight / 2),
-                    null,
-                    Color.White,
-                    angle,
-                    // rotate around the texture's center
-                    new Vector2(_shotgunBlastSprite.Width / 2, _shotgunBlastSprite.Height / 2),
-                    1, // same scale
-                    SpriteEffects.None,
-                    0.0f);
-            }
-
             switch(_currentDirection)
             {
-
                 case Direction.Left:
-                    if(_reloading)
+                    if(_shotgunBlastTimer > 0)
+                    {
+                    sb.Draw(
+                        _shotgunBlastSprite,
+                        new Vector2(
+                            graphics.PreferredBackBufferWidth / 2,
+                            graphics.PreferredBackBufferHeight / 2),
+                        null,
+                        Color.White,
+                        angle,
+                        // rotate around the texture's center
+                        new Vector2(_shotgunBlastSprite.Width / 2, _shotgunBlastSprite.Height / 2),
+                        1, // same scale
+                        SpriteEffects.None,
+                        0.0f);
+                    }
+
+                    if (_reloadTimer > 0)
                     {
                         sb.Draw(
                             _shotgunArmSprite,
@@ -318,7 +297,24 @@ namespace ShotgunBoomerang
 
                 case Direction.Right:
                     // flip the sprite when the player looks right
-                    if (_reloading)
+                    if(_shotgunBlastTimer > 0)
+                    {
+                    sb.Draw(
+                        _shotgunBlastSprite,
+                        new Vector2(
+                            graphics.PreferredBackBufferWidth / 2,
+                            graphics.PreferredBackBufferHeight / 2),
+                        null,
+                        Color.White,
+                        angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
+                        // rotate around the texture's center
+                        new Vector2(_shotgunBlastSprite.Width / 2, _shotgunBlastSprite.Height / 2),
+                        1, // same scale
+                        SpriteEffects.FlipHorizontally,
+                        0.0f);
+                    }
+
+                    if (_reloadTimer > 0)
                     {
                         sb.Draw(
                             _shotgunArmSprite,
@@ -461,9 +457,13 @@ namespace ShotgunBoomerang
                     }
 
                     // player reloads if they run out or press R
-                    if ((kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R)) || _ammo == 0)
+                    // (and they are not currently reloading or at full ammo)
+                    if (_reloadTimer <= 0 &&
+                        _ammo < 2 &&
+                        ((kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R)) ||
+                        _ammo == 0)) 
                     {
-                        _reloading = true;
+                        _reloadTimer = 0.5;
                     }
 
                     // Transition to Airborne when no longer colliding with the ground
@@ -518,9 +518,13 @@ namespace ShotgunBoomerang
                     _velocity *= runFriction;
 
                     // player reloads if they run out or press R
-                    if ((kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R)) || _ammo == 0)
+                    // (and they are not currently reloading or at full ammo)
+                    if (_reloadTimer <= 0 &&
+                        _ammo < 2 &&
+                        ((kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R)) ||
+                        _ammo == 0))
                     {
-                        _reloading = true;
+                        _reloadTimer = 0.5;
                     }
 
                     // Transition to Airborne when no longer colliding with the ground
@@ -620,9 +624,13 @@ namespace ShotgunBoomerang
                     }
 
                     // player reloads if they run out or press R
-                    if ((kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R)) || _ammo == 0)
+                    // (and they are not currently reloading or at full ammo)
+                    if (_reloadTimer <= 0 &&
+                        _ammo < 2 &&
+                        ((kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R)) ||
+                        _ammo == 0))
                     {
-                        _reloading = true;
+                        _reloadTimer = 0.5;
                     }
 
                     // Transition to Run when CTRL is released
@@ -671,9 +679,13 @@ namespace ShotgunBoomerang
                     }
 
                     // player reloads if they run out or press R
-                    if ((kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R)) || _ammo == 0)
+                    // (and they are not currently reloading or at full ammo)
+                    if (_reloadTimer <= 0 &&
+                        _ammo < 2 &&
+                        ((kb.IsKeyDown(Keys.R) && prevKb.IsKeyUp(Keys.R)) ||
+                        _ammo == 0))
                     {
-                        _reloading = true;
+                        _reloadTimer = 0.5;
                     }
 
                     // Transition to Idle when there is no horizontal velocity
@@ -709,18 +721,18 @@ namespace ShotgunBoomerang
                     break;
             }
 
-            // separate state that allows for realoading in other states
-            if(_reloading)
+            // run reload logic as long as the reload timer is still running
+            if(_reloadTimer > 0)
             {
                 _reloadTimer -= gameTime.ElapsedGameTime.TotalSeconds;
-                MediaPlayer.Play(_playerSounds[3]);
+                //MediaPlayer.Play(_playerSounds[3]);
 
+                // the moment after the reload timer is up, add the ammo
                 if (_reloadTimer <= 0)
                 {
-                    _reloadTimer = 1;
-                    _reloading = false;
+                    //_reloadTimer = 1;
                     Ammo = 2;
-                    //MediaPlayer.Play(_playerSounds[3]);
+                    MediaPlayer.Play(_playerSounds[3]);
                 }
             }
 
@@ -728,7 +740,7 @@ namespace ShotgunBoomerang
             levelTimer += gameTime.ElapsedGameTime.TotalSeconds;
             score = (kills * 200) + (1200 - levelTimer * 10); // 200 points per kill and score is lost the more time is spent
 
-            _muzzleFlashTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            _shotgunBlastTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
             // the player's isCollidingWithGround variable must always
             // be set to false at the end of Update, it will be detected again in ResolveCollisions
@@ -852,7 +864,7 @@ namespace ShotgunBoomerang
 
         private void ShotgunAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameEnemy> enemies, List<IGameProjectile> projectiles, GameTime gameTime)
         {
-            if(_ammo > 0)
+            if(_ammo > 0 && _reloadTimer <= 0)
             {
                 // SFX (chooses one of three random sounds)
                 Random rng = new Random();
@@ -917,9 +929,8 @@ namespace ShotgunBoomerang
                     }
                 }
 
-                // VFX
-                _muzzleFlashTimer = 0.1;
-                muzzleDrawAngle = angle;
+                // set animation timer
+                _shotgunBlastTimer = 0.1;
 
                 Ammo--;
             }

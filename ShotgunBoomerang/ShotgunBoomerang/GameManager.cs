@@ -180,7 +180,7 @@ namespace ShotgunBoomerang
             {
                 this.Content.Load<Texture2D>("player_sheet"),
                 this.Content.Load<Texture2D>("player_sgArm_sheet"),
-                this.Content.Load<Texture2D>("muzzle"),
+                this.Content.Load<Texture2D>("player_sg_blast"),
                 this.Content.Load<Texture2D>("Boomerang")
             };
 
@@ -645,14 +645,6 @@ namespace ShotgunBoomerang
                     currentLevel.Draw(_spriteBatch, screenOffset);
                     player.Draw(_spriteBatch, graphics, ms);
                     DrawHPAmmo();
-
-                    // muzzle flare oh my
-                    /*
-                    if (player.MuzzleDrawTimer > 0)
-                    {
-                        _spriteBatch.Draw(muzzleSprite, new Vector2(graphics.PreferredBackBufferWidth/2, graphics.PreferredBackBufferHeight/2 - 32 ), null, Color.White, -(float)player.MuzzleDrawAngle, new Vector2(player.Width/2, player.Height/2), 1, SpriteEffects.None, 0.0f);
-                    }
-                    */
 
                     break;
 
