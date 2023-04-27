@@ -39,28 +39,32 @@ namespace ShotgunBoomerang
         // Fields
 
         private Texture2D _boomerangSprite;
-        private Texture2D _ShotgunArmSprite;
+        private Texture2D _shotgunArmSprite;
+        private Texture2D _shotgunBlastSprite;
 
-        private int _ammo;
-        private bool _isHoldingBoomerang;
+        
+        
         private PlayerState _currentState;
         private Direction _currentDirection;
+        private bool _isHoldingBoomerang;
+        private bool _isCollidingWithGround;
+        private bool _reloading;
+
+        private int _ammo;
         private float _shotgunRadius;
         private float _shotgunAngle;
-        private bool _isCollidingWithGround;
         private float _jumpForce;
 
         private double score;
         private int kills;
 
         private double levelTimer;
-        private double dmgTimer; //this might not be handled here. won't implement until it's clear
-
-        private double muzzleDrawTimer;
+        
         private float muzzleDrawAngle;
 
         private double _reloadTimer;
-        private bool _reloading;
+        private double _muzzleFlashTimer;
+        private double dmgTimer; //this might not be handled here. won't implement until it's clear
 
         private List<Song> _playerSounds;
 
@@ -140,8 +144,8 @@ namespace ShotgunBoomerang
         /// </summary>
         public double MuzzleDrawTimer
         {
-            get { return muzzleDrawTimer; }
-            set { muzzleDrawTimer = value; }
+            get { return _muzzleFlashTimer; }
+            set { _muzzleFlashTimer = value; }
         }
 
         /// <summary>
@@ -167,11 +171,20 @@ namespace ShotgunBoomerang
         /// <param name="shotgunArmSprite">The player's arm texture/spritesheet</param>
         /// <param name="position">The player's starting position</param>
         /// <param name="health">The player's starting health</param>
-        public Player(Texture2D sprite, Texture2D boomerangSprite, Texture2D shotgunArmSprite, Vector2 position, float health, List<Song> playerSounds)
+        public Player(List<Texture2D> texturePack, Vector2 position, float health, List<Song> playerSounds)
         {
-            _sprite = sprite;
-            _boomerangSprite = boomerangSprite;
-            _ShotgunArmSprite = shotgunArmSprite;
+            // the player's main sprite should be the first sprite
+            _sprite = texturePack[0];
+
+            // the player's shotgun arm should be the second sprite
+            _shotgunArmSprite = texturePack[1];
+
+            // the shotgun's blast/muzzle flare should be the third sprite
+            _shotgunBlastSprite = texturePack[2];
+
+            // the boomerang's sprite should be the fourth sprite
+            _boomerangSprite = texturePack[3];
+            
 
             _position = position;
             _width = _sprite.Width; // the spritesheet is 1 sprites long
@@ -195,11 +208,13 @@ namespace ShotgunBoomerang
 
             dmgTimer = .5;
             _reloadTimer = 1;
+            _muzzleFlashTimer = 0;
+
             drawColor = Color.White;
 
             _reloading = false;
 
-            muzzleDrawTimer = 0;
+            _muzzleFlashTimer = 0;
         }
 
 
@@ -221,23 +236,60 @@ namespace ShotgunBoomerang
 
             float angle = MathF.Atan2(mouseCenterNormal.Y, mouseCenterNormal.X);
 
+            if(_muzzleFlashTimer > 0)
+            {
+                sb.Draw(
+                    _shotgunBlastSprite,
+                    new Vector2(
+                        graphics.PreferredBackBufferWidth / 2,
+                        graphics.PreferredBackBufferHeight / 2),
+                    null,
+                    Color.White,
+                    angle,
+                    // rotate around the texture's center
+                    new Vector2(_shotgunBlastSprite.Width / 2, _shotgunBlastSprite.Height / 2),
+                    1, // same scale
+                    SpriteEffects.None,
+                    0.0f);
+            }
+
             switch(_currentDirection)
             {
-                case Direction.Left:
-                    sb.Draw(
-                        _ShotgunArmSprite,
-                        new Vector2(
-                            graphics.PreferredBackBufferWidth / 2,
-                            graphics.PreferredBackBufferHeight / 2),
-                        null,
-                        Color.White,
-                        angle,
-                        // rotate around the texture's center
-                        new Vector2(_width / 2, _height / 2),
-                        1, // same scale
-                        SpriteEffects.None,
-                        0.0f);
 
+                case Direction.Left:
+                    if(_reloading)
+                    {
+                        sb.Draw(
+                            _shotgunArmSprite,
+                            new Vector2(
+                                graphics.PreferredBackBufferWidth / 2,
+                                graphics.PreferredBackBufferHeight / 2),
+                            new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet,
+                            Color.White,
+                            angle,
+                            // rotate around the texture's center
+                            new Vector2(_width / 2, _height / 2),
+                            1, // same scale
+                            SpriteEffects.None,
+                            0.0f);
+                    }
+                    else
+                    {
+                        sb.Draw(
+                            _shotgunArmSprite,
+                            new Vector2(
+                                graphics.PreferredBackBufferWidth / 2,
+                                graphics.PreferredBackBufferHeight / 2),
+                            new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
+                            Color.White,
+                            angle,
+                            // rotate around the texture's center
+                            new Vector2(_width / 2, _height / 2),
+                            1, // same scale
+                            SpriteEffects.None,
+                            0.0f);
+                    }
+                    
                     if (_isHoldingBoomerang)
                     {
                         sb.Draw(
@@ -266,19 +318,38 @@ namespace ShotgunBoomerang
 
                 case Direction.Right:
                     // flip the sprite when the player looks right
-                    sb.Draw(
-                        _ShotgunArmSprite,
-                        new Vector2(
-                            graphics.PreferredBackBufferWidth / 2,
-                            graphics.PreferredBackBufferHeight / 2),
-                        null,
-                        Color.White,
-                        angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
-                        // rotate around the texture's center
-                        new Vector2(_width / 2, _height / 2),
-                        1, // same scale
-                        SpriteEffects.FlipHorizontally,
-                        0.0f);
+                    if (_reloading)
+                    {
+                        sb.Draw(
+                            _shotgunArmSprite,
+                            new Vector2(
+                                graphics.PreferredBackBufferWidth / 2,
+                                graphics.PreferredBackBufferHeight / 2),
+                            new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet,
+                            Color.White,
+                            angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
+                            // rotate around the texture's center
+                            new Vector2(_width / 2, _height / 2),
+                            1, // same scale
+                            SpriteEffects.FlipHorizontally,
+                            0.0f);
+                    }
+                    else
+                    {
+                        sb.Draw(
+                            _shotgunArmSprite,
+                            new Vector2(
+                                graphics.PreferredBackBufferWidth / 2,
+                                graphics.PreferredBackBufferHeight / 2),
+                            new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
+                            Color.White,
+                            angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
+                            // rotate around the texture's center
+                            new Vector2(_width / 2, _height / 2),
+                            1, // same scale
+                            SpriteEffects.FlipHorizontally,
+                            0.0f);
+                    }
 
                     if (_isHoldingBoomerang)
                     {
@@ -657,7 +728,7 @@ namespace ShotgunBoomerang
             levelTimer += gameTime.ElapsedGameTime.TotalSeconds;
             score = (kills * 200) + (1200 - levelTimer * 10); // 200 points per kill and score is lost the more time is spent
 
-            muzzleDrawTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            _muzzleFlashTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
             // the player's isCollidingWithGround variable must always
             // be set to false at the end of Update, it will be detected again in ResolveCollisions
@@ -847,7 +918,7 @@ namespace ShotgunBoomerang
                 }
 
                 // VFX
-                muzzleDrawTimer = 0.1;
+                _muzzleFlashTimer = 0.1;
                 muzzleDrawAngle = angle;
 
                 Ammo--;

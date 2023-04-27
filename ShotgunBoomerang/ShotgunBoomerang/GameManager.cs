@@ -79,11 +79,14 @@ namespace ShotgunBoomerang
         private Texture2D threeDisplay;
 
         //private Texture2D testTileSprite;
-        private Texture2D playerSpriteSheet;
-        private Texture2D playerShotgunArm;
+        //private Texture2D playerSpriteSheet;
+        //private Texture2D playerShotgunArm;
         //private Texture2D snakeSprite;
-        private Texture2D boomerangSprite;
-        private Texture2D muzzleSprite;
+        //private Texture2D boomerangSprite;
+        //private Texture2D muzzleSprite;
+
+        private List<Texture2D> playerTexturePack;
+
         private Texture2D controls;
 
         private List<Texture2D> levelTexturepack;
@@ -157,22 +160,31 @@ namespace ShotgunBoomerang
             // Load textures
             menuBackground = this.Content.Load<Texture2D>("pixeldesertback");
             //testTileSprite = this.Content.Load<Texture2D>("TestTile");
-            playerSpriteSheet = this.Content.Load<Texture2D>("Player_sheet");
-            playerShotgunArm = this.Content.Load<Texture2D>("player_sgArm");
+            //playerSpriteSheet = this.Content.Load<Texture2D>("Player_sheet");
+            //playerShotgunArm = this.Content.Load<Texture2D>("player_sgArm");
             blankRectangleSprite = this.Content.Load<Texture2D>("blankRectangle");
-            boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
+            //boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
             //snakeSprite = this.Content.Load<Texture2D>("Snek");
             darkFilter = this.Content.Load<Texture2D>("darkfilter");
             healthBar = this.Content.Load<Texture2D>("redsquare");
             ammoBar = this.Content.Load<Texture2D>("ammoui");
             demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
             awesomeFlamingSkull = this.Content.Load<Texture2D>("awesomeflamingskull");
-            muzzleSprite = this.Content.Load<Texture2D>("muzzle");
+            //muzzleSprite = this.Content.Load<Texture2D>("muzzle");
             levelOneBack = this.Content.Load<Texture2D>("levelOneBack");
             oneDisplay = this.Content.Load<Texture2D>("oneDisplay");
             controls = this.Content.Load<Texture2D>("controls");
 
-            // These are the textures the test level will need to display prperly
+            // these textures are all used within the player class
+            playerTexturePack = new List<Texture2D>()
+            {
+                this.Content.Load<Texture2D>("player_sheet"),
+                this.Content.Load<Texture2D>("player_sgArm_sheet"),
+                this.Content.Load<Texture2D>("muzzle"),
+                this.Content.Load<Texture2D>("Boomerang")
+            };
+
+            // These textures are all used by the level class
             levelTexturepack = new List<Texture2D>()
             {
                 this.Content.Load<Texture2D>("TestTile"),
@@ -239,7 +251,7 @@ namespace ShotgunBoomerang
 
 
             // set up the player
-            player = new Player(playerSpriteSheet, boomerangSprite, playerShotgunArm, demoLevel.PlayerStart, 100, playerSounds);
+            player = new Player(playerTexturePack, demoLevel.PlayerStart, 100, playerSounds);
 
             //Test enemy
             /*
@@ -635,10 +647,12 @@ namespace ShotgunBoomerang
                     DrawHPAmmo();
 
                     // muzzle flare oh my
+                    /*
                     if (player.MuzzleDrawTimer > 0)
                     {
                         _spriteBatch.Draw(muzzleSprite, new Vector2(graphics.PreferredBackBufferWidth/2, graphics.PreferredBackBufferHeight/2 - 32 ), null, Color.White, -(float)player.MuzzleDrawAngle, new Vector2(player.Width/2, player.Height/2), 1, SpriteEffects.None, 0.0f);
                     }
+                    */
 
                     break;
 
