@@ -63,7 +63,7 @@ namespace ShotgunBoomerang
             // Checking for player collision
             if (CheckCollision(player))
             {
-                player.TakeDamage(_damage);
+                player.TakeHit(this, _damage);
             }
         }
     }

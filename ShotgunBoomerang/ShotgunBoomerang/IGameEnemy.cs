@@ -9,16 +9,11 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ShotgunBoomerang
 {
-    public enum enemyState
+    
+    public enum EnemyState
     {
         Damaged,
         Run
-    }
-
-    public enum directionState
-    {
-        Left,
-        Right,
     }
 
     /// <summary>
@@ -47,7 +42,12 @@ namespace ShotgunBoomerang
         /// <param name="enemies">The current level's enemies</param>
         /// <param name="projectiles">The projectiles currently in play</param>
         public void Update(
+            KeyboardState kb,
+            KeyboardState prevKb,
+            MouseState ms,
+            MouseState prevMs,
             List<Tile> tileMap,
+            List<IGameEnemy> enemies,
             List<IGameProjectile> projectiles,
             Player player,
             GameTime gameTime);
@@ -58,31 +58,42 @@ namespace ShotgunBoomerang
         /// <returns></returns>
         public bool CheckCollision(MobileEntity other);
 
+        /*
         /// <summary>
         /// Should either launch a projectile or melee attack on the player
         /// </summary>
         public void Attack(Player player);
+        */
 
+        /*
         /// <summary>
         /// Checks the health of the enemy to trigger it's death
         /// </summary>
         public bool CheckHealth();
+        */
         
+        /*
         /// <summary>
         /// should contain logic for movement
         /// </summary>
         public void Move();
+        */
 
         /// <summary>
-        /// Takes a set amount of damage from a source
+        /// Contains logic for an enemy taking a hit from a given source
         /// </summary>
+        /// <param name="damagerNormal">
+        /// The normalized vector between the center of the entity 
+        /// damaging the enemy and the center of the enemy
+        /// </param>
         /// <param name="damage">amount of damage to take</param>
-        /// <returns></returns>
-        public void TakeDamage(float damage, Player player);
+        public void TakeHit(GameObject attacker, float damage);
 
+        
         /// <summary>
         /// Resets to start location
         /// </summary>
         public void Reset();
+        
     }
 }

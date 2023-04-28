@@ -13,7 +13,7 @@ using Microsoft.Xna.Framework.Media;
 namespace ShotgunBoomerang
 {
     /// <summary>
-    /// Determines the different states the player can be in
+    /// Defines the different states the player can be in
     /// </summary>
     public enum PlayerState
     {
@@ -23,15 +23,6 @@ namespace ShotgunBoomerang
         Slide,
         Skid,
         Damaged
-    }
-
-    /// <summary>
-    /// Determines the directions the player can face
-    /// </summary>
-    public enum Direction
-    {
-        Left,
-        Right
     }
 
     internal class Player : MobileEntity
@@ -66,8 +57,8 @@ namespace ShotgunBoomerang
         private double dmgTimer; //this might not be handled here. won't implement until it's clear
 
         private List<Song> _playerSounds;
-
-        private Color drawColor;
+        private double _dmgTimer;
+        private Color _drawColor;
 
         // Properties
 
@@ -188,11 +179,11 @@ namespace ShotgunBoomerang
 
             _playerSounds = playerSounds;
 
-            dmgTimer = .5;
+            _dmgTimer = .5;
             _reloadTimer = 0;
             _shotgunBlastTimer = 0;
 
-            drawColor = Color.White;
+            _drawColor = Color.White;
 
             _shotgunBlastTimer = 0;
         }
@@ -227,7 +218,7 @@ namespace ShotgunBoomerang
                             graphics.PreferredBackBufferWidth / 2,
                             graphics.PreferredBackBufferHeight / 2),
                         null,
-                        Color.White,
+                        _drawColor,
                         angle,
                         // rotate around the texture's center
                         new Vector2(_shotgunBlastSprite.Width / 2, _shotgunBlastSprite.Height / 2),
@@ -244,7 +235,7 @@ namespace ShotgunBoomerang
                                 graphics.PreferredBackBufferWidth / 2,
                                 graphics.PreferredBackBufferHeight / 2),
                             new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet,
-                            Color.White,
+                            _drawColor,
                             angle,
                             // rotate around the texture's center
                             new Vector2(_width / 2, _height / 2),
@@ -260,7 +251,7 @@ namespace ShotgunBoomerang
                                 graphics.PreferredBackBufferWidth / 2,
                                 graphics.PreferredBackBufferHeight / 2),
                             new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
-                            Color.White,
+                            _drawColor,
                             angle,
                             // rotate around the texture's center
                             new Vector2(_width / 2, _height / 2),
@@ -279,7 +270,7 @@ namespace ShotgunBoomerang
                             graphics.PreferredBackBufferHeight / 2
                             - _height / 2),
                             new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
-                            Color.White);
+                            _drawColor);
                     }
                     else
                     {
@@ -291,7 +282,7 @@ namespace ShotgunBoomerang
                             graphics.PreferredBackBufferHeight / 2
                             - _height / 2),
                             new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
-                            Color.White);
+                            _drawColor);
                     }
                     break;
 
@@ -305,7 +296,7 @@ namespace ShotgunBoomerang
                             graphics.PreferredBackBufferWidth / 2,
                             graphics.PreferredBackBufferHeight / 2),
                         null,
-                        Color.White,
+                        _drawColor,
                         angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
                         // rotate around the texture's center
                         new Vector2(_shotgunBlastSprite.Width / 2, _shotgunBlastSprite.Height / 2),
@@ -322,7 +313,7 @@ namespace ShotgunBoomerang
                                 graphics.PreferredBackBufferWidth / 2,
                                 graphics.PreferredBackBufferHeight / 2),
                             new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet,
-                            Color.White,
+                            _drawColor,
                             angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
                             // rotate around the texture's center
                             new Vector2(_width / 2, _height / 2),
@@ -338,7 +329,7 @@ namespace ShotgunBoomerang
                                 graphics.PreferredBackBufferWidth / 2,
                                 graphics.PreferredBackBufferHeight / 2),
                             new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
-                            Color.White,
+                            _drawColor,
                             angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
                             // rotate around the texture's center
                             new Vector2(_width / 2, _height / 2),
@@ -357,7 +348,7 @@ namespace ShotgunBoomerang
                             graphics.PreferredBackBufferHeight / 2
                             - _height / 2),
                             new Rectangle(0, 0, _width, _height), // will print the bottom-right sprite in the sheet
-                            Color.White,
+                            _drawColor,
                             0,
                             new Vector2(0, 0),
                             1,
@@ -374,7 +365,7 @@ namespace ShotgunBoomerang
                             graphics.PreferredBackBufferHeight / 2
                             - _height / 2),
                             new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
-                            Color.White,
+                            _drawColor,
                             0,
                             new Vector2(0,0),
                             1,
@@ -708,13 +699,13 @@ namespace ShotgunBoomerang
                 case PlayerState.Damaged:
                     dmgTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
-                    drawColor = Color.Red;
+                    _drawColor = Color.Red;
 
                     _velocity *= 0.99f;
 
                     if(dmgTimer <= 0)
                     {
-                        drawColor = Color.White;
+                        _drawColor = Color.White;
                         dmgTimer = .5;
                         _currentState = PlayerState.Idle;
                     }
@@ -906,26 +897,26 @@ namespace ShotgunBoomerang
                         enemyAngle <= angle + _shotgunAngle / 2 && // and the angle between the enemy and the player is less than the max spread angle
                         enemyAngle >= angle - _shotgunAngle / 2)  // and the angle between the enemy and the player is greater than the min spread angle
                     {
-                        enemies[i].TakeDamage(_damage, this);
+                        enemies[i].TakeHit(this, _damage);
                     }
 
                 }
 
                 for (int i = 0; i < projectiles.Count; i++)
                 {
-                    Boomerang currentProjectile = (Boomerang)projectiles[i];
+                    //MobileEntity currentProjectile = (MobileEntity) projectiles[i];
 
-                    float distance = Vector2.Distance(CenterPoint, currentProjectile.CenterPoint);
+                    float distance = Vector2.Distance(CenterPoint, projectiles[i].CenterPoint);
                     float projectileAngle = MathF.Atan2(
-                        -(currentProjectile.CenterPoint.Y - CenterPoint.Y),
-                        (currentProjectile.CenterPoint.X - CenterPoint.X));
+                        -(projectiles[i].CenterPoint.Y - CenterPoint.Y),
+                        (projectiles[i].CenterPoint.X - CenterPoint.X));
 
-                    //caluclates if enemy is in range
+                    //caluclates if projectile is in range
                     if (distance <= _shotgunRadius & // only if the projectile is within the radius
                         projectileAngle <= angle + _shotgunAngle / 2 && // and the angle between the projectile and the player is less than the max spread angle
                         projectileAngle >= angle - _shotgunAngle / 2)  // and the angle between the projectile and the player is greater than the min spread angle
                     {
-                        currentProjectile.ShotgunHit(mouseCenterNormal, graphics, _damage);
+                        projectiles[i].ShotgunHit(mouseCenterNormal);
                     }
                 }
 
@@ -958,11 +949,18 @@ namespace ShotgunBoomerang
         /// <summary>
         /// Player takes damage, gains i frames
         /// </summary>
-        public void TakeDamage(float incDmg)
+        public void TakeHit(GameObject attacker, float damage)
         {
+            // the player should not take damage if they are already in the damaged state
             if (_currentState != PlayerState.Damaged)
             {
-                _health -= incDmg;
+                // get the normalized vector between the player's centerpoint and the enemy's centerpoint
+                Vector2 attackerNormal = Vector2.Normalize(CenterPoint - attacker.CenterPoint);
+
+                // throw the enemy away from it's attacker (throw force scales with damage)
+                _velocity += attackerNormal * (damage);
+
+                _health -= damage;
                 _currentState = PlayerState.Damaged;
             }
         }

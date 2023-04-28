@@ -18,6 +18,11 @@ namespace ShotgunBoomerang
     internal interface IGameProjectile
     {
         /// <summary>
+        /// Should get the projectile's centerpoint
+        /// </summary>
+        public Vector2 CenterPoint { get; }
+
+        /// <summary>
         /// Should tell the given spritebatch to draw/animate the projectile at the correct part of the screen
         /// </summary>
         public void Draw(SpriteBatch sb, Vector2 screenOffset);
@@ -45,21 +50,19 @@ namespace ShotgunBoomerang
             Player player,
             GameTime gameTime);
 
-
-        //Commented out because projectiles get it from MobileEntity as an override, but this causes a conflict
-        //As the override doesn't count as implementing the interface member. 
-        //Vice verse is also true, because the implemented interface member doesn't count as implementing
-        //The inherited abstract member from MobileEntity
         /*
-        /// <summary>
-        /// Should Resolve Collisions with Tiles
-        /// </summary>
-        protected void ResolveTileCollisions(List<Tile> tilemap);
-        */
-
         /// <summary>
         /// Should contain logic for what to do when the projectile hits a player or enemy
         /// </summary>
-        public void Hit(Player player, float damage);
+        public void HitEntity();
+        */
+
+        /// <summary>
+        /// Method that allows all projectiles to take hits from the shotgun
+        /// </summary>
+        /// <param name="shotgunNormal">The normalized vector between the shotgun and the projectile</param>
+        public void ShotgunHit(Vector2 shotgunNormal);
+
+        public void Reset();
     }
 }

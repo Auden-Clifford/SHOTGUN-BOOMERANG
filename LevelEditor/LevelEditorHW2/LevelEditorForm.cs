@@ -249,6 +249,10 @@ namespace LevelEditor
                         {
                             writer.Write("snek,");
                         }
+                        else if(i == tilePicker_Scorpion.Image)
+                        {
+                            writer.Write("scorpion,");
+                        }
                         else if(i == tilePicker_PlayerStart.Image)
                         {
                             writer.Write("playerStart,");
@@ -259,7 +263,7 @@ namespace LevelEditor
                         }
                         else if(i == tilePicker_Vegemite.Image)
                         {
-                            writer.Write("vegemite");
+                            writer.Write("vegemite,");
                         }
                         // save plank tiles
                         else if(i == tilePicker_PlanksLeft.Image)
@@ -440,6 +444,7 @@ namespace LevelEditor
                 tilePicker_LevelEnd,
                 tilePicker_PlayerStart,
                 tilePicker_Snek,
+                tilePicker_Scorpion,
                 tilePicker_Vegemite
             };
 
@@ -585,6 +590,10 @@ namespace LevelEditor
                     else if (currentLine[x] == "snek")
                     {
                         i = tilePicker_Snek.Image;
+                    }
+                    else if (currentLine[x] == "scorpion")
+                    {
+                        i = tilePicker_Scorpion.Image;
                     }
                     else if (currentLine[x] == "playerStart")
                     {

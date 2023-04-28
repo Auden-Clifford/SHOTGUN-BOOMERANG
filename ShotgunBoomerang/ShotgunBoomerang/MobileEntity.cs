@@ -9,6 +9,15 @@ using Microsoft.Xna.Framework.Input;
 
 namespace ShotgunBoomerang
 {
+    /// <summary>
+    /// Defines the directions the entity can face
+    /// </summary>
+    public enum Direction
+    {
+        Left,
+        Right
+    }
+
     internal abstract class MobileEntity : GameObject
     {
 
