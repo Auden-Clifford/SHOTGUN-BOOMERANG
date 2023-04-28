@@ -27,12 +27,19 @@ namespace ShotgunBoomerang
         //private bool damaged;
         private SnakeState _currentState;
 
+        private Texture2D _vegemiteDropSprite;
+
         
 
-        public SnakeEnemy(Texture2D sprite, Vector2 position)
+        public SnakeEnemy(List<Texture2D> texturePack, Vector2 position)
 
         {
-            _sprite = sprite;
+            // the snake's texture should be the first one
+            _sprite = texturePack[0];
+
+            // the vegemite sprite should be second
+            _vegemiteDropSprite = texturePack[1];
+
             _position = position;
             _startPos = position;
             _maxHealth = 100;
@@ -186,6 +193,16 @@ namespace ShotgunBoomerang
                     // if the enemy died, remove it from the enemies list
                     if(_health <= 0)
                     {
+                        // has a 1 in 10 chance of dropping vegemite
+                        Random dropRng = new Random();
+                        if(dropRng.Next(10) == 0)
+                        {
+                            projectiles.Add(
+                                new Vegemite(_vegemiteDropSprite,
+                                _position,
+                                _velocity));
+                        }
+
                         enemies.Remove(this);
                         player.Kills++;
                     }

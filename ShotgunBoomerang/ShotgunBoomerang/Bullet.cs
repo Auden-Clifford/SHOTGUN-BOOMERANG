@@ -41,6 +41,7 @@ namespace ShotgunBoomerang
             }
         }
 
+        /*
         /// <summary>
         /// method for use in the update loop, contains all logic the object needs to go through in a frame
         /// as well as any parameters from the game manager that might be needed for this logic. 
@@ -76,6 +77,7 @@ namespace ShotgunBoomerang
                 }
             }
         }
+        */
 
         /// <summary>
         /// I swear this isn't recursion. This is just fixing a problem arising from a conflict between
@@ -101,35 +103,68 @@ namespace ShotgunBoomerang
             Player player,
             GameTime gameTime)
         {
-            Update(tileMap, enemies, projectiles, player, gameTime);
+            //Only updates if active
+            if (active)
+            {
+                //Is not affected by gravity currently
+                _velocity.Y = 0;
+                Math.Clamp(_velocity.Y, 0, 0);
+                _position += _velocity;
+
+                //If it collides with the player, begin hit logic and remove the projectile
+                if (CheckCollision(player))
+                {
+                    player.TakeHit(this, _damage);
+                    projectiles.Remove(this);
+                }
+
+                //detetcts enemy collisions
+                for (int i = 0; i < enemies.Count; i++)
+                {
+                    MobileEntity enemey = (MobileEntity)enemies[i];
+                    if (this.CheckCollision(enemey))
+                    {
+                        enemies[i].TakeHit(this, _damage);
+                        projectiles.Remove(this);
+                    }
+                }
+
+                // if it collides with a wall, the bullet is removed
+                foreach (Tile tile in tileMap)
+                {
+                    if (CheckCollision(tile))
+                    {
+                        projectiles.Remove(this);
+                    }
+                }
+            }
+            //Update(tileMap, enemies, projectiles, player, gameTime);
         }
             
 
         /// <summary>
-        /// Disables the projectile and damages the player
+        /// Activates when the player shoots the shotgun at the projectile
+        /// The projectile flies in the direction of the shotgun blast
         /// </summary>
         /// <param name="player">The player</param>
         /// <param name="damage">How much damage to do</param>
-        public void Hit(Player player, float damage)
+        public void ShotgunHit(Vector2 shotgunNormal)
         {
-            player.TakeDamage(damage);
-            active = false;
+            // throw the bullet in the  direction of the shotgun blast
+            _velocity = shotgunNormal * _velocity.Length() * 2;
         }
 
+        
         /// <summary>
-        /// If the projectile hits a wall, deactivate it.
+        /// the bullet should not need to resolve collisions as it 
+        /// is removed from the level when it hits a wall
         /// </summary>
         /// <param name="tileMap">The tiles</param>
         protected override void ResolveTileCollisions(List<Tile> tileMap)
         {
-            foreach (Tile tile in tileMap)
-            {
-                if (CheckCollision(tile))
-                {
-                    active = false;
-                }
-            }
+            throw new NotImplementedException();
         }
+        
 
         /// <summary>
         /// Checks if there is a collision with another object
@@ -139,6 +174,16 @@ namespace ShotgunBoomerang
         public bool CheckCollision(MobileEntity other)
         {
             return this.HitBox.Intersects(other.HitBox);
+        }
+
+        /// <summary>
+        /// Bullets should not need a reset function because they should not
+        /// be spawned at the beginning of the level. this is a leftover from the interface
+        /// </summary>
+        /// <exception cref="NotImplementedException">unnecissary</exception>
+        public void Reset()
+        {
+            throw new NotImplementedException();
         }
     }
 }
