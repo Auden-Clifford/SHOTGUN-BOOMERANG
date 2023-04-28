@@ -184,6 +184,7 @@ namespace ShotgunBoomerang
             levelOneBack = this.Content.Load<Texture2D>("levelOneBack");
             oneDisplay = this.Content.Load<Texture2D>("oneDisplay");
             controls = this.Content.Load<Texture2D>("controls");
+            levelTwoBack = this.Content.Load<Texture2D>("levelTwoBack");
 
             // these textures are all used within the player class
             playerTexturePack = new List<Texture2D>()
@@ -362,7 +363,6 @@ namespace ShotgunBoomerang
                         gameState = GameState.Gameplay;
                     }
 
-                    /*
                     // Play level two
                     if (buttonPlayTwo.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
@@ -378,7 +378,6 @@ namespace ShotgunBoomerang
                         player.Position = currentLevel.PlayerStart;
                         gameState = GameState.Gameplay;
                     }
-                    */
 
                     break;
 
@@ -914,11 +913,20 @@ namespace ShotgunBoomerang
         public void DrawBackground()
         {
             if (currentLevel == levelOne)
-            { _spriteBatch.Draw(levelOneBack, new Rectangle(0, 0,
-                graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White); }
+            {
+                _spriteBatch.Draw(levelOneBack, new Rectangle(0, 0,
+                graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            }
 
-            else if (currentLevel == levelTwo) { }
-            else if (currentLevel == levelThree) { }
+            else if (currentLevel == levelTwo)
+            {
+                _spriteBatch.Draw(levelTwoBack, new Rectangle(0, 0,
+                graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            }
+            else if (currentLevel == levelThree)
+            {
+
+            }
         }
     }
 }

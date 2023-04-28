@@ -480,6 +480,18 @@
 #begin Levels/testlevel3.level
 /copy:Levels/testlevel3.level
 
+#begin levelTwoBack.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:levelTwoBack.png
+
 #begin muzzle.png
 /importer:TextureImporter
 /processor:TextureProcessor
