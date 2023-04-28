@@ -14,7 +14,7 @@ namespace ShotgunBoomerang
     internal class KoalaTree : MobileEntity, IGameEnemy
     {
 
-        private directionState direction = directionState.Right;
+        private Direction direction = Direction.Right;
         private Texture2D leftTexture;
         private Texture2D rightTexture;
         private bool damaged;
@@ -48,11 +48,11 @@ namespace ShotgunBoomerang
         {
             if(player.X < _position.X)
             {
-                direction = directionState.Left;
+                direction = Direction.Left;
 
             }else if(player.Y >= _position.Y)
             {
-                direction = directionState.Right;
+                direction = Direction.Right;
             }
 
             Attack(player, projectiles, 10, 1.0f, gameTime);
@@ -67,11 +67,11 @@ namespace ShotgunBoomerang
             
             switch (direction)
             {
-                case directionState.Left:
+                case Direction.Left:
                     _sprite = leftTexture;
                     break;
 
-                case directionState.Right:
+                case Direction.Right:
                     _sprite = rightTexture;
                     break;
             }
@@ -122,7 +122,7 @@ namespace ShotgunBoomerang
         /// </summary>
         /// <param name="damage"></param>
         /// <param name="player"></param>
-        public void TakeDamage(float damage, Player player)
+        public void TakeHit(GameObject attacker, float damage)
         {
             if (!damaged)
             {
@@ -259,13 +259,13 @@ namespace ShotgunBoomerang
                     //Fixes problem where very small and brief horizontal collisions cause reversal
                     if (intersectRect.Height >= 16)
                     {
-                        if (direction == directionState.Left)
+                        if (direction == Direction.Left)
                         {
-                            direction = directionState.Right;
+                            direction = Direction.Right;
                         }
-                        else if (direction == directionState.Right)
+                        else if (direction == Direction.Right)
                         {
-                            direction = directionState.Left;
+                            direction = Direction.Left;
                         }
 
 
