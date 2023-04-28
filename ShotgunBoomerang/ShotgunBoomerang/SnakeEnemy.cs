@@ -9,6 +9,12 @@ using System.Threading.Tasks;
 
 namespace ShotgunBoomerang
 {
+    public enum SnakeState
+    {
+        Patrol,
+        Frightened,
+        Damaged
+    }
     internal class SnakeEnemy : MobileEntity, IGameEnemy
     {
         //private Vector2 bump;
@@ -17,8 +23,9 @@ namespace ShotgunBoomerang
         //private float defaultSpeed;
         private Vector2 _startPos;
         private double _damageTimer;
+        private double _frightenTimer;
         //private bool damaged;
-        private EnemyState _currentState;
+        private SnakeState _currentState;
 
         
 
@@ -32,9 +39,9 @@ namespace ShotgunBoomerang
             _health = _maxHealth;
             _damage = 20;
 
-            _currentState = EnemyState.Run;
+            _currentState = SnakeState.Patrol;
 
-            _acceleration = new Vector2(2, 0);
+            _acceleration = new Vector2(1, 0);
 
             
 
@@ -53,6 +60,7 @@ namespace ShotgunBoomerang
             //damaged = false;
 
             _damageTimer = 0;
+            _frightenTimer = 0;
         }
 
         
@@ -76,13 +84,18 @@ namespace ShotgunBoomerang
         {
             switch(_currentState)
             {
-                // draw normally while running
-                case EnemyState.Run:
+                // draw normally while patrolling
+                case SnakeState.Patrol:
+                    sb.Draw(Sprite, _position - offset, Color.White);
+                    break;
+
+                // draw normally while frightened
+                case SnakeState.Frightened:
                     sb.Draw(Sprite, _position - offset, Color.White);
                     break;
 
                 // draw in red while damaged
-                case EnemyState.Damaged:
+                case SnakeState.Damaged:
                     sb.Draw(Sprite, _position - offset, Color.Red);
                     break;
             }
@@ -129,7 +142,7 @@ namespace ShotgunBoomerang
 
             switch(_currentState)
             {
-                case EnemyState.Run:
+                case SnakeState.Patrol:
                     // add the velocity to the accelertation
                     _velocity.X += _acceleration.X;
                     _velocity *= runFriction;
@@ -143,7 +156,28 @@ namespace ShotgunBoomerang
                     // the enemy will transition to damage state when the TakeDamage function is called
                     break;
 
-                case EnemyState.Damaged:
+                case SnakeState.Frightened:
+                    _frightenTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+
+                    // add the velocity to the accelertation (acceleration is 3x faster when frightened)
+                    _velocity.X += _acceleration.X * 3;
+                    _velocity *= runFriction;
+
+                    // detect whether the enemy has intersected the player and damage them
+                    if (CheckCollision(player))
+                    {
+                        player.TakeHit(this, _damage);
+                    }
+
+                    // when the time is up, transition back to the patrol state
+                    if(_frightenTimer <= 0)
+                    {
+                        _currentState = SnakeState.Patrol;
+                    }
+
+                    break;
+
+                case SnakeState.Damaged:
                     _damageTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
                     // if the enemy died, remove it from the enemies list
@@ -153,10 +187,11 @@ namespace ShotgunBoomerang
                         player.Kills++;
                     }
 
-                    // when the time is up, transition back to run
+                    // when the time is up, transition frightened state
                     if(_damageTimer <= 0)
                     {
-                        _currentState = EnemyState.Run;
+                        _currentState = SnakeState.Frightened;
+                        _frightenTimer = 5;
                     }
                     break;
             }
@@ -226,7 +261,11 @@ namespace ShotgunBoomerang
             Vector2 attackerNormal = Vector2.Normalize(CenterPoint - attacker.CenterPoint);
 
             // throw the enemy away from it's attacker (throw force scales with damage)
-            _velocity = attackerNormal * (damage / 10);
+            _velocity += attackerNormal * (damage / 2);
+
+            _currentState = SnakeState.Damaged;
+
+            _damageTimer = 0.5f;
 
             /*
             if (!damaged)

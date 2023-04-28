@@ -958,7 +958,7 @@ namespace ShotgunBoomerang
                 Vector2 attackerNormal = Vector2.Normalize(CenterPoint - attacker.CenterPoint);
 
                 // throw the enemy away from it's attacker (throw force scales with damage)
-                _velocity += attackerNormal * (damage / 10);
+                _velocity += attackerNormal * (damage / 2);
 
                 _health -= damage;
                 _currentState = PlayerState.Damaged;
