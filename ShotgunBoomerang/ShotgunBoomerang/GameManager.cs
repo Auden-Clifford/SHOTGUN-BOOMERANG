@@ -208,9 +208,9 @@ namespace ShotgunBoomerang
                 this.Content.Load<Texture2D>("Snek"),
                 this.Content.Load<Texture2D>("scorpin_Left"),
                 this.Content.Load<Texture2D>("scorpin_Right"),
+                this.Content.Load<Texture2D>("Bullet"),
                 this.Content.Load<Texture2D>("GunKoala_Left3.0"),
                 this.Content.Load<Texture2D>("GunKoala_Right3.0"),
-                this.Content.Load<Texture2D>("Bullet"),
                 this.Content.Load<Texture2D>("ausFlag"),
                 this.Content.Load<Texture2D>("vegemite"),
 
@@ -262,6 +262,7 @@ namespace ShotgunBoomerang
 
             demoLevel = new Level(levelTexturepack, "Content/Levels/testLevel3.level");
             levelOne = new Level(levelTexturepack, "Content/Levels/Level1_V1Alt.level"); //remember to replace the default textures
+            levelTwo = new Level(levelTexturepack, "Content/Levels/Level2.level");
 
             //NOT level 2. just a test alt for level 1
             //levelTwo = new Level(demoLevelTexturepack, "../../../../Levels/Level1_V1Alt.level");

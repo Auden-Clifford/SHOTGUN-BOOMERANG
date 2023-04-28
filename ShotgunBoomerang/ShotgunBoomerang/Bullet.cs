@@ -13,6 +13,7 @@ namespace ShotgunBoomerang
     {
         private bool active;
         bool aimedShot;
+        bool parried;
 
 
         /// <summary>
@@ -28,8 +29,9 @@ namespace ShotgunBoomerang
             this._position = position;
             this._damage = damage;
             this._velocity = new Vector2(moveSpeed, 0);
-            aimedShot = true;
+            aimedShot = false;
             active = false;
+            parried = false;
         }
 
         public Bullet(Texture2D sprite, Vector2 position, float damage, float moveSpeed, Vector2 targetPos)
@@ -49,10 +51,9 @@ namespace ShotgunBoomerang
         /// </summary>
         public void Draw(SpriteBatch sb, Vector2 screenOffset)
         {
-            if (active)
-            {
-                sb.Draw(_sprite, _position - screenOffset, Color.White);
-            }
+            
+            sb.Draw(_sprite, _position - screenOffset, Color.White);
+            
         }
 
         /*
@@ -126,8 +127,11 @@ namespace ShotgunBoomerang
             if (active)
             {
                 //Is not affected by gravity currently
-                _velocity.Y = 0;
-                Math.Clamp(_velocity.Y, 0, 0);
+                if (!aimedShot)
+                {
+                    _velocity.Y = 0;
+                    Math.Clamp(_velocity.Y, 0, 0);
+                }
                 _position += _velocity;
 
                 //If it collides with the player, begin hit logic and remove the projectile
@@ -137,14 +141,17 @@ namespace ShotgunBoomerang
                     projectiles.Remove(this);
                 }
 
-                //detetcts enemy collisions
-                for (int i = 0; i < enemies.Count; i++)
+                if (parried)
                 {
-                    MobileEntity enemey = (MobileEntity)enemies[i];
-                    if (this.CheckCollision(enemey))
+                    //detetcts enemy collisions
+                    for (int i = 0; i < enemies.Count; i++)
                     {
-                        enemies[i].TakeHit(this, _damage);
-                        projectiles.Remove(this);
+                        MobileEntity enemey = (MobileEntity)enemies[i];
+                        if (this.CheckCollision(enemey))
+                        {
+                            enemies[i].TakeHit(this, _damage);
+                            projectiles.Remove(this);
+                        }
                     }
                 }
 
@@ -171,6 +178,7 @@ namespace ShotgunBoomerang
         {
             // throw the bullet in the  direction of the shotgun blast
             _velocity = shotgunNormal * _velocity.Length() * 2;
+            parried = true;
         }
 
         
