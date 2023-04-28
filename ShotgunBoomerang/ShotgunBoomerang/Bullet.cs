@@ -12,6 +12,7 @@ namespace ShotgunBoomerang
     internal class Bullet : MobileEntity, IGameProjectile
     {
         private bool active;
+        bool aimedShot;
 
 
         /// <summary>
@@ -27,7 +28,20 @@ namespace ShotgunBoomerang
             this._position = position;
             this._damage = damage;
             this._velocity = new Vector2(moveSpeed, 0);
+            aimedShot = true;
+            active = false;
+        }
+
+        public Bullet(Texture2D sprite, Vector2 position, float damage, float moveSpeed, Vector2 targetPos)
+        {
+            this._sprite = sprite;
+            this._position = position;
+            this._damage = damage;
+            
+            Vector2 normalizedVector = Vector2.Multiply(Vector2.Normalize(targetPos - position), moveSpeed);
+            this._velocity = normalizedVector;
             active = true;
+            aimedShot = true;
         }
 
         /// <summary>
@@ -64,9 +78,14 @@ namespace ShotgunBoomerang
             if (active)
             {
                 //Is not affected by gravity currently
-                _velocity.Y = 0;
-                Math.Clamp(_velocity.Y, 0, 0);
+                if (!aimedShot)
+                {
+                    _velocity.Y = 0;
+                    Math.Clamp(_velocity.Y, 0, 0);
+                    
+                }
                 _position += _velocity;
+
 
                 //If it collides with the player, begin hit logic and remove the projectile
                 if (CheckCollision(player))

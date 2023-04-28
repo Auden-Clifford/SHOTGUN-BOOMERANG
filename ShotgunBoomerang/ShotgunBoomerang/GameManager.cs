@@ -87,6 +87,8 @@ namespace ShotgunBoomerang
         private Texture2D scorpionLeft;
         private Texture2D scorpionRight;
         private Texture2D bulletSprite;
+        private Texture2D koalaLeft;
+        private Texture2D koalaRight;
 
         private List<Texture2D> playerTexturePack;
 
@@ -171,6 +173,8 @@ namespace ShotgunBoomerang
             scorpionLeft = this.Content.Load<Texture2D>("scorpin_Left");
             scorpionRight = this.Content.Load<Texture2D>("scorpin_Right");
             bulletSprite = this.Content.Load<Texture2D>("Bullet");
+            koalaLeft = this.Content.Load<Texture2D>("GunKoala_Left3.0");
+            koalaRight = this.Content.Load<Texture2D>("GunKoala_Right3.0");
             darkFilter = this.Content.Load<Texture2D>("darkfilter");
             healthBar = this.Content.Load<Texture2D>("redsquare");
             ammoBar = this.Content.Load<Texture2D>("ammoui");
@@ -202,6 +206,8 @@ namespace ShotgunBoomerang
                 this.Content.Load<Texture2D>("Snek"),
                 this.Content.Load<Texture2D>("scorpin_Left"),
                 this.Content.Load<Texture2D>("scorpin_Right"),
+                this.Content.Load<Texture2D>("GunKoala_Left3.0"),
+                this.Content.Load<Texture2D>("GunKoala_Right3.0"),
                 this.Content.Load<Texture2D>("Bullet"),
                 this.Content.Load<Texture2D>("ausFlag"),
                 this.Content.Load<Texture2D>("vegemite"),
@@ -452,14 +458,12 @@ namespace ShotgunBoomerang
 
                     if(kb.IsKeyDown(Keys.I) && prevKb.IsKeyUp(Keys.I))
                     {
-                        currentLevel.CurrentEnemies.Add(new ScorpionEnemy(
-                            scorpionLeft,
-                            scorpionRight,
+                        currentLevel.CurrentEnemies.Add(new KoalaTree(
+                            koalaLeft,
+                            koalaRight,
                             new Vector2(ms.X, ms.Y) + screenOffset,
-                            50,
+                            100,
                             25,
-                            3,
-                            9,
                             bulletSprite
                             ));
                         
