@@ -729,7 +729,9 @@ namespace ShotgunBoomerang
 
             // Updating the current time and score
             levelTimer += gameTime.ElapsedGameTime.TotalSeconds;
-            score = (kills * 200) + (1200 - levelTimer * 10); // 200 points per kill and score is lost the more time is spent
+            score = (kills * 200) + (1800 - levelTimer * 10); // 200 points per kill and score is lost the more time is spent
+            if (score < 0)
+            { score = 0; } // The score cannot be less than zero
 
             _shotgunBlastTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
