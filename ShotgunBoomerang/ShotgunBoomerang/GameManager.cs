@@ -185,6 +185,7 @@ namespace ShotgunBoomerang
             oneDisplay = this.Content.Load<Texture2D>("oneDisplay");
             controls = this.Content.Load<Texture2D>("controls");
             levelTwoBack = this.Content.Load<Texture2D>("levelTwoBack");
+            levelThreeBack = this.Content.Load<Texture2D>("levelThreeBack");
 
             // these textures are all used within the player class
             playerTexturePack = new List<Texture2D>()
@@ -925,7 +926,8 @@ namespace ShotgunBoomerang
             }
             else if (currentLevel == levelThree)
             {
-
+                _spriteBatch.Draw(levelThreeBack, new Rectangle(0, 0,
+                graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
             }
         }
     }
