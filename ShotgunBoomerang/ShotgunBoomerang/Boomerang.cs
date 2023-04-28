@@ -162,6 +162,7 @@ namespace ShotgunBoomerang
             throw new NotImplementedException();
         }
 
+
         public override void Update(
             KeyboardState kb,
             KeyboardState prevKb,
