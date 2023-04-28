@@ -12,6 +12,9 @@ namespace ShotgunBoomerang
 {
     internal class Vegemite : MobileEntity , IGameProjectile
     {
+        // fields
+        private Vector2 _startPosition;
+
         // constructor
         /// <summary>
         /// Creates a new Vegemite healing item (can be given an initial velocity)
@@ -24,6 +27,7 @@ namespace ShotgunBoomerang
         {
             _sprite = sprite;
             _position = position;
+            _startPosition = position;
             _velocity = velocity;
 
             _width = _sprite.Width;
@@ -182,6 +186,15 @@ namespace ShotgunBoomerang
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Resets the item to it's initial values for level restarting
+        /// </summary>
+        public void Reset()
+        {
+            _position = _startPosition;
+            _velocity = Vector2.Zero;
         }
     }
 }

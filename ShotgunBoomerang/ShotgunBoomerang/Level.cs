@@ -450,6 +450,7 @@ namespace ShotgunBoomerang
             _currentProjectiles.Clear();
             foreach (IGameProjectile projectile in _startProjectiles)
             {
+                projectile.Reset();
                 _currentProjectiles.Add(projectile);
             }
         }

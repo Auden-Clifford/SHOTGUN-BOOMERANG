@@ -275,5 +275,11 @@ namespace ShotgunBoomerang
             // go back into the flying state
             _currentState = BoomerangState.Flying;
         }
+
+        public void Reset()
+        {
+            // the boomerang is not reset when the level is
+            // reset as it is not in the original level list
+        }
     }
 }

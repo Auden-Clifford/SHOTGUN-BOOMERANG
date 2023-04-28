@@ -72,6 +72,9 @@ namespace ShotgunBoomerang
             //isAlive = true;
             //onGround = false;
             _velocity = new Vector2(0, 0);
+            _currentState = SnakeState.Patrol;
+            _damageTimer = 0;
+            _frightenTimer = 0;
         }
         
         

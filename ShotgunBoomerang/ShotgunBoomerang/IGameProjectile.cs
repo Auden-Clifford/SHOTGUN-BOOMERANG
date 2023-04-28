@@ -62,5 +62,7 @@ namespace ShotgunBoomerang
         /// </summary>
         /// <param name="shotgunNormal">The normalized vector between the shotgun and the projectile</param>
         public void ShotgunHit(Vector2 shotgunNormal);
+
+        public void Reset();
     }
 }
