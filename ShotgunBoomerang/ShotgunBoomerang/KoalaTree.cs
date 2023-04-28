@@ -44,7 +44,17 @@ namespace ShotgunBoomerang
 
         }
 
-        public void Update(List<Tile> tileMap, List<IGameProjectile> projectiles, Player player, GameTime gameTime)
+        public void Update(
+            KeyboardState kb,
+            KeyboardState prevKb,
+            MouseState ms,
+            MouseState prevMs,
+            List<Tile> tileMap,
+            List<IGameEnemy> enemies,
+            List<IGameProjectile> projectiles,
+            Player player,
+            GameTime gameTime
+            )
         {
             if(player.X < _position.X)
             {
