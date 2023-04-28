@@ -259,7 +259,7 @@ namespace LevelEditor
                         }
                         else if(i == tilePicker_Vegemite.Image)
                         {
-                            writer.Write("vegemite");
+                            writer.Write("vegemite,");
                         }
                         // save plank tiles
                         else if(i == tilePicker_PlanksLeft.Image)

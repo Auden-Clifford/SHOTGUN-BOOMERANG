@@ -243,7 +243,7 @@ namespace ShotgunBoomerang
                 -testTileSprite.Width * 3));
             */
 
-            demoLevel = new Level(levelTexturepack, "Levels/testLevel3.level");
+            demoLevel = new Level(levelTexturepack, "Levels/testLevel3_alt.level");
             levelOne = new Level(levelTexturepack, "Levels/Level1_V1Alt.level"); //remember to replace the default textures
 
             //NOT level 2. just a test alt for level 1
