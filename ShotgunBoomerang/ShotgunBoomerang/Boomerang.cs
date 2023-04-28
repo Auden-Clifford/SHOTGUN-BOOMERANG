@@ -157,10 +157,11 @@ namespace ShotgunBoomerang
         }
         
 
-        public void hit()
+        public void Hit(Player player, float damage)
         {
             throw new NotImplementedException();
         }
+
 
         public override void Update(
             KeyboardState kb,
@@ -262,10 +263,13 @@ namespace ShotgunBoomerang
             _position += _velocity;
         }
 
-        void IGameProjectile.ResolveTileCollisions(List<Tile> tilemap)
+        //Commented out because it was yet implemented and it was causing problems
+        /*
+        protected override void ResolveTileCollisions(List<Tile> tilemap)
         {
             throw new NotImplementedException();
         }
+        */
 
 
         /// <summary>

@@ -84,6 +84,9 @@ namespace ShotgunBoomerang
         //private Texture2D snakeSprite;
         //private Texture2D boomerangSprite;
         //private Texture2D muzzleSprite;
+        private Texture2D scorpionLeft;
+        private Texture2D scorpionRight;
+        private Texture2D bulletSprite;
 
         private List<Texture2D> playerTexturePack;
 
@@ -165,6 +168,9 @@ namespace ShotgunBoomerang
             blankRectangleSprite = this.Content.Load<Texture2D>("blankRectangle");
             //boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
             //snakeSprite = this.Content.Load<Texture2D>("Snek");
+            scorpionLeft = this.Content.Load<Texture2D>("scorpin_Left");
+            scorpionRight = this.Content.Load<Texture2D>("scorpin_Right");
+            bulletSprite = this.Content.Load<Texture2D>("Bullet");
             darkFilter = this.Content.Load<Texture2D>("darkfilter");
             healthBar = this.Content.Load<Texture2D>("redsquare");
             ammoBar = this.Content.Load<Texture2D>("ammoui");
@@ -194,6 +200,9 @@ namespace ShotgunBoomerang
                 this.Content.Load<Texture2D>("planksRight"),
 
                 this.Content.Load<Texture2D>("Snek"),
+                this.Content.Load<Texture2D>("scorpin_Left"),
+                this.Content.Load<Texture2D>("scorpin_Right"),
+                this.Content.Load<Texture2D>("Bullet"),
                 this.Content.Load<Texture2D>("ausFlag"),
                 this.Content.Load<Texture2D>("vegemite"),
 
@@ -441,13 +450,20 @@ namespace ShotgunBoomerang
                         currentLevel.ResetLevel(player);
                     }
 
-                    //this is likely test code. waiting for confirmation before delete
-                    /*
-                    if(ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
+                    if(kb.IsKeyDown(Keys.I) && prevKb.IsKeyUp(Keys.I))
                     {
-                        snek.TakeDamage(25, player);
+                        currentLevel.CurrentEnemies.Add(new ScorpionEnemy(
+                            scorpionLeft,
+                            scorpionRight,
+                            new Vector2(ms.X, ms.Y) + screenOffset,
+                            50,
+                            25,
+                            3,
+                            9,
+                            bulletSprite
+                            ));
+                        
                     }
-                    */
                     
                     break;
 
