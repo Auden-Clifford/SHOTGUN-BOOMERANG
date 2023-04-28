@@ -18,6 +18,11 @@ namespace ShotgunBoomerang
     internal interface IGameProjectile
     {
         /// <summary>
+        /// Should get the projectile's centerpoint
+        /// </summary>
+        public Vector2 CenterPoint { get; }
+
+        /// <summary>
         /// Should tell the given spritebatch to draw/animate the projectile at the correct part of the screen
         /// </summary>
         public void Draw(SpriteBatch sb, Vector2 screenOffset);
@@ -46,13 +51,14 @@ namespace ShotgunBoomerang
             GameTime gameTime);
 
         /// <summary>
-        /// Should Resolve Collisions with Tiles
-        /// </summary>
-        protected void ResolveTileCollisions(List<Tile> tilemap);
-
-        /// <summary>
         /// Should contain logic for what to do when the projectile hits a player or enemy
         /// </summary>
-        public void hit();
+        public void HitEntity();
+
+        /// <summary>
+        /// Method that allows all projectiles to take hits from the shotgun
+        /// </summary>
+        /// <param name="shotgunNormal">The normalized vector between the shotgun and the projectile</param>
+        public void ShotgunHit(Vector2 shotgunNormal);
     }
 }

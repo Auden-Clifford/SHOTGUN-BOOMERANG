@@ -157,7 +157,7 @@ namespace ShotgunBoomerang
         }
         
 
-        public void hit()
+        public void HitEntity()
         {
             throw new NotImplementedException();
         }
@@ -179,7 +179,7 @@ namespace ShotgunBoomerang
                 MobileEntity enemey = (MobileEntity) enemies[i];
                 if (this.CheckCollision(enemey))
                 {
-                    enemies[i].TakeDamage(_damage * _velocity.Length(), player);
+                    enemies[i].TakeHit(this, _damage * _velocity.Length());
                 }
             }
 
@@ -262,22 +262,14 @@ namespace ShotgunBoomerang
             _position += _velocity;
         }
 
-        void IGameProjectile.ResolveTileCollisions(List<Tile> tilemap)
-        {
-            throw new NotImplementedException();
-        }
-
 
         /// <summary>
         /// parrys boomerang
         /// forcing it away from player
         /// </summary>
-        /// <param name="mausPos"></param>
-        /// <param name="graphics"></param>
-        public void ShotgunHit(Vector2 shotgunNormal, GraphicsDeviceManager graphics, float damage)
+        public void ShotgunHit(Vector2 shotgunNormal)
         {
-
-            // throw the player back in the opposite direction of the blast
+            // throw the boomerang  in the  direction of the shotgun blast
             _velocity = shotgunNormal * _velocity.Length() * 2;
 
             // go back into the flying state

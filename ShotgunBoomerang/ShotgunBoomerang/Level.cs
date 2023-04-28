@@ -182,10 +182,7 @@ namespace ShotgunBoomerang
                     {
                         _startEnemies.Add(
                             new SnakeEnemy(texturePack[5],
-                            new Vector2(x * 64, y * 64),
-                            100,
-                            20,
-                            2));
+                            new Vector2(x * 64, y * 64)));
                     }
                     // load the playerStart
                     else if (currentLine[x] == "playerStart")
@@ -382,12 +379,7 @@ namespace ShotgunBoomerang
 
             for (int i = _currentEnemies.Count - 1; i >= 0; i--)
             {
-                _currentEnemies[i].Update(_currentTileMap, _currentProjectiles, player, gameTime);
-                if (!_currentEnemies[i].CheckHealth())
-                {
-                    _currentEnemies.RemoveAt(i);
-                    player.Kills++;
-                }
+                _currentEnemies[i].Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player, gameTime);
             }
 
             for(int i = _currentProjectiles.Count- 1; i >= 0; i--)
