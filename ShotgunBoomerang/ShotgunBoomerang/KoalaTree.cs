@@ -66,7 +66,10 @@ namespace ShotgunBoomerang
             }
 
             Attack(player, projectiles, 10, 1.0f, gameTime);
-
+            if (!CheckHealth())
+            {
+                enemies.Remove(this);
+            }
             ResolveTileCollisions(tileMap);
         }
 
