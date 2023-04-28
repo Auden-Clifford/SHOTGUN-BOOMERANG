@@ -186,6 +186,7 @@ namespace ShotgunBoomerang
             controls = this.Content.Load<Texture2D>("controls");
             levelTwoBack = this.Content.Load<Texture2D>("levelTwoBack");
             levelThreeBack = this.Content.Load<Texture2D>("levelThreeBack");
+            twoDisplay = this.Content.Load<Texture2D>("twoDisplay");
 
             // these textures are all used within the player class
             playerTexturePack = new List<Texture2D>()
@@ -597,7 +598,7 @@ namespace ShotgunBoomerang
                     else if (buttonPlayTwo.Contains(ms.Position))
                     {
                         levelText = "Play stage two - the deep dark cave.";
-                        //levelSprite = twoDisplay;
+                        levelSprite = twoDisplay;
                     }
                     else if (buttonPlayThree.Contains(ms.Position))
                     {
@@ -716,13 +717,11 @@ namespace ShotgunBoomerang
             }
 
             // If debug enabled, print position & speed stats on screen
-            ShapeBatch.Begin(GraphicsDevice);
             if (debugOn)
             { DrawDebug(); }
-            ShapeBatch.End();
 
             // Important code! Leave at the end of the method
-            _spriteBatch.End(); 
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
 
@@ -786,7 +785,10 @@ namespace ShotgunBoomerang
             _spriteBatch.DrawString(arial12, $"Time: {(int)player.Timer}", new Vector2(10, 230), Color.White);
             _spriteBatch.DrawString(arial12, $"Score: {(int)player.Score}", new Vector2(10, 250), Color.White);
 
+            _spriteBatch.End();
+
             // draw hitboxes
+            ShapeBatch.Begin(GraphicsDevice);
 
             // player hitbox
             ShapeBatch.BoxOutline(
@@ -853,6 +855,8 @@ namespace ShotgunBoomerang
                     Color.White);
             }
 
+            ShapeBatch.End();
+            _spriteBatch.Begin();
 
             /*
             // print the boomerang's X and Y
