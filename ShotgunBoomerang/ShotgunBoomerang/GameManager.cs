@@ -578,8 +578,8 @@ namespace ShotgunBoomerang
                     // Level Buttons
                     DrawButton(ms, buttonPlayDemo, "Demo");
                     DrawButton(ms, buttonPlayOne, "Stage One");
-                    DrawButton(ms, buttonPlayTwo, "COMING SOON"); // SHOULD SAY "Stage Two"
-                    DrawButton(ms, buttonPlayThree, "COMING SOON"); // SHOULD SAY "Stage Three"
+                    DrawButton(ms, buttonPlayTwo, "Stage Two");
+                    DrawButton(ms, buttonPlayThree, "Stage Three");
 
                     // Changes text and sprite depending on hover
                     if (buttonPlayDemo.Contains(ms.Position))
