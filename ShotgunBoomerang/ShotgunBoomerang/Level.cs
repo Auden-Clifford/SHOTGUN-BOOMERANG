@@ -195,6 +195,14 @@ namespace ShotgunBoomerang
                         _levelEnd = new LevelEnd(texturePack[6],
                             new Vector2(x * 64, y * 64));
                     }
+                    // load vegemite "projectiles"
+                    else if (currentLine[x] == "vegemite")
+                    {
+                        _startProjectiles.Add(
+                            new Vegemite(texturePack[7],
+                            new Vector2(x * 64, y * 64),
+                            Vector2.Zero));
+                    }
                     // load cave tiles
                     else if (currentLine[x] == "caveBottomCenter")
                     {

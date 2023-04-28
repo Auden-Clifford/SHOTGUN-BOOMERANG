@@ -50,10 +50,12 @@ namespace ShotgunBoomerang
             Player player,
             GameTime gameTime);
 
+        /*
         /// <summary>
         /// Should contain logic for what to do when the projectile hits a player or enemy
         /// </summary>
         public void HitEntity();
+        */
 
         /// <summary>
         /// Method that allows all projectiles to take hits from the shotgun
