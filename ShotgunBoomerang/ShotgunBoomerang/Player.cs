@@ -218,7 +218,7 @@ namespace ShotgunBoomerang
                             graphics.PreferredBackBufferWidth / 2,
                             graphics.PreferredBackBufferHeight / 2),
                         null,
-                        Color.White,
+                        _drawColor,
                         angle,
                         // rotate around the texture's center
                         new Vector2(_shotgunBlastSprite.Width / 2, _shotgunBlastSprite.Height / 2),
@@ -235,7 +235,7 @@ namespace ShotgunBoomerang
                                 graphics.PreferredBackBufferWidth / 2,
                                 graphics.PreferredBackBufferHeight / 2),
                             new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet,
-                            Color.White,
+                            _drawColor,
                             angle,
                             // rotate around the texture's center
                             new Vector2(_width / 2, _height / 2),
@@ -251,7 +251,7 @@ namespace ShotgunBoomerang
                                 graphics.PreferredBackBufferWidth / 2,
                                 graphics.PreferredBackBufferHeight / 2),
                             new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
-                            Color.White,
+                            _drawColor,
                             angle,
                             // rotate around the texture's center
                             new Vector2(_width / 2, _height / 2),
@@ -270,7 +270,7 @@ namespace ShotgunBoomerang
                             graphics.PreferredBackBufferHeight / 2
                             - _height / 2),
                             new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
-                            Color.White);
+                            _drawColor);
                     }
                     else
                     {
@@ -282,7 +282,7 @@ namespace ShotgunBoomerang
                             graphics.PreferredBackBufferHeight / 2
                             - _height / 2),
                             new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
-                            Color.White);
+                            _drawColor);
                     }
                     break;
 
@@ -296,7 +296,7 @@ namespace ShotgunBoomerang
                             graphics.PreferredBackBufferWidth / 2,
                             graphics.PreferredBackBufferHeight / 2),
                         null,
-                        Color.White,
+                        _drawColor,
                         angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
                         // rotate around the texture's center
                         new Vector2(_shotgunBlastSprite.Width / 2, _shotgunBlastSprite.Height / 2),
@@ -313,7 +313,7 @@ namespace ShotgunBoomerang
                                 graphics.PreferredBackBufferWidth / 2,
                                 graphics.PreferredBackBufferHeight / 2),
                             new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet,
-                            Color.White,
+                            _drawColor,
                             angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
                             // rotate around the texture's center
                             new Vector2(_width / 2, _height / 2),
@@ -329,7 +329,7 @@ namespace ShotgunBoomerang
                                 graphics.PreferredBackBufferWidth / 2,
                                 graphics.PreferredBackBufferHeight / 2),
                             new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
-                            Color.White,
+                            _drawColor,
                             angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
                             // rotate around the texture's center
                             new Vector2(_width / 2, _height / 2),
@@ -348,7 +348,7 @@ namespace ShotgunBoomerang
                             graphics.PreferredBackBufferHeight / 2
                             - _height / 2),
                             new Rectangle(0, 0, _width, _height), // will print the bottom-right sprite in the sheet
-                            Color.White,
+                            _drawColor,
                             0,
                             new Vector2(0, 0),
                             1,
@@ -365,7 +365,7 @@ namespace ShotgunBoomerang
                             graphics.PreferredBackBufferHeight / 2
                             - _height / 2),
                             new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
-                            Color.White,
+                            _drawColor,
                             0,
                             new Vector2(0,0),
                             1,
@@ -958,7 +958,7 @@ namespace ShotgunBoomerang
                 Vector2 attackerNormal = Vector2.Normalize(CenterPoint - attacker.CenterPoint);
 
                 // throw the enemy away from it's attacker (throw force scales with damage)
-                _velocity += attackerNormal * (damage / 2);
+                _velocity += attackerNormal * (damage);
 
                 _health -= damage;
                 _currentState = PlayerState.Damaged;

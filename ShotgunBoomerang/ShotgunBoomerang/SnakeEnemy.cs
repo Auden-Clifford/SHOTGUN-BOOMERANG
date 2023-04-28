@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace ShotgunBoomerang
@@ -13,6 +14,7 @@ namespace ShotgunBoomerang
     {
         Patrol,
         Frightened,
+        Airborne,
         Damaged
     }
     internal class SnakeEnemy : MobileEntity, IGameEnemy
@@ -28,6 +30,7 @@ namespace ShotgunBoomerang
         private SnakeState _currentState;
 
         private Texture2D _vegemiteDropSprite;
+        private bool _inContactWithGround;
 
         
 
@@ -68,6 +71,8 @@ namespace ShotgunBoomerang
 
             _damageTimer = 0;
             _frightenTimer = 0;
+
+            _inContactWithGround = true;
         }
 
         
@@ -101,6 +106,10 @@ namespace ShotgunBoomerang
 
                 // draw normally while frightened
                 case SnakeState.Frightened:
+                    sb.Draw(Sprite, _position - offset, Color.White);
+                    break;
+
+                case SnakeState.Airborne:
                     sb.Draw(Sprite, _position - offset, Color.White);
                     break;
 
@@ -146,6 +155,7 @@ namespace ShotgunBoomerang
         {
             // set friction constant
             float runFriction = 0.8f;
+            float airFriction = 0.99f;
 
             // calculate physics
             ResolveTileCollisions(tileMap);
@@ -161,6 +171,12 @@ namespace ShotgunBoomerang
                     if(CheckCollision(player))
                     {
                         player.TakeHit(this, _damage);
+                    }
+
+                    // if the snake is no longer touching the ground, transition to airborne
+                    if (!_inContactWithGround)
+                    {
+                        _currentState = SnakeState.Airborne;
                     }
 
                     // the enemy will transition to damage state when the TakeDamage function is called
@@ -179,12 +195,37 @@ namespace ShotgunBoomerang
                         player.TakeHit(this, _damage);
                     }
 
+                    // if the snake is no longer touching the ground, transition to airborne
+                    if(!_inContactWithGround)
+                    {
+                        _currentState = SnakeState.Airborne;
+                    }
+
                     // when the time is up, transition back to the patrol state
                     if(_frightenTimer <= 0)
                     {
                         _currentState = SnakeState.Patrol;
                     }
 
+                    break;
+
+                case SnakeState.Airborne:
+                    // add the velocity to the accelertation
+                    //_velocity.X += _acceleration.X * 3;
+                    _velocity *= airFriction;
+
+                    // transition to frighten if the snake is in contact with ground and 
+                    // the frighten timer is not up
+                    if(_inContactWithGround && _frightenTimer > 0)
+                    {
+                        _currentState = SnakeState.Frightened;
+                    }
+                    // transition to patrol state if the snake touches the ground
+                    // and there is no remaining fighten time
+                    else if(_inContactWithGround)
+                    {
+                        _currentState = SnakeState.Patrol;
+                    }
                     break;
 
                 case SnakeState.Damaged:
@@ -281,7 +322,7 @@ namespace ShotgunBoomerang
             Vector2 attackerNormal = Vector2.Normalize(CenterPoint - attacker.CenterPoint);
 
             // throw the enemy away from it's attacker (throw force scales with damage)
-            _velocity += attackerNormal * (damage / 2);
+            _velocity = attackerNormal * (damage / 2);
 
             _currentState = SnakeState.Damaged;
 
@@ -397,6 +438,9 @@ namespace ShotgunBoomerang
             //gravity is applied beforehand
             ApplyPhysics();
 
+            // reset ground sensor
+            _inContactWithGround = false;
+
             // get the snake's hitbox
             Rectangle SnakeHitBox = this.HitBox;
 
@@ -495,6 +539,9 @@ namespace ShotgunBoomerang
                     if (this._position.Y < intersectRect.Y)
                     {
                         SnakeHitBox.Y -= intersectRect.Height;
+
+                        // report that the snake is touching the ground
+                        _inContactWithGround = true;
 
                         //the snake's Y velocity cannot be negative when touching the ground
                         this._velocity.Y = Math.Clamp(_velocity.Y, float.MinValue, 0);
