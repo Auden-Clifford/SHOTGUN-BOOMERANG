@@ -589,17 +589,17 @@ namespace ShotgunBoomerang
                     }
                     else if (buttonPlayOne.Contains(ms.Position))
                     {
-                        levelText = "Play stage one.";
+                        levelText = "Play stage one - the local village.";
                         levelSprite = oneDisplay;
                     }
                     else if (buttonPlayTwo.Contains(ms.Position))
                     {
-                        levelText = "COMING SOON";
+                        levelText = "Play stage two - the deep dark cave.";
                         //levelSprite = twoDisplay;
                     }
                     else if (buttonPlayThree.Contains(ms.Position))
                     {
-                        levelText = "COMING SOON";
+                        levelText = "Play stage three - the arid outback.";
                         //levelSprite = threeDisplay;
                     }
                     else // Note that level sprite will remain the same as whatever was last hovered over
@@ -696,19 +696,19 @@ namespace ShotgunBoomerang
                     _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
                     _spriteBatch.DrawString(arial36, "STAGE CLEAR", new Vector2(graphics.PreferredBackBufferWidth / 2 - arial36.MeasureString("STAGE CLEAR").X / 2,
-                        (graphics.PreferredBackBufferHeight / 2) - 250), Color.Black);
+                        (graphics.PreferredBackBufferHeight / 2) - 255), Color.White);
 
                     _spriteBatch.DrawString(arial12, "Press Enter to return to menu", new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Press Enter to return to menu").X / 2,
-                         (graphics.PreferredBackBufferHeight / 2) - 200), Color.Black);
+                         (graphics.PreferredBackBufferHeight / 2) - 200), Color.White);
 
                     _spriteBatch.DrawString(arial12, "Score: " + (int)player.Score, new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Score: " + (int)player.Score).X / 2,
-                         (graphics.PreferredBackBufferHeight / 2) - 150), Color.Black);
+                         (graphics.PreferredBackBufferHeight / 2) - 150), Color.White);
 
                     _spriteBatch.DrawString(arial12, "Kills: " + player.Kills, new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Kills: " + player.Kills).X / 2,
-                         (graphics.PreferredBackBufferHeight / 2) - 130), Color.Black);
+                         (graphics.PreferredBackBufferHeight / 2) - 130), Color.White);
 
                     _spriteBatch.DrawString(arial12, "Time: " + (int)player.Timer + " seconds", new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Time: " + (int)player.Timer + " seconds").X / 2,
-                        (graphics.PreferredBackBufferHeight / 2) - 110), Color.Black);
+                        (graphics.PreferredBackBufferHeight / 2) - 110), Color.White);
 
                     break;
             }
