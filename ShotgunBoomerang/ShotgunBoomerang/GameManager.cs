@@ -881,6 +881,18 @@ namespace ShotgunBoomerang
                     Color.White);
             }
 
+            foreach(IGameProjectile projectile in  currentLevel.CurrentProjectiles)
+            {
+                MobileEntity currentProjectile = projectile as MobileEntity;
+
+                ShapeBatch.BoxOutline(
+                    currentProjectile.Position.X - screenOffset.X,
+                    currentProjectile.Position.Y - screenOffset.Y,
+                    currentProjectile.Sprite.Width,
+                    currentProjectile.Sprite.Height,
+                    Color.White);
+            }
+
             ShapeBatch.End();
             _spriteBatch.Begin();
         }

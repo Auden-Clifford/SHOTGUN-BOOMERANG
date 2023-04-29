@@ -67,7 +67,8 @@ namespace ShotgunBoomerang
 
             sb.Draw(
                 _sprite,
-                _position - screenOffset,
+                // ensure the sprite is drawn from the center of the hitbox
+                _position - screenOffset + new Vector2(_width / 2, Height / 2), 
                 null,
                 Color.White,
                 _drawAngle,
