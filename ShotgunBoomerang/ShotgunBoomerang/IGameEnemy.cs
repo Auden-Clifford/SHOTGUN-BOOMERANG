@@ -30,48 +30,16 @@ namespace ShotgunBoomerang
         public void Draw(SpriteBatch sb, Vector2 offset);
 
         /// <summary>
-        /// method for use in the update loop, contains all logic the object needs to go through in a frame
-        /// as well as any parameters from the game manager that might be needed for this logic. 
-        /// Update will be the entry point for all data from Game manager to the other classes
+        /// Method for use in the game's update step; all logic calculated 
+        /// for this object by frame should go into this function.
         /// </summary>
-        /// <param name="kb">The keyboard state this frame</param>
-        /// <param name="prevKb"> The keyboard state last frame</param>
-        /// <param name="ms">The mouse state this frame</param>
-        /// <param name="prevMs">The mouse state last frame</param>
-        /// <param name="tileMap">The current level's tiles</param>
-        /// <param name="enemies">The current level's enemies</param>
-        /// <param name="projectiles">The projectiles currently in play</param>
+        /// <param name="currentLevel">The level currently being played</param>
+        /// <param name="player">The player</param>
+        /// <param name="gameTime">tracks in-game time intervals</param>
         public void Update(
             Level currentLevel,
             Player player,
             GameTime gameTime);
-
-        /// <summary>
-        /// Should check if the enemy is colliding with any game objects
-        /// </summary>
-        /// <returns></returns>
-        public bool CheckCollision(MobileEntity other);
-
-        /*
-        /// <summary>
-        /// Should either launch a projectile or melee attack on the player
-        /// </summary>
-        public void Attack(Player player);
-        */
-
-        /*
-        /// <summary>
-        /// Checks the health of the enemy to trigger it's death
-        /// </summary>
-        public bool CheckHealth();
-        */
-        
-        /*
-        /// <summary>
-        /// should contain logic for movement
-        /// </summary>
-        public void Move();
-        */
 
         /// <summary>
         /// Contains logic for an enemy taking a hit from a given source
@@ -85,7 +53,8 @@ namespace ShotgunBoomerang
 
         
         /// <summary>
-        /// Resets to start location
+        /// Resets the enemy to how it had
+        /// been at the start of the level
         /// </summary>
         public void Reset();
         

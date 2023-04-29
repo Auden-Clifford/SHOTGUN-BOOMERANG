@@ -264,18 +264,6 @@ namespace ShotgunBoomerang
             */
         }
 
-
-        /// <summary>
-        /// Checks for a collision with another object
-        /// </summary>
-        /// <param name="other">The object to check against</param>
-        /// <returns>Whether or not a collision was detected</returns>
-        public bool CheckCollision(MobileEntity other)
-        {
-
-            return this.HitBox.Intersects(other.HitBox);
-        }
-
         /*
         /// <summary>
         /// If a collision is detected against the player, damage and bump them
