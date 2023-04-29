@@ -431,19 +431,19 @@ namespace ShotgunBoomerang
                 if(tile is DamageTile)
                 {
                     DamageTile damageTile = tile as DamageTile;
-                    damageTile.Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player, gameTime);
+                    damageTile.Update(this, player, gameTime);
                 }
             }
             
 
             for (int i = _currentEnemies.Count - 1; i >= 0; i--)
             {
-                _currentEnemies[i].Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player, gameTime);
+                _currentEnemies[i].Update(this, player, gameTime);
             }
 
             for(int i = _currentProjectiles.Count- 1; i >= 0; i--)
             {
-                _currentProjectiles[i].Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player, gameTime);
+                _currentProjectiles[i].Update(this, player, gameTime);
             }
 
             if(player.Position.Y > _levelSize.Y * 64)
@@ -451,7 +451,7 @@ namespace ShotgunBoomerang
                 player.Health = 0;
             }
 
-            _levelEnd.Update(kb,prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player, gameTime);
+            _levelEnd.Update(this, player, gameTime);
         }
 
         /// <summary>

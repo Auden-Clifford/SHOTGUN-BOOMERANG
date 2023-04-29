@@ -44,14 +44,8 @@ namespace ShotgunBoomerang
 
         }
 
-        public void Update(
-            KeyboardState kb,
-            KeyboardState prevKb,
-            MouseState ms,
-            MouseState prevMs,
-            List<Tile> tileMap,
-            List<IGameEnemy> enemies,
-            List<IGameProjectile> projectiles,
+        public override void Update(
+            Level currentLevel,
             Player player,
             GameTime gameTime
             )
@@ -65,12 +59,12 @@ namespace ShotgunBoomerang
                 direction = Direction.Right;
             }
 
-            Attack(player, projectiles, 10, 1.0f, gameTime);
+            Attack(player, currentLevel.CurrentProjectiles, 10, 1.0f, gameTime);
             if (!CheckHealth())
             {
-                enemies.Remove(this);
+                currentLevel.CurrentEnemies.Remove(this);
             }
-            ResolveTileCollisions(tileMap);
+            ResolveTileCollisions(currentLevel.CurrentTileMap);
         }
 
 

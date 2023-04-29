@@ -50,27 +50,16 @@ namespace ShotgunBoomerang
         // Methods
 
         /// <summary>
-        /// method for use in the update loop, contains all logic the object needs to go through in a frame
-        /// as well as any parameters from the game manager that might be needed for this logic. 
-        /// Update will be the entry point for all data from Game manager to the other classes
+        /// Method for use in the game's update step; all logic 
+        /// calculated by frame should go into this function.
+        /// --- The bullet should fly in a straight line until it hits an entity or 
+        /// a wall, it cannot damage enemies until it has been parried by the player
         /// </summary>
-        /// <param name="kb">The keyboard state this frame</param>
-        /// <param name="prevKb"> The keyboard state last frame</param>
-        /// <param name="ms">The mouse state this frame</param>
-        /// <param name="prevMs">The mouse state last frame</param>
-        /// <param name="tileMap">The current level's tiles</param>
-        /// <param name="enemies">The current level's enemies</param>
-        /// <param name="projectiles">The projectiles currently in play</param>
-        /// <param name="player">The player</param> 
+        /// <param name="currentLevel">The level currently being played</param>
+        /// <param name="player">The player</param>
         /// <param name="gameTime">tracks in-game time intervals</param>
         public override void Update(
-            KeyboardState kb,
-            KeyboardState prevKb,
-            MouseState ms,
-            MouseState prevMs,
-            List<Tile> tileMap,
-            List<IGameEnemy> enemies,
-            List<IGameProjectile> projectiles,
+            Level currentLevel,
             Player player,
             GameTime gameTime)
         {
@@ -80,29 +69,30 @@ namespace ShotgunBoomerang
             if (CheckCollision(player))
             {
                 player.TakeHit(this, _damage);
-                projectiles.Remove(this);
+                currentLevel.CurrentProjectiles.Remove(this);
             }
 
+            // only detect enemy collisions if the bullet has been parried
             if (parried)
             {
                 //detetcts enemy collisions
-                for (int i = 0; i < enemies.Count; i++)
+                for (int i = 0; i < currentLevel.CurrentEnemies.Count; i++)
                 {
-                    MobileEntity enemey = (MobileEntity)enemies[i];
+                    MobileEntity enemey = (MobileEntity)currentLevel.CurrentEnemies[i];
                     if (this.CheckCollision(enemey))
                     {
-                        enemies[i].TakeHit(this, _damage);
-                        projectiles.Remove(this);
+                        currentLevel.CurrentEnemies[i].TakeHit(this, _damage);
+                        currentLevel.CurrentProjectiles.Remove(this);
                     }
                 }
             }
 
             // if it collides with a wall, the bullet is removed
-            foreach (Tile tile in tileMap)
+            foreach (Tile tile in currentLevel.CurrentTileMap)
             {
                 if (CheckCollision(tile))
                 {
-                    projectiles.Remove(this);
+                    currentLevel.CurrentProjectiles.Remove(this);
                 }
             }
         }

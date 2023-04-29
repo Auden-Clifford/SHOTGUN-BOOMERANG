@@ -40,13 +40,7 @@ namespace ShotgunBoomerang
         /// <param name="enemies">The current level's enemies</param>
         /// <param name="projectiles">The projectiles currently in play</param>
         public void Update(
-            KeyboardState kb,
-            KeyboardState prevKb,
-            MouseState ms,
-            MouseState prevMs,
-            List<Tile> tileMap,
-            List<IGameEnemy> enemies,
-            List<IGameProjectile> projectiles,
+            Level currentLevel,
             Player player,
             GameTime gameTime);
 

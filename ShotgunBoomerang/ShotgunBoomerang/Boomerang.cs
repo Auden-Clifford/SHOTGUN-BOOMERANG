@@ -89,39 +89,26 @@ namespace ShotgunBoomerang
         }
 
         /// <summary>
-        /// Base method for use in the update loop, should contain all logic the object needs to go through 
-        /// in a frame as well as any parameters from the game manager that might be needed for this logic. 
-        /// Update will be the entry point for all data from Game manager to the other classes
-        /// -- The boomerang's update should allow it to fly around the level 
-        /// bouncing off walls, returning to the player once it slows down
+        /// Method for use in the game's update step; all logic 
+        /// calculated by frame should go into this function.
+        /// --- The boomerang should fly and bounce 
+        /// off walls before returning to the player
         /// </summary>
-        /// <param name="kb">The keyboard state this frame</param>
-        /// <param name="prevKb"> The keyboard state last frame</param>
-        /// <param name="ms">The mouse state this frame</param>
-        /// <param name="prevMs">The mouse state last frame</param>
-        /// <param name="tileMap">The current level's tiles</param>
-        /// <param name="enemies">The current level's enemies</param>
-        /// <param name="projectiles">The projectiles currently in play</param>
+        /// <param name="currentLevel">The level currently being played</param>
         /// <param name="player">The player</param>
         /// <param name="gameTime">tracks in-game time intervals</param>
         public override void Update(
-            KeyboardState kb,
-            KeyboardState prevKb,
-            MouseState ms,
-            MouseState prevMs,
-            List<Tile> tileMap,
-            List<IGameEnemy> enemies,
-            List<IGameProjectile> projectiles,
+            Level currentLevel,
             Player player,
             GameTime gameTime)
         {
             //detetcts enemy collisions
-            for (int i = 0; i < enemies.Count; i++)
+            for (int i = 0; i < currentLevel.CurrentEnemies.Count; i++)
             {
-                MobileEntity enemey = (MobileEntity) enemies[i];
+                MobileEntity enemey = (MobileEntity) currentLevel.CurrentEnemies[i];
                 if (this.CheckCollision(enemey))
                 {
-                    enemies[i].TakeHit(this, _damage * _velocity.Length());
+                    currentLevel.CurrentEnemies[i].TakeHit(this, _damage * _velocity.Length());
                 }
             }
 
@@ -138,7 +125,7 @@ namespace ShotgunBoomerang
                     ApplyPhysics();
 
                     // The boomerang can bounce off walls while flying
-                    ResolveTileCollisions(tileMap);
+                    ResolveTileCollisions(currentLevel.CurrentTileMap);
 
                     // The boomerang will return to the player once it has reached a low enough speed
                     if(Math.Abs(_velocity.Length()) <= 20)
@@ -153,8 +140,8 @@ namespace ShotgunBoomerang
 
                     // velocity normal between the boomerang and the player's centerpoint
                     Vector2 playerBoomerangNormal = Vector2.Normalize(
-                            new Vector2(player.Position.X + player.Sprite.Width / 2,
-                           player.Position.Y + player.Sprite.Height / 2) - _position);
+                            new Vector2(player.Position.X + player.Width / 2,
+                           player.Position.Y + player.Height / 2) - _position);
 
                     _acceleration = playerBoomerangNormal * 2;
 
@@ -170,7 +157,7 @@ namespace ShotgunBoomerang
                         // the tell the player that the boomerang has returned
                         player.IsHoldingBoomerang = true;
                         // the boomerang should remove itself from the game when it hits the player
-                        projectiles.Remove(this);
+                        currentLevel.CurrentProjectiles.Remove(this);
                     }
                     break;
             }

@@ -40,13 +40,7 @@ namespace ShotgunBoomerang
         /// <param name="player">The player</param>
         /// <exception cref="NotImplementedException">Tile currently has no update function</exception>
         public override void Update(
-            KeyboardState kb,
-            KeyboardState prevKb,
-            MouseState ms,
-            MouseState prevMs,
-            List<Tile> tileMap,
-            List<IGameEnemy> enemies,
-            List<IGameProjectile> projectiles,
+            Level currentLevel,
             Player player,
             GameTime gameTime)
         {

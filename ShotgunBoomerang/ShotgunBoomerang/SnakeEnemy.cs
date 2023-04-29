@@ -101,21 +101,21 @@ namespace ShotgunBoomerang
             {
                 // draw normally while patrolling
                 case SnakeState.Patrol:
-                    sb.Draw(Sprite, _position - offset, Color.White);
+                    sb.Draw(_sprite, _position - offset, Color.White);
                     break;
 
                 // draw normally while frightened
                 case SnakeState.Frightened:
-                    sb.Draw(Sprite, _position - offset, Color.White);
+                    sb.Draw(_sprite, _position - offset, Color.White);
                     break;
 
                 case SnakeState.Airborne:
-                    sb.Draw(Sprite, _position - offset, Color.White);
+                    sb.Draw(_sprite, _position - offset, Color.White);
                     break;
 
                 // draw in red while damaged
                 case SnakeState.Damaged:
-                    sb.Draw(Sprite, _position - offset, Color.Red);
+                    sb.Draw(_sprite, _position - offset, Color.Red);
                     break;
             }
             /*
@@ -143,13 +143,8 @@ namespace ShotgunBoomerang
         /// <param name="tileMap">The level map</param>
         /// <param name="projectiles">The list of projectiles</param>
         /// <param name="player">The player</param>
-        public override void Update(KeyboardState kb,
-            KeyboardState prevKb,
-            MouseState ms,
-            MouseState prevMs,
-            List<Tile> tileMap,
-            List<IGameEnemy> enemies,
-            List<IGameProjectile> projectiles,
+        public override void Update(
+            Level currentLevel,
             Player player,
             GameTime gameTime)
         {
@@ -158,7 +153,7 @@ namespace ShotgunBoomerang
             float airFriction = 0.99f;
 
             // calculate physics
-            ResolveTileCollisions(tileMap);
+            ResolveTileCollisions(currentLevel.CurrentTileMap);
 
             switch(_currentState)
             {
@@ -238,13 +233,13 @@ namespace ShotgunBoomerang
                         Random dropRng = new Random();
                         if(dropRng.Next(10) == 0)
                         {
-                            projectiles.Add(
+                            currentLevel.CurrentProjectiles.Add(
                                 new Vegemite(_vegemiteDropSprite,
                                 _position,
                                 _velocity));
                         }
 
-                        enemies.Remove(this);
+                        currentLevel.CurrentEnemies.Remove(this);
                         player.Kills++;
                     }
 

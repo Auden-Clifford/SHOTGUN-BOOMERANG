@@ -377,7 +377,7 @@ namespace ShotgunBoomerang
                 case GameState.Gameplay:
 
                     // Update the player
-                    player.Update(kb, prevKb, ms, prevMs, currentLevel.CurrentTileMap, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, graphics, gameTime);
+                    player.Update(kb, prevKb, ms, prevMs, currentLevel, graphics, gameTime);
 
                     // Updating player health and ammo if godmode options are enabled
                     if (infiniteHP && player.Health != 100)
@@ -793,8 +793,8 @@ namespace ShotgunBoomerang
                 ShapeBatch.BoxOutline(
                     currentEnemy.Position.X - screenOffset.X,
                     currentEnemy.Position.Y - screenOffset.Y,
-                    currentEnemy.Sprite.Width,
-                    currentEnemy.Sprite.Height,
+                    currentEnemy.Width,
+                    currentEnemy.Height,
                     Color.White);
             }
 
@@ -805,8 +805,8 @@ namespace ShotgunBoomerang
                 ShapeBatch.BoxOutline(
                     currentProjectile.Position.X - screenOffset.X,
                     currentProjectile.Position.Y - screenOffset.Y,
-                    currentProjectile.Sprite.Width,
-                    currentProjectile.Sprite.Height,
+                    currentProjectile.Width,
+                    currentProjectile.Height,
                     Color.White);
             }
 

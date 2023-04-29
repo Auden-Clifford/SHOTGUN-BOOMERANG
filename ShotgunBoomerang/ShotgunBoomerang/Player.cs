@@ -396,9 +396,7 @@ namespace ShotgunBoomerang
             KeyboardState prevKb,
             MouseState ms,
             MouseState prevMs,
-            List<Tile> tileMap,
-            List<IGameEnemy> enemies,
-            List<IGameProjectile> projectiles,
+            Level currentLevel,
             GraphicsDeviceManager graphics,
             GameTime gameTime)
         {
@@ -409,7 +407,7 @@ namespace ShotgunBoomerang
             float skidFriction = 0.7f;
 
             // resolve tile collisions before anything else
-            ResolveTileCollisions(tileMap);
+            ResolveTileCollisions(currentLevel.CurrentTileMap);
 
             // determine the direction the player is facing
             if(ms.Position.X < graphics.PreferredBackBufferWidth / 2)
@@ -435,7 +433,7 @@ namespace ShotgunBoomerang
                     if(ms.LeftButton == ButtonState.Pressed && 
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies, projectiles, gameTime);  
+                        ShotgunAttack(ms, graphics, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, gameTime);  
                     }
 
                     // if the player right clicks (only once) and
@@ -444,7 +442,7 @@ namespace ShotgunBoomerang
                         prevMs.RightButton == ButtonState.Released &&
                         _isHoldingBoomerang)
                     {
-                        BoomerangAttack(ms, graphics, projectiles);
+                        BoomerangAttack(ms, graphics, currentLevel.CurrentProjectiles);
                     }
 
                     // player reloads if they run out or press R
@@ -483,7 +481,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies, projectiles, gameTime);
+                        ShotgunAttack(ms, graphics, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, gameTime);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -491,7 +489,7 @@ namespace ShotgunBoomerang
                         prevMs.RightButton == ButtonState.Released &&
                         _isHoldingBoomerang)
                     {
-                        BoomerangAttack(ms, graphics, projectiles);
+                        BoomerangAttack(ms, graphics, currentLevel.CurrentProjectiles);
                     }
 
                     // while A or D are pressed, increase the player's velocity
@@ -545,7 +543,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies, projectiles, gameTime);
+                        ShotgunAttack(ms, graphics, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, gameTime);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -553,7 +551,7 @@ namespace ShotgunBoomerang
                         prevMs.RightButton == ButtonState.Released &&
                         _isHoldingBoomerang)
                     {
-                        BoomerangAttack(ms, graphics, projectiles);
+                        BoomerangAttack(ms, graphics, currentLevel.CurrentProjectiles);
                     }
 
                     // while A or D are pressed, increase the player's velocity (1/2 of normal)
@@ -603,7 +601,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies, projectiles, gameTime);
+                        ShotgunAttack(ms, graphics, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, gameTime);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -611,7 +609,7 @@ namespace ShotgunBoomerang
                         prevMs.RightButton == ButtonState.Released &&
                         _isHoldingBoomerang)
                     {
-                        BoomerangAttack(ms, graphics, projectiles);
+                        BoomerangAttack(ms, graphics, currentLevel.CurrentProjectiles);
                     }
 
                     // player reloads if they run out or press R
@@ -649,7 +647,7 @@ namespace ShotgunBoomerang
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
                     {
-                        ShotgunAttack(ms, graphics, enemies, projectiles, gameTime);
+                        ShotgunAttack(ms, graphics, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, gameTime);
                     }
 
                     // if the player right clicks (only once), perform a boomerang attack
@@ -657,7 +655,7 @@ namespace ShotgunBoomerang
                         prevMs.RightButton == ButtonState.Released &&
                         _isHoldingBoomerang)
                     {
-                        BoomerangAttack(ms, graphics, projectiles);
+                        BoomerangAttack(ms, graphics, currentLevel.CurrentProjectiles);
                     }
 
                     // apply friction to the player's velocity
@@ -738,6 +736,16 @@ namespace ShotgunBoomerang
             // the player's isCollidingWithGround variable must always
             // be set to false at the end of Update, it will be detected again in ResolveCollisions
             _isCollidingWithGround = false;
+        }
+
+        /// <summary>
+        /// This is the wrong overload for player. You need to
+        /// use the one that allows for beyboard and mouse input
+        /// </summary>
+        /// <exception cref="NotImplementedException">Uoou have used the wrong overload, use the other one</exception>
+        public override void Update(Level currentLevel, Player player, GameTime gameTime)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>

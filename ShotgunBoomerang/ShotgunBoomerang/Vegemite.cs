@@ -54,19 +54,13 @@ namespace ShotgunBoomerang
         }
 
         public override void Update(
-            KeyboardState kb,
-            KeyboardState prevKb,
-            MouseState ms,
-            MouseState prevMs,
-            List<Tile> tileMap,
-            List<IGameEnemy> enemies,
-            List<IGameProjectile> projectiles,
+            Level currentLevel,
             Player player,
             GameTime gameTime)
         {
             float groundFriction = 0.99f;
 
-            ResolveTileCollisions(tileMap);
+            ResolveTileCollisions(currentLevel.CurrentTileMap);
 
             // slow down over time
             _velocity *= groundFriction;
@@ -75,7 +69,7 @@ namespace ShotgunBoomerang
             if(CheckCollision(player))
             {
                 player.Health += _damage;
-                projectiles.Remove(this);
+                currentLevel.CurrentProjectiles.Remove(this);
             }
         }
 
