@@ -39,11 +39,6 @@ namespace ShotgunBoomerang
         private MouseState ms;
         private MouseState prevMs;
 
-        // many classes will have to keep track of the currently loaded tiles
-        //private List<Tile> currentTileMap;
-        //private List<IGameEnemy> currentEnemies;
-        //private List<IGameProjectile> currentProjectiles;
-
         private Vector2 screenOffset;
 
         private static GraphicsDeviceManager graphics;
@@ -56,10 +51,10 @@ namespace ShotgunBoomerang
 
         // Sound Effects
         private Song deathSound;
-        private Song gunFireA;
-        private Song gunFireB;
-        private Song gunFireC;
-        private Song reload;
+        //private Song gunFireA;
+        //private Song gunFireB;
+        //private Song gunFireC;
+        //private Song reload;
         private List<Song> playerSounds;
 
         // Textures
@@ -78,23 +73,14 @@ namespace ShotgunBoomerang
         private Texture2D twoDisplay;
         private Texture2D threeDisplay;
 
-        //private Texture2D testTileSprite;
-        //private Texture2D playerSpriteSheet;
-        //private Texture2D playerShotgunArm;
-        //private Texture2D snakeSprite;
-        //private Texture2D boomerangSprite;
-        //private Texture2D muzzleSprite;
-        private Texture2D scorpionLeft;
-        private Texture2D scorpionRight;
         private Texture2D bulletSprite;
         private Texture2D koalaLeft;
         private Texture2D koalaRight;
 
         private List<Texture2D> playerTexturePack;
+        private List<Texture2D> levelTexturepack;
 
         private Texture2D controls;
-
-        private List<Texture2D> levelTexturepack;
 
         // Fonts
         private SpriteFont arial12;
@@ -133,8 +119,6 @@ namespace ShotgunBoomerang
         private Rectangle deadRespawnButton;
         private Rectangle deadQuitButton;
 
-        private SnakeEnemy snek;
-
         public GameManager()
         {
             // Sets width and height to match hardware fullscreen
@@ -164,29 +148,22 @@ namespace ShotgunBoomerang
 
             // Load textures
             menuBackground = this.Content.Load<Texture2D>("pixeldesertback");
-            //testTileSprite = this.Content.Load<Texture2D>("TestTile");
-            //playerSpriteSheet = this.Content.Load<Texture2D>("Player_sheet");
-            //playerShotgunArm = this.Content.Load<Texture2D>("player_sgArm");
             blankRectangleSprite = this.Content.Load<Texture2D>("MiscUI/blankRectangle");
-            //boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
-            //snakeSprite = this.Content.Load<Texture2D>("Snek");
-            scorpionLeft = this.Content.Load<Texture2D>("EnemyTextures/scorpin_Left");
-            scorpionRight = this.Content.Load<Texture2D>("EnemyTextures/scorpin_Right");
-            bulletSprite = this.Content.Load<Texture2D>("MiscEntities/Bullet");
-            koalaLeft = this.Content.Load<Texture2D>("EnemyTextures/GunKoala_Left3.0");
-            koalaRight = this.Content.Load<Texture2D>("EnemyTextures/GunKoala_Right3.0");
             darkFilter = this.Content.Load<Texture2D>("MiscUI/darkfilter");
             healthBar = this.Content.Load<Texture2D>("MiscUI/redsquare");
             ammoBar = this.Content.Load<Texture2D>("MiscUI/ammoui");
             demoDisplay = this.Content.Load<Texture2D>("MiscUI/demoDisplay");
             awesomeFlamingSkull = this.Content.Load<Texture2D>("MiscUI/awesomeflamingskull");
-            //muzzleSprite = this.Content.Load<Texture2D>("muzzle");
             levelOneBack = this.Content.Load<Texture2D>("levelOneBack");
             oneDisplay = this.Content.Load<Texture2D>("MiscUI/oneDisplay");
             controls = this.Content.Load<Texture2D>("MiscUI/controls");
             levelTwoBack = this.Content.Load<Texture2D>("levelTwoBack");
             levelThreeBack = this.Content.Load<Texture2D>("levelThreeBack");
             twoDisplay = this.Content.Load<Texture2D>("MiscUI/twoDisplay");
+
+            bulletSprite = this.Content.Load<Texture2D>("MiscEntities/Bullet");
+            koalaLeft = this.Content.Load<Texture2D>("EnemyTextures/GunKoala_Left3.0");
+            koalaRight = this.Content.Load<Texture2D>("EnemyTextures/GunKoala_Right3.0");
 
             // these textures are all used within the player class
             playerTexturePack = new List<Texture2D>()
@@ -240,11 +217,14 @@ namespace ShotgunBoomerang
             // Load SFX
             deathSound = this.Content.Load<Song>("Sounds/BTBRiff");
             
-            gunFireA = this.Content.Load<Song>("Sounds/gunA");
-            gunFireB = this.Content.Load<Song>("Sounds/gunB");
-            gunFireC = this.Content.Load<Song>("Sounds/gunC");
-            reload = this.Content.Load<Song>("Sounds/reload");
-            playerSounds = new List<Song>() { gunFireA, gunFireB, gunFireC , reload};
+            // sound effects used by the player
+            playerSounds = new List<Song>() 
+            {
+                this.Content.Load<Song>("Sounds/gunA"),
+                this.Content.Load<Song>("Sounds/gunB"),
+                this.Content.Load<Song>("Sounds/gunC"),
+                this.Content.Load<Song>("Sounds/reload"),
+            };
 
             levelSprite = demoDisplay; // Sets the preview image in level select to show the demo level by default. It has to show something
 
@@ -252,41 +232,12 @@ namespace ShotgunBoomerang
             arial12 = this.Content.Load<SpriteFont>("MiscUI/Arial12");
             arial36 = this.Content.Load<SpriteFont>("MiscUI/Arial36");
 
-            // create the test level
-            /*
-            testLevel = new Level(
-                GenerateTestLevel(),
-                new List<IGameEnemy>(),
-                new List<IGameProjectile>(),
-                new Vector2(testTileSprite.Width, 
-                -testTileSprite.Width * 3));
-            */
-
             demoLevel = new Level(levelTexturepack, "Content/Levels/testLevel3.level");
             levelOne = new Level(levelTexturepack, "Content/Levels/Level1_V1Alt.level"); //remember to replace the default textures
             levelTwo = new Level(levelTexturepack, "Content/Levels/Level2.level");
 
-            //NOT level 2. just a test alt for level 1
-            //levelTwo = new Level(demoLevelTexturepack, "../../../../Levels/Level1_V1Alt.level");
-
-
             // set up the player
             player = new Player(playerTexturePack, demoLevel.PlayerStart, 100, playerSounds);
-
-            //Test enemy
-            /*
-            snek = new SnakeEnemy(
-                snakeSprite,
-                new Vector2(
-                    testLevel.PlayerStart.X + (testTileSprite.Width * 3),
-                    testLevel.PlayerStart.Y + (testTileSprite.Height)),
-                    100,
-                    20,
-                    2);
-            testLevel.StartEnemies.Add(snek);
-            testLevel.CurrentEnemies.Add(snek);
-            testLevel.StartEnemies.Add(snek);
-            */
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
             pauseButtonDebug = new Rectangle(graphics.PreferredBackBufferWidth / 2 - 264 + 350, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);
@@ -309,7 +260,7 @@ namespace ShotgunBoomerang
         }
 
         /// <summary>
-        /// Update!! This is where the game states are managed!!
+        /// Update!! This is where the game states and main game logic are managed!!
         /// </summary>
         /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
@@ -726,37 +677,6 @@ namespace ShotgunBoomerang
             base.Draw(gameTime);
         }
 
-        /*
-        /// <summary>
-        /// Generates the demo level
-        /// </summary>
-        /// <returns></returns>
-        private List<Tile> GenerateTestLevel()
-        {
-            List<Tile> tileMap = new List<Tile>();
-
-
-            //Adds a wall at the beginning
-            tileMap.Add(new Tile(testTileSprite, new Vector2(0, -testTileSprite.Height)));
-
-
-            // create a 32-tile long floor
-            int i = 0;
-
-            for(i = 0; i < 32; i++)
-            {
-                tileMap.Add(new Tile(testTileSprite, 
-                    new Vector2(i * testTileSprite.Width, 
-                    0)));
-            }
-
-            //Adds a wall at the end
-            tileMap.Add(new Tile(testTileSprite, new Vector2((i - 1) * testTileSprite.Width, -testTileSprite.Height)));
-
-            return tileMap;
-        }
-        */
-
         /// <summary>
         /// Draws the debug text and hitboxes. Helper Method!
         /// </summary>
@@ -839,10 +759,6 @@ namespace ShotgunBoomerang
             Vector2 mouseCenterNormal = Vector2.Normalize(new Vector2(ms.Position.X, ms.Position.Y) - screenCenter);
 
             float angle = MathF.Atan2(-mouseCenterNormal.Y, mouseCenterNormal.X);
-           
-            
-
-            //angle = -MathF.Atan(mouseCenterNormal.Y / mouseCenterNormal.X);
 
             try
             {
