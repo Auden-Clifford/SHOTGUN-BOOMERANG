@@ -12,10 +12,12 @@ namespace ShotgunBoomerang
 {
     internal class Bullet : MobileEntity, IGameProjectile
     {
-        //private bool active;
+        // Fields
         bool aimedShot;
         bool parried;
 
+
+        // Constructor
 
         /// <summary>
         /// Creates a new bullet moving horizontally at a specified speed
@@ -34,7 +36,6 @@ namespace ShotgunBoomerang
             _height = _sprite.Height;
 
             aimedShot = false;
-            //active = false;
             parried = false;
 
             _damage = 10;
@@ -44,6 +45,9 @@ namespace ShotgunBoomerang
             _health= 0;
             _maxHealth= 0;
         }
+
+
+        // Methods
 
         /// <summary>
         /// method for use in the update loop, contains all logic the object needs to go through in a frame
@@ -102,6 +106,9 @@ namespace ShotgunBoomerang
                 }
             }
         }
+
+
+        // Helper methods
 
         /// <summary>
         /// the bullet should not need to resolve collisions as it 

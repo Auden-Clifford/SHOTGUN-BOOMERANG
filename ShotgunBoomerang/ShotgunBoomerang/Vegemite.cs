@@ -100,7 +100,7 @@ namespace ShotgunBoomerang
             foreach (Tile tile in tileMap)
             {
                 // if the vegemite is intersecting the tile
-                if (tile.CheckCollision(this))
+                if (this.CheckCollision(tile))
                 {
                     // add it's hitbox to the list
                     intersectionsList.Add(tile.HitBox);

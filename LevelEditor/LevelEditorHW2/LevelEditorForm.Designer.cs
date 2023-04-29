@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LevelEditorForm));
             this.groupBox_TileSelector = new System.Windows.Forms.GroupBox();
+            this.tilePicker_Scorpion = new System.Windows.Forms.PictureBox();
             this.tilePicker_CaveBottomRight = new System.Windows.Forms.PictureBox();
             this.tilePicker_CaveBottomCenter = new System.Windows.Forms.PictureBox();
             this.tilePicker_CaveBottomLeft = new System.Windows.Forms.PictureBox();
@@ -67,8 +68,9 @@
             this.groupBox_MapView = new System.Windows.Forms.GroupBox();
             this.ScrollBarX = new System.Windows.Forms.HScrollBar();
             this.ScrollBarY = new System.Windows.Forms.VScrollBar();
-            this.tilePicker_Scorpion = new System.Windows.Forms.PictureBox();
+            this.tilePicker_WoodSpike = new System.Windows.Forms.PictureBox();
             this.groupBox_TileSelector.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_Scorpion)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveBottomRight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveBottomCenter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveBottomLeft)).BeginInit();
@@ -100,11 +102,12 @@
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_TestTile)).BeginInit();
             this.groupBox_CurrentTile.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_CurrentTile)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_Scorpion)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_WoodSpike)).BeginInit();
             this.SuspendLayout();
             // 
             // groupBox_TileSelector
             // 
+            this.groupBox_TileSelector.Controls.Add(this.tilePicker_WoodSpike);
             this.groupBox_TileSelector.Controls.Add(this.tilePicker_Scorpion);
             this.groupBox_TileSelector.Controls.Add(this.tilePicker_CaveBottomRight);
             this.groupBox_TileSelector.Controls.Add(this.tilePicker_CaveBottomCenter);
@@ -141,6 +144,19 @@
             this.groupBox_TileSelector.TabIndex = 0;
             this.groupBox_TileSelector.TabStop = false;
             this.groupBox_TileSelector.Text = "Tiles";
+            // 
+            // tilePicker_Scorpion
+            // 
+            this.tilePicker_Scorpion.BackColor = System.Drawing.Color.Transparent;
+            this.tilePicker_Scorpion.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tilePicker_Scorpion.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_Scorpion.Image")));
+            this.tilePicker_Scorpion.Location = new System.Drawing.Point(62, 109);
+            this.tilePicker_Scorpion.Name = "tilePicker_Scorpion";
+            this.tilePicker_Scorpion.Size = new System.Drawing.Size(50, 50);
+            this.tilePicker_Scorpion.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tilePicker_Scorpion.TabIndex = 37;
+            this.tilePicker_Scorpion.TabStop = false;
+            this.tilePicker_Scorpion.Click += new System.EventHandler(this.tilePicker_Click);
             // 
             // tilePicker_CaveBottomRight
             // 
@@ -595,18 +611,18 @@
             this.ScrollBarY.TabIndex = 0;
             this.ScrollBarY.Scroll += new System.Windows.Forms.ScrollEventHandler(this.ScrollBar_Scroll);
             // 
-            // tilePicker_Scorpion
+            // tilePicker_WoodSpike
             // 
-            this.tilePicker_Scorpion.BackColor = System.Drawing.Color.Transparent;
-            this.tilePicker_Scorpion.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.tilePicker_Scorpion.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_Scorpion.Image")));
-            this.tilePicker_Scorpion.Location = new System.Drawing.Point(62, 109);
-            this.tilePicker_Scorpion.Name = "tilePicker_Scorpion";
-            this.tilePicker_Scorpion.Size = new System.Drawing.Size(50, 50);
-            this.tilePicker_Scorpion.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.tilePicker_Scorpion.TabIndex = 37;
-            this.tilePicker_Scorpion.TabStop = false;
-            this.tilePicker_Scorpion.Click += new System.EventHandler(this.tilePicker_Click);
+            this.tilePicker_WoodSpike.BackColor = System.Drawing.Color.Transparent;
+            this.tilePicker_WoodSpike.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tilePicker_WoodSpike.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_WoodSpike.Image")));
+            this.tilePicker_WoodSpike.Location = new System.Drawing.Point(118, 109);
+            this.tilePicker_WoodSpike.Name = "tilePicker_WoodSpike";
+            this.tilePicker_WoodSpike.Size = new System.Drawing.Size(50, 50);
+            this.tilePicker_WoodSpike.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tilePicker_WoodSpike.TabIndex = 38;
+            this.tilePicker_WoodSpike.TabStop = false;
+            this.tilePicker_WoodSpike.Click += new System.EventHandler(this.tilePicker_Click);
             // 
             // LevelEditorForm
             // 
@@ -625,6 +641,7 @@
             this.Text = "Level Editor";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LevelEditorForm_FormClosing);
             this.groupBox_TileSelector.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_Scorpion)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveBottomRight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveBottomCenter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_CaveBottomLeft)).EndInit();
@@ -656,7 +673,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_TestTile)).EndInit();
             this.groupBox_CurrentTile.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_CurrentTile)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_Scorpion)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_WoodSpike)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -702,5 +719,6 @@
         private PictureBox tilePicker_CaveTopCenter;
         private PictureBox tilePicker_CaveTopLeft;
         private PictureBox tilePicker_Scorpion;
+        private PictureBox tilePicker_WoodSpike;
     }
 }

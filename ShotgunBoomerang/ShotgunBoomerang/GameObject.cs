@@ -111,7 +111,7 @@ namespace ShotgunBoomerang
         /// </summary>
         /// <param name="other">Other object to check</param>
         /// <returns>True if the objects are intersecting; false otherwise</returns>
-        public virtual bool CheckCollision(GameObject other)
+        protected virtual bool CheckCollision(GameObject other)
         {
             return this.HitBox.Intersects(other.HitBox);
         }

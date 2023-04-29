@@ -21,15 +21,21 @@ namespace ShotgunBoomerang
     internal class Boomerang : MobileEntity, IGameProjectile
     {
         // fields
+
         private BoomerangState _currentState;
         private float _drawAngle;
 
 
         // Properties
+
+        /// <summary>
+        /// Gets the current state of the boomerang
+        /// </summary>
         public BoomerangState CurrentState { get { return _currentState; } }
 
 
         // Constructor
+
         /// <summary>
         /// Creates a new boomerang with a given texture and position
         /// </summary>
@@ -53,6 +59,9 @@ namespace ShotgunBoomerang
 
             _drawAngle = 0;
         }
+
+
+        // Methods
 
         /// <summary>
         /// Draw override for the boomerang, allows the 
@@ -167,6 +176,9 @@ namespace ShotgunBoomerang
             }
         }
 
+
+        // Helper methods
+
         /// <summary>
         /// Should allow the boomerang to bounce off walls
         /// </summary>
@@ -184,7 +196,7 @@ namespace ShotgunBoomerang
             foreach (Tile tile in tileMap)
             {
                 // if the boomerang is intersecting the tile
-                if (tile.CheckCollision(this))
+                if (this.CheckCollision(tile))
                 {
                     // add it's hitbox to the list
                     intersectionsList.Add(tile.HitBox);

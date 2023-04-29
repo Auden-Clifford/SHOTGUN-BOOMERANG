@@ -265,6 +265,10 @@ namespace LevelEditor
                         {
                             writer.Write("vegemite,");
                         }
+                        else if(i == tilePicker_WoodSpike.Image)
+                        {
+                            writer.Write("woodSpike,");
+                        }
                         // save plank tiles
                         else if(i == tilePicker_PlanksLeft.Image)
                         {
@@ -445,7 +449,8 @@ namespace LevelEditor
                 tilePicker_PlayerStart,
                 tilePicker_Snek,
                 tilePicker_Scorpion,
-                tilePicker_Vegemite
+                tilePicker_Vegemite,
+                tilePicker_WoodSpike
             };
 
             _grass = new List<PictureBox>()
@@ -606,6 +611,10 @@ namespace LevelEditor
                     else if (currentLine[x] == "vegemite")
                     {
                         i = tilePicker_Vegemite.Image;
+                    }
+                    else if (currentLine[x] == "woodSpike,")
+                    {
+                        i = tilePicker_WoodSpike.Image;
                     }
                     // load plank tiles
                     else if (currentLine[x] == "planksLeft")
