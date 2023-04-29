@@ -167,89 +167,89 @@ namespace ShotgunBoomerang
             //testTileSprite = this.Content.Load<Texture2D>("TestTile");
             //playerSpriteSheet = this.Content.Load<Texture2D>("Player_sheet");
             //playerShotgunArm = this.Content.Load<Texture2D>("player_sgArm");
-            blankRectangleSprite = this.Content.Load<Texture2D>("blankRectangle");
+            blankRectangleSprite = this.Content.Load<Texture2D>("MiscUI/blankRectangle");
             //boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
             //snakeSprite = this.Content.Load<Texture2D>("Snek");
-            scorpionLeft = this.Content.Load<Texture2D>("scorpin_Left");
-            scorpionRight = this.Content.Load<Texture2D>("scorpin_Right");
-            bulletSprite = this.Content.Load<Texture2D>("Bullet");
-            koalaLeft = this.Content.Load<Texture2D>("GunKoala_Left3.0");
-            koalaRight = this.Content.Load<Texture2D>("GunKoala_Right3.0");
-            darkFilter = this.Content.Load<Texture2D>("darkfilter");
-            healthBar = this.Content.Load<Texture2D>("redsquare");
-            ammoBar = this.Content.Load<Texture2D>("ammoui");
-            demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
-            awesomeFlamingSkull = this.Content.Load<Texture2D>("awesomeflamingskull");
+            scorpionLeft = this.Content.Load<Texture2D>("EnemyTextures/scorpin_Left");
+            scorpionRight = this.Content.Load<Texture2D>("EnemyTextures/scorpin_Right");
+            bulletSprite = this.Content.Load<Texture2D>("MiscEntities/Bullet");
+            koalaLeft = this.Content.Load<Texture2D>("EnemyTextures/GunKoala_Left3.0");
+            koalaRight = this.Content.Load<Texture2D>("EnemyTextures/GunKoala_Right3.0");
+            darkFilter = this.Content.Load<Texture2D>("MiscUI/darkfilter");
+            healthBar = this.Content.Load<Texture2D>("MiscUI/redsquare");
+            ammoBar = this.Content.Load<Texture2D>("MiscUI/ammoui");
+            demoDisplay = this.Content.Load<Texture2D>("MiscUI/demoDisplay");
+            awesomeFlamingSkull = this.Content.Load<Texture2D>("MiscUI/awesomeflamingskull");
             //muzzleSprite = this.Content.Load<Texture2D>("muzzle");
             levelOneBack = this.Content.Load<Texture2D>("levelOneBack");
-            oneDisplay = this.Content.Load<Texture2D>("oneDisplay");
-            controls = this.Content.Load<Texture2D>("controls");
+            oneDisplay = this.Content.Load<Texture2D>("MiscUI/oneDisplay");
+            controls = this.Content.Load<Texture2D>("MiscUI/controls");
             levelTwoBack = this.Content.Load<Texture2D>("levelTwoBack");
             levelThreeBack = this.Content.Load<Texture2D>("levelThreeBack");
-            twoDisplay = this.Content.Load<Texture2D>("twoDisplay");
+            twoDisplay = this.Content.Load<Texture2D>("MiscUI/twoDisplay");
 
             // these textures are all used within the player class
             playerTexturePack = new List<Texture2D>()
             {
-                this.Content.Load<Texture2D>("player_sheet"),
-                this.Content.Load<Texture2D>("player_sgArm_sheet"),
-                this.Content.Load<Texture2D>("player_sg_blast"),
-                this.Content.Load<Texture2D>("Boomerang")
+                this.Content.Load<Texture2D>("PlayerTextures/player_sheet"),
+                this.Content.Load<Texture2D>("PlayerTextures/player_sgArm_sheet"),
+                this.Content.Load<Texture2D>("PlayerTextures/player_sg_blast"),
+                this.Content.Load<Texture2D>("PlayerTextures/Boomerang")
             };
 
             // These textures are all used by the level class
             levelTexturepack = new List<Texture2D>()
             {
-                this.Content.Load<Texture2D>("TestTile"),
-                this.Content.Load<Texture2D>("bricks"),
-                this.Content.Load<Texture2D>("planksCenter"),
-                this.Content.Load<Texture2D>("planksLeft"),
-                this.Content.Load<Texture2D>("planksRight"),
+                this.Content.Load<Texture2D>("TileTextures/TestTile"),
+                this.Content.Load<Texture2D>("TileTextures/bricks"),
+                this.Content.Load<Texture2D>("TileTextures/planksCenter"),
+                this.Content.Load<Texture2D>("TileTextures/planksLeft"),
+                this.Content.Load<Texture2D>("TileTextures/planksRight"),
 
-                this.Content.Load<Texture2D>("Snek"),
-                this.Content.Load<Texture2D>("scorpin_Left"),
-                this.Content.Load<Texture2D>("scorpin_Right"),
-                this.Content.Load<Texture2D>("Bullet"),
-                this.Content.Load<Texture2D>("GunKoala_Left3.0"),
-                this.Content.Load<Texture2D>("GunKoala_Right3.0"),
-                this.Content.Load<Texture2D>("ausFlag"),
-                this.Content.Load<Texture2D>("vegemite"),
+                this.Content.Load<Texture2D>("EnemyTextures/Snek"),
+                this.Content.Load<Texture2D>("EnemyTextures/scorpin_Left"),
+                this.Content.Load<Texture2D>("EnemyTextures/scorpin_Right"),
+                this.Content.Load<Texture2D>("MiscEntities/Bullet"),
+                this.Content.Load<Texture2D>("EnemyTextures/GunKoala_Left3.0"),
+                this.Content.Load<Texture2D>("EnemyTextures/GunKoala_Right3.0"),
+                this.Content.Load<Texture2D>("MiscEntities/ausFlag"),
+                this.Content.Load<Texture2D>("MiscEntities/vegemite"),
 
-                this.Content.Load<Texture2D>("caveBottomCenter"),
-                this.Content.Load<Texture2D>("caveBottomLeft"),
-                this.Content.Load<Texture2D>("caveBottomRight"),
-                this.Content.Load<Texture2D>("caveCenterCenter"),
-                this.Content.Load<Texture2D>("caveCenterLeft"),
-                this.Content.Load<Texture2D>("caveCenterRight"),
-                this.Content.Load<Texture2D>("caveTopCenter"),
-                this.Content.Load<Texture2D>("caveTopLeft"),
-                this.Content.Load<Texture2D>("caveTopRight"),
+                this.Content.Load<Texture2D>("TileTextures/caveBottomCenter"),
+                this.Content.Load<Texture2D>("TileTextures/caveBottomLeft"),
+                this.Content.Load<Texture2D>("TileTextures/caveBottomRight"),
+                this.Content.Load<Texture2D>("TileTextures/caveCenterCenter"),
+                this.Content.Load<Texture2D>("TileTextures/caveCenterLeft"),
+                this.Content.Load<Texture2D>("TileTextures/caveCenterRight"),
+                this.Content.Load<Texture2D>("TileTextures/caveTopCenter"),
+                this.Content.Load<Texture2D>("TileTextures/caveTopLeft"),
+                this.Content.Load<Texture2D>("TileTextures/caveTopRight"),
 
-                this.Content.Load<Texture2D>("grassBottomCenter"),
-                this.Content.Load<Texture2D>("grassBottomLeft"),
-                this.Content.Load<Texture2D>("grassBottomRight"),
-                this.Content.Load<Texture2D>("grassCenterCenter"),
-                this.Content.Load<Texture2D>("grassCenterLeft"),
-                this.Content.Load<Texture2D>("grassCenterRight"),
-                this.Content.Load<Texture2D>("grassTopCenter"),
-                this.Content.Load<Texture2D>("grassTopLeft"),
-                this.Content.Load<Texture2D>("grassTopRight")
+                this.Content.Load<Texture2D>("TileTextures/grassBottomCenter"),
+                this.Content.Load<Texture2D>("TileTextures/grassBottomLeft"),
+                this.Content.Load<Texture2D>("TileTextures/grassBottomRight"),
+                this.Content.Load<Texture2D>("TileTextures/grassCenterCenter"),
+                this.Content.Load<Texture2D>("TileTextures/grassCenterLeft"),
+                this.Content.Load<Texture2D>("TileTextures/grassCenterRight"),
+                this.Content.Load<Texture2D>("TileTextures/grassTopCenter"),
+                this.Content.Load<Texture2D>("TileTextures/grassTopLeft"),
+                this.Content.Load<Texture2D>("TileTextures/grassTopRight")
             };
 
             // Load SFX
-            deathSound = this.Content.Load<Song>("BTBRiff");
+            deathSound = this.Content.Load<Song>("Sounds/BTBRiff");
             
-            gunFireA = this.Content.Load<Song>("gunA");
-            gunFireB = this.Content.Load<Song>("gunB");
-            gunFireC = this.Content.Load<Song>("gunC");
-            reload = this.Content.Load<Song>("reload");
+            gunFireA = this.Content.Load<Song>("Sounds/gunA");
+            gunFireB = this.Content.Load<Song>("Sounds/gunB");
+            gunFireC = this.Content.Load<Song>("Sounds/gunC");
+            reload = this.Content.Load<Song>("Sounds/reload");
             playerSounds = new List<Song>() { gunFireA, gunFireB, gunFireC , reload};
 
             levelSprite = demoDisplay; // Sets the preview image in level select to show the demo level by default. It has to show something
 
             // Load fonts
-            arial12 = this.Content.Load<SpriteFont>("Arial12");
-            arial36 = this.Content.Load<SpriteFont>("Arial36");
+            arial12 = this.Content.Load<SpriteFont>("MiscUI/Arial12");
+            arial36 = this.Content.Load<SpriteFont>("MiscUI/Arial36");
 
             // create the test level
             /*
