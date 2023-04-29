@@ -785,6 +785,32 @@ namespace ShotgunBoomerang
             _spriteBatch.DrawString(arial12, $"Time: {(int)player.Timer}", new Vector2(10, 230), Color.White);
             _spriteBatch.DrawString(arial12, $"Score: {(int)player.Score}", new Vector2(10, 250), Color.White);
 
+            // search for a boomerang if it is currently in play
+            Boomerang boomerang = null;
+
+            foreach(IGameProjectile projectile in currentLevel.CurrentProjectiles)
+            {
+                if(projectile is Boomerang)
+                {
+                    boomerang = (Boomerang)projectile;
+                }
+            }
+
+            // only print boomerang stats if one is found
+            if(boomerang != null)
+            {
+                // print the boomerang's X and Y
+                _spriteBatch.DrawString(arial12, $"Boomerang Coordinates: {boomerang.Position.X}, {boomerang.Position.Y}", new Vector2(10, 290), Color.White);
+
+                // print the boomerang's velocity
+                _spriteBatch.DrawString(arial12, $"Boomerang Velocity: {boomerang.Velocity.X}, {boomerang.Velocity.Y}", new Vector2(10, 310), Color.White);
+
+                // print the boomerang's state
+                _spriteBatch.DrawString(arial12, $"Boomerang state: {boomerang.CurrentState}", new Vector2(10, 330), Color.White);
+            }
+            
+
+
             _spriteBatch.End();
 
             // draw hitboxes
@@ -857,18 +883,6 @@ namespace ShotgunBoomerang
 
             ShapeBatch.End();
             _spriteBatch.Begin();
-
-            /*
-            // print the boomerang's X and Y
-            _spriteBatch.DrawString(arial12, $"Boomerang Coordinates: {boomerang.Position.X}, {boomerang.Position.Y}", new Vector2(10, 130), Color.White);
-
-            // print the boomerang's velocity
-            _spriteBatch.DrawString(arial12, $"Boomerang Velocity: {boomerang.Velocity.X}, {boomerang.Velocity.Y}", new Vector2(10, 150), Color.White);
-
-            // print the boomerang's state
-            _spriteBatch.DrawString(arial12, $"Boomerang state: {boomerang.CurrentState}", new Vector2(10, 170), Color.White);
-            */
-
         }
 
         /// <summary>

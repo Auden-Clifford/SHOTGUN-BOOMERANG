@@ -49,6 +49,92 @@ namespace ShotgunBoomerang
         }
 
         /// <summary>
+        /// Base method for use in the update loop, should contain all logic the object needs to go through 
+        /// in a frame as well as any parameters from the game manager that might be needed for this logic. 
+        /// Update will be the entry point for all data from Game manager to the other classes
+        /// -- The boomerang's update should allow it to fly around the level 
+        /// bouncing off walls, returning to the player once it slows down
+        /// </summary>
+        /// <param name="kb">The keyboard state this frame</param>
+        /// <param name="prevKb"> The keyboard state last frame</param>
+        /// <param name="ms">The mouse state this frame</param>
+        /// <param name="prevMs">The mouse state last frame</param>
+        /// <param name="tileMap">The current level's tiles</param>
+        /// <param name="enemies">The current level's enemies</param>
+        /// <param name="projectiles">The projectiles currently in play</param>
+        /// <param name="player">The player</param>
+        /// <param name="gameTime">tracks in-game time intervals</param>
+        public override void Update(
+            KeyboardState kb,
+            KeyboardState prevKb,
+            MouseState ms,
+            MouseState prevMs,
+            List<Tile> tileMap,
+            List<IGameEnemy> enemies,
+            List<IGameProjectile> projectiles,
+            Player player,
+            GameTime gameTime)
+        {
+            //detetcts enemy collisions
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                MobileEntity enemey = (MobileEntity) enemies[i];
+                if (this.CheckCollision(enemey))
+                {
+                    enemies[i].TakeHit(this, _damage * _velocity.Length());
+                }
+            }
+
+            // the boomerang will experience a slowing due to friction while in the air
+            float airFriction = 0.99f;
+
+            switch (_currentState)
+            {
+
+                case BoomerangState.Flying:
+
+                    _velocity *= airFriction;
+
+                    // The boomerang can bounce off walls while flying
+                    ResolveTileCollisions(tileMap);
+
+                    // The boomerang will return to the player once it has reached a low enough speed
+                    if(Math.Abs(_velocity.Length()) <= 20)
+                    {
+                        _currentState = BoomerangState.Returning;
+                    }
+
+                    break;
+                case BoomerangState.Returning:
+                    // while the boomerang is returning, it does not experience friction or collide with walls
+                    // it experiences constant acceleration towards the player
+
+                    // velocity normal between the boomerang and the player's centerpoint
+                    Vector2 playerBoomerangNormal = Vector2.Normalize(
+                            new Vector2(player.Position.X + player.Sprite.Width / 2,
+                           player.Position.Y + player.Sprite.Height / 2) - _position);
+
+                    _acceleration = playerBoomerangNormal * 2;
+
+                    _velocity *= airFriction;
+
+                    // apply physics to the boomerang
+                    ApplyPhysics();
+
+                    // the boomerang should be removed if it touches the player or if
+                    // it has been more then 10 seconds since the boomerang was thrown
+                    if (this.CheckCollision(player))
+                    {
+                        // the tell the player that the boomerang has returned
+                        player.IsHoldingBoomerang = true;
+                        // the boomerang should remove itself from the game when it hits the player
+                        projectiles.Remove(this);
+                    }
+                    break;
+            }
+        }
+
+        /// <summary>
         /// Should allow the boomerang to bounce off walls
         /// </summary>
         /// <param name="tileMap">The current level's tiles</param>
@@ -150,113 +236,6 @@ namespace ShotgunBoomerang
             }
         }
 
-        
-        public override void Draw(SpriteBatch sb, Vector2 screenOffset)
-        {
-            base.Draw(sb, screenOffset);
-        }
-        
-
-        public void HitEntity()
-        {
-            throw new NotImplementedException();
-        }
-
-
-        public override void Update(
-            KeyboardState kb,
-            KeyboardState prevKb,
-            MouseState ms,
-            MouseState prevMs,
-            List<Tile> tileMap,
-            List<IGameEnemy> enemies,
-            List<IGameProjectile> projectiles,
-            Player player,
-            GameTime gameTime)
-        {
-            //detetcts enemy collisions
-            for (int i = 0; i < enemies.Count; i++)
-            {
-                MobileEntity enemey = (MobileEntity) enemies[i];
-                if (this.CheckCollision(enemey))
-                {
-                    enemies[i].TakeHit(this, _damage * _velocity.Length());
-                }
-            }
-
-            // the boomerang will experience a slowing due to friction while in the air
-            float airFriction = 0.99f;
-
-            switch (_currentState)
-            {
-                /*
-                case BoomerangState.Held:
-                    // while the boomerang is being held, it's position and velocity are the same as the player
-                    _velocity = player.Velocity;
-                    _position = player.Position;
-
-                    // a transition to the Flying state will happen if the player right clicks once
-                    if(ms.RightButton == ButtonState.Pressed && 
-                        prevMs.RightButton == ButtonState.Released)
-                    {
-                        Vector2 mousePos = new Vector2(ms.X, ms.Y);
-
-                        // velocity normal between the mouse and the player's centerpoint
-                        Vector2 velocityNormal = Vector2.Normalize(mousePos -
-                            new Vector2(player.Position.X + player.Sprite.Width / 2,
-                           player.Position.Y + player.Sprite.Height / 2));
-
-                        // add some velocity when the boomerang is leaving the player's hand
-                        _velocity += velocityNormal * _damage;
-
-                        _currentState = BoomerangState.Flying;
-                    }
-                    break;
-                */
-
-                case BoomerangState.Flying:
-
-                    _velocity *= airFriction;
-
-                    // The boomerang can bounce off walls while flying
-                    ResolveTileCollisions(tileMap);
-
-                    // The boomerang will return to the player once it has reached a low enough speed
-                    if(Math.Abs(_velocity.Length()) <= 20)
-                    {
-                        _currentState = BoomerangState.Returning;
-                    }
-
-                    break;
-                case BoomerangState.Returning:
-                    // while the boomerang is returning, it does not experience friction or collide with walls
-                    // it experiences constant acceleration towards the player
-
-                    // velocity normal between the boomerang and the player's centerpoint
-                    Vector2 playerBoomerangNormal = Vector2.Normalize(
-                            new Vector2(player.Position.X + player.Sprite.Width / 2,
-                           player.Position.Y + player.Sprite.Height / 2) - _position);
-
-                    _acceleration = playerBoomerangNormal * 2;
-
-                    _velocity *= airFriction;
-
-                    // apply physics to the boomerang
-                    ApplyPhysics();
-
-                    // if the boomerang intersects with the player, go back to the player's hand
-                    if(this.CheckCollision(player))
-                    {
-                        // the tell the player that the boomerang has returned
-                        player.IsHoldingBoomerang = true;
-                        // the boomerang should remove itself from the game when it hits the player
-                        projectiles.Remove(this);
-                    }
-                    //if()
-                    break;
-            }
-        }
-
         protected override void ApplyPhysics()
         {
             _velocity += _acceleration;
@@ -272,6 +251,9 @@ namespace ShotgunBoomerang
         {
             // throw the boomerang  in the  direction of the shotgun blast
             _velocity = shotgunNormal * _velocity.Length() * 2;
+
+            // reset the acceleration
+            _acceleration = Vector2.Zero;
 
             // go back into the flying state
             _currentState = BoomerangState.Flying;
