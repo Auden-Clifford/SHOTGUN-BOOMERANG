@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Input;
+using System.Reflection.Metadata;
 
 namespace ShotgunBoomerang
 {
@@ -21,9 +22,12 @@ namespace ShotgunBoomerang
     {
         // fields
         private BoomerangState _currentState;
+        private float _drawAngle;
+
 
         // Properties
         public BoomerangState CurrentState { get { return _currentState; } }
+
 
         // Constructor
         /// <summary>
@@ -46,6 +50,32 @@ namespace ShotgunBoomerang
             _damage = 1;
             _health = 0;
             _maxHealth = 0;
+
+            _drawAngle = 0;
+        }
+
+        /// <summary>
+        /// Draw override for the boomerang, allows the 
+        /// boomerang to spin based on how fast its going
+        /// </summary>
+        /// <param name="sb">Spritebatch in use</param>
+        /// <param name="screenOffset">offset of the screen coordinates from the world coordinates</param>
+        public override void Draw(SpriteBatch sb, Vector2 screenOffset)
+        {
+            // add to the angle (spins faster when moving faster)
+            _drawAngle += (_velocity.Length()) * (MathF.PI / 180);
+
+            sb.Draw(
+                _sprite,
+                _position - screenOffset,
+                null,
+                Color.White,
+                _drawAngle,
+                // rotate around the texture's center
+                new Vector2(_width / 2, _height / 2),
+                1, // same scale
+                SpriteEffects.None,
+                0.0f);
         }
 
         /// <summary>
@@ -95,6 +125,8 @@ namespace ShotgunBoomerang
 
                     _velocity *= airFriction;
 
+                    ApplyPhysics();
+
                     // The boomerang can bounce off walls while flying
                     ResolveTileCollisions(tileMap);
 
@@ -140,9 +172,6 @@ namespace ShotgunBoomerang
         /// <param name="tileMap">The current level's tiles</param>
         protected override void ResolveTileCollisions(List<Tile> tileMap)
         {
-            //gravity is applied beforehand
-            ApplyPhysics();
-
             // get the boomerang's hitbox
             Rectangle boomerangHitBox = this.HitBox;
 
@@ -207,7 +236,7 @@ namespace ShotgunBoomerang
                     {
                         boomerangHitBox.Y -= intersectRect.Height;
                     }
-                    // otherwise the boomerang has hit the cieling, move down
+                    // otherwise the boomerang has hit the ceiling, move down
                     else
                     {
                         boomerangHitBox.Y += intersectRect.Height;
@@ -236,6 +265,10 @@ namespace ShotgunBoomerang
             }
         }
 
+        /// <summary>
+        /// Applies acceleration to velocity and velocity to 
+        /// position; the boomerang is not effected by gravity
+        /// </summary>
         protected override void ApplyPhysics()
         {
             _velocity += _acceleration;
@@ -244,8 +277,8 @@ namespace ShotgunBoomerang
 
 
         /// <summary>
-        /// parrys boomerang
-        /// forcing it away from player
+        /// parrys the boomerang forcing it away 
+        /// from player and back into the flying state
         /// </summary>
         public void ShotgunHit(Vector2 shotgunNormal)
         {
@@ -259,10 +292,13 @@ namespace ShotgunBoomerang
             _currentState = BoomerangState.Flying;
         }
 
+        /// <summary>
+        /// The boomerang should never be in play at the beginning of the level 
+        /// so this method is uneccisary and only a leftover from IGameProjectile
+        /// </summary>
         public void Reset()
         {
-            // the boomerang is not reset when the level is
-            // reset as it is not in the original level list
+            throw new NotImplementedException();
         }
     }
 }

@@ -194,7 +194,7 @@ namespace ShotgunBoomerang
                 this.Content.Load<Texture2D>("PlayerTextures/player_sheet"),
                 this.Content.Load<Texture2D>("PlayerTextures/player_sgArm_sheet"),
                 this.Content.Load<Texture2D>("PlayerTextures/player_sg_blast"),
-                this.Content.Load<Texture2D>("PlayerTextures/Boomerang")
+                this.Content.Load<Texture2D>("PlayerTextures/Boomerang_alt_2")
             };
 
             // These textures are all used by the level class
