@@ -190,7 +190,10 @@ namespace ShotgunBoomerang
                     shootingTimer = initialTimer;
                     counter = 0;
 
-                    projectilesList.Add(new Bullet(bulletSprite, CenterPoint, damage, 3, player.CenterPoint));
+                    // normal vector between the player and the koala
+                    Vector2 velocityNormal = Vector2.Normalize(player.Position - _position);
+
+                    projectilesList.Add(new Bullet(bulletSprite, CenterPoint, velocityNormal * 10));
                 }
 
 

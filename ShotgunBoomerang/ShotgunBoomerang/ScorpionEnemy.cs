@@ -322,11 +322,11 @@ namespace ShotgunBoomerang
                     //If the player is to the right, spawn a bullet going right
                     if (player.X < _position.X)
                     {
-                        projectilesList.Add(new Bullet(bulletSprite, _position, 10, -2));
+                        projectilesList.Add(new Bullet(bulletSprite, _position, new Vector2(-10, 0)));
                     }
                     else if (player.X > _position.X)
                     {
-                        projectilesList.Add(new Bullet(bulletSprite, _position, 10, 2));
+                        projectilesList.Add(new Bullet(bulletSprite, _position, new Vector2(10, 0)));
                     }
                 }
 
