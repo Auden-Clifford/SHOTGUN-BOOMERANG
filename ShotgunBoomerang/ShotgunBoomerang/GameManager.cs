@@ -74,8 +74,8 @@ namespace ShotgunBoomerang
         private Texture2D threeDisplay;
 
         private Texture2D bulletSprite;
-        private Texture2D koalaLeft;
-        private Texture2D koalaRight;
+        private Texture2D koalaSprite;
+        private Texture2D vegemiteSprite;
 
         private List<Texture2D> playerTexturePack;
         private List<Texture2D> levelTexturepack;
@@ -162,9 +162,9 @@ namespace ShotgunBoomerang
             twoDisplay = this.Content.Load<Texture2D>("MiscUI/twoDisplay");
 
             bulletSprite = this.Content.Load<Texture2D>("MiscEntities/Bullet");
-            koalaLeft = this.Content.Load<Texture2D>("EnemyTextures/GunKoala_Left3.0");
-            koalaRight = this.Content.Load<Texture2D>("EnemyTextures/GunKoala_Right3.0");
-
+            koalaSprite = this.Content.Load<Texture2D>("EnemyTextures/GunKoala");
+            vegemiteSprite = this.Content.Load<Texture2D>("MiscEntities/vegemite");
+ 
             // these textures are all used within the player class
             playerTexturePack = new List<Texture2D>()
             {
@@ -187,8 +187,7 @@ namespace ShotgunBoomerang
                 this.Content.Load<Texture2D>("EnemyTextures/scorpin_Left"),
                 this.Content.Load<Texture2D>("EnemyTextures/scorpin_Right"),
                 this.Content.Load<Texture2D>("MiscEntities/Bullet"),
-                this.Content.Load<Texture2D>("EnemyTextures/GunKoala_Left3.0"),
-                this.Content.Load<Texture2D>("EnemyTextures/GunKoala_Right3.0"),
+                this.Content.Load<Texture2D>("EnemyTextures/GunKoala"),
                 this.Content.Load<Texture2D>("MiscEntities/ausFlag"),
                 this.Content.Load<Texture2D>("MiscEntities/vegemite"),
                 this.Content.Load<Texture2D>("TileTextures/woodSpike"),
@@ -412,15 +411,15 @@ namespace ShotgunBoomerang
 
                     if(kb.IsKeyDown(Keys.I) && prevKb.IsKeyUp(Keys.I))
                     {
-                        currentLevel.CurrentEnemies.Add(new KoalaTree(
-                            koalaLeft,
-                            koalaRight,
-                            new Vector2(ms.X, ms.Y) + screenOffset,
-                            100,
-                            25,
-                            bulletSprite
-                            ));
-                        
+                        currentLevel.CurrentEnemies.Add(
+                            new KoalaTree(
+                                new List<Texture2D>()
+                                {
+                                    koalaSprite,
+                                    bulletSprite,
+                                    vegemiteSprite
+                                },
+                                new Vector2(ms.X, ms.Y) + screenOffset));
                     }
                     
                     break;

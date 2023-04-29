@@ -44,17 +44,14 @@ namespace ShotgunBoomerang
         /// <summary>
         /// Contains logic for an enemy taking a hit from a given source
         /// </summary>
-        /// <param name="damagerNormal">
-        /// The normalized vector between the center of the entity 
-        /// damaging the enemy and the center of the enemy
-        /// </param>
-        /// <param name="damage">amount of damage to take</param>
+        /// <param name="attacker">Source of the damage</param>
+        /// <param name="damage">Amount of damage to take</param>
         public void TakeHit(GameObject attacker, float damage);
 
         
         /// <summary>
-        /// Resets the enemy to how it had
-        /// been at the start of the level
+        /// Resets the enemy to how it 
+        /// was at the start of the level
         /// </summary>
         public void Reset();
         

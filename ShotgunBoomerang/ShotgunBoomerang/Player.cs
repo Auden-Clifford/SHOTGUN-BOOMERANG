@@ -926,7 +926,8 @@ namespace ShotgunBoomerang
                         projectileAngle <= angle + _shotgunAngle / 2 && // and the angle between the projectile and the player is less than the max spread angle
                         projectileAngle >= angle - _shotgunAngle / 2)  // and the angle between the projectile and the player is greater than the min spread angle
                     {
-                        projectiles[i].ShotgunHit(mouseCenterNormal);
+                        // send the projectile flying with twice the velocity
+                        projectiles[i].ShotgunHit(mouseCenterNormal * projectiles[i].Velocity.Length() * 2);
                     }
                 }
 

@@ -117,7 +117,6 @@ namespace ShotgunBoomerang
 
             switch (_currentState)
             {
-
                 case BoomerangState.Flying:
 
                     _velocity *= airFriction;
@@ -280,10 +279,10 @@ namespace ShotgunBoomerang
         /// parrys the boomerang forcing it away 
         /// from player and back into the flying state
         /// </summary>
-        public void ShotgunHit(Vector2 shotgunNormal)
+        public void ShotgunHit(Vector2 velocity)
         {
-            // throw the boomerang  in the  direction of the shotgun blast
-            _velocity = shotgunNormal * _velocity.Length() * 2;
+            // throw the boomerang in the direction given by the shotgun
+            _velocity = velocity;
 
             // reset the acceleration
             _acceleration = Vector2.Zero;

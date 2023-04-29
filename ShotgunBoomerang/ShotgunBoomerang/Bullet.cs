@@ -127,10 +127,10 @@ namespace ShotgunBoomerang
         /// </summary>
         /// <param name="player">The player</param>
         /// <param name="damage">How much damage to do</param>
-        public void ShotgunHit(Vector2 shotgunNormal)
+        public void ShotgunHit(Vector2 velocity)
         {
-            // throw the bullet in the  direction of the shotgun blast
-            _velocity = shotgunNormal * _velocity.Length() * 2;
+            // throw the bullet in the direction given by the shotgun
+            _velocity = velocity;
             parried = true;
         }
 

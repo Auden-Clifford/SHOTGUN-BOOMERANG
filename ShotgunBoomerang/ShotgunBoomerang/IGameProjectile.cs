@@ -23,6 +23,11 @@ namespace ShotgunBoomerang
         public Vector2 CenterPoint { get; }
 
         /// <summary>
+        /// Should get the projectile's velocity
+        /// </summary>
+        public Vector2 Velocity { get; }
+
+        /// <summary>
         /// Should tell the given spritebatch to draw/animate the projectile at the correct part of the screen
         /// </summary>
         public void Draw(SpriteBatch sb, Vector2 screenOffset);
@@ -44,19 +49,17 @@ namespace ShotgunBoomerang
             Player player,
             GameTime gameTime);
 
-        /*
         /// <summary>
-        /// Should contain logic for what to do when the projectile hits a player or enemy
-        /// </summary>
-        public void HitEntity();
-        */
-
-        /// <summary>
-        /// Method that allows all projectiles to take hits from the shotgun
+        /// Method that allows all projectiles 
+        /// be parried by the shotgun
         /// </summary>
         /// <param name="shotgunNormal">The normalized vector between the shotgun and the projectile</param>
-        public void ShotgunHit(Vector2 shotgunNormal);
+        public void ShotgunHit(Vector2 velocity);
 
+        /// <summary>
+        /// Should reset the projectile to the way
+        /// it was at the beginning of the level
+        /// </summary>
         public void Reset();
     }
 }
