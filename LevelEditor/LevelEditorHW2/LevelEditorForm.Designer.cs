@@ -30,6 +30,7 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LevelEditorForm));
             this.groupBox_TileSelector = new System.Windows.Forms.GroupBox();
+            this.tilePicker_KoalaTree = new System.Windows.Forms.PictureBox();
             this.tilePicker_MesaBottomRight = new System.Windows.Forms.PictureBox();
             this.tilePicker_MesaBottomCenter = new System.Windows.Forms.PictureBox();
             this.tilePicker_MesaBottomLeft = new System.Windows.Forms.PictureBox();
@@ -79,6 +80,7 @@
             this.ScrollBarX = new System.Windows.Forms.HScrollBar();
             this.ScrollBarY = new System.Windows.Forms.VScrollBar();
             this.groupBox_TileSelector.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_KoalaTree)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_MesaBottomRight)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_MesaBottomCenter)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_MesaBottomLeft)).BeginInit();
@@ -125,6 +127,7 @@
             // 
             // groupBox_TileSelector
             // 
+            this.groupBox_TileSelector.Controls.Add(this.tilePicker_KoalaTree);
             this.groupBox_TileSelector.Controls.Add(this.tilePicker_MesaBottomRight);
             this.groupBox_TileSelector.Controls.Add(this.tilePicker_MesaBottomCenter);
             this.groupBox_TileSelector.Controls.Add(this.tilePicker_MesaBottomLeft);
@@ -171,6 +174,19 @@
             this.groupBox_TileSelector.TabIndex = 0;
             this.groupBox_TileSelector.TabStop = false;
             this.groupBox_TileSelector.Text = "Tiles";
+            // 
+            // tilePicker_KoalaTree
+            // 
+            this.tilePicker_KoalaTree.BackColor = System.Drawing.Color.Transparent;
+            this.tilePicker_KoalaTree.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.tilePicker_KoalaTree.Image = ((System.Drawing.Image)(resources.GetObject("tilePicker_KoalaTree.Image")));
+            this.tilePicker_KoalaTree.Location = new System.Drawing.Point(6, 165);
+            this.tilePicker_KoalaTree.Name = "tilePicker_KoalaTree";
+            this.tilePicker_KoalaTree.Size = new System.Drawing.Size(50, 50);
+            this.tilePicker_KoalaTree.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.tilePicker_KoalaTree.TabIndex = 48;
+            this.tilePicker_KoalaTree.TabStop = false;
+            this.tilePicker_KoalaTree.Click += new System.EventHandler(this.tilePicker_Click);
             // 
             // tilePicker_MesaBottomRight
             // 
@@ -787,6 +803,7 @@
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.LevelEditorForm_FormClosing);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.LevelEditorForm_KeyPress);
             this.groupBox_TileSelector.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.tilePicker_KoalaTree)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_MesaBottomRight)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_MesaBottomCenter)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.tilePicker_MesaBottomLeft)).EndInit();
@@ -884,5 +901,6 @@
         private PictureBox tilePicker_MesaTopRight;
         private PictureBox tilePicker_MesaTopCenter;
         private PictureBox tilePicker_MesaTopLeft;
+        private PictureBox tilePicker_KoalaTree;
     }
 }

@@ -270,6 +270,10 @@ namespace LevelEditor
                         {
                             writer.Write("woodSpike,");
                         }
+                        else if (i == tilePicker_KoalaTree.Image)
+                        {
+                            writer.Write("koalaTree,");
+                        }
                         // save plank tiles
                         else if(i == tilePicker_PlanksLeft.Image)
                         {
@@ -492,7 +496,8 @@ namespace LevelEditor
                 tilePicker_Snek,
                 tilePicker_Scorpion,
                 tilePicker_Vegemite,
-                tilePicker_WoodSpike
+                tilePicker_WoodSpike,
+                tilePicker_KoalaTree
             };
 
             _grass = new List<PictureBox>()
@@ -661,9 +666,13 @@ namespace LevelEditor
                     {
                         i = tilePicker_Vegemite.Image;
                     }
-                    else if (currentLine[x] == "woodSpike,")
+                    else if (currentLine[x] == "woodSpike")
                     {
                         i = tilePicker_WoodSpike.Image;
+                    }
+                    else if (currentLine[x] == "koalaTree")
+                    {
+                        i = tilePicker_KoalaTree.Image;
                     }
                     // load plank tiles
                     else if (currentLine[x] == "planksLeft")
@@ -1020,54 +1029,6 @@ namespace LevelEditor
                         {
                             // if the tile was one of the grass tiles, go to the next one
                             pictureBox_CurrentTile.Image = _mesa[(i + 1) % 9].Image;
-                            break;
-                        }
-                    }
-                }
-            }
-            // sense when the user presses the r key
-            if (e.KeyChar == 'q')
-            {
-                // if grass tiles are selected, allow the user to scroll through them forward
-                if (comboBox_TilePickerCatagories.SelectedIndex == 2)
-                {
-                    for (int i = 0; i < _grass.Count; i++)
-                    {
-                        // find the tile currently selected
-                        if (_grass[i].Image == pictureBox_CurrentTile.Image)
-                        {
-                            // if the tile was one of the grass tiles, go to the next one
-                            pictureBox_CurrentTile.Image = _grass[(i - 1) % 9].Image;
-                            break;
-                        }
-                    }
-                }
-
-                // if cave tiles are selected, allow the user to scroll through them forward
-                if (comboBox_TilePickerCatagories.SelectedIndex == 3)
-                {
-                    for (int i = 0; i < _cave.Count; i++)
-                    {
-                        // find the tile currently selected
-                        if (_cave[i].Image == pictureBox_CurrentTile.Image)
-                        {
-                            // if the tile was one of the grass tiles, go to the next one
-                            pictureBox_CurrentTile.Image = _cave[(i - 1) % 9].Image;
-                            break;
-                        }
-                    }
-                }
-
-                // if mesa tiles are selected, allow the user to scroll through them forward
-                if (comboBox_TilePickerCatagories.SelectedIndex == 4)
-                {
-                    for (int i = 0; i < _mesa.Count; i++)
-                    {
-                        // find the tile currently selected
-                        if (_mesa[i].Image == pictureBox_CurrentTile.Image)
-                        {
-                            // if the tile was one of the grass tiles, go to the next one
-                            pictureBox_CurrentTile.Image = _mesa[(i - 1) % 9].Image;
                             break;
                         }
                     }
