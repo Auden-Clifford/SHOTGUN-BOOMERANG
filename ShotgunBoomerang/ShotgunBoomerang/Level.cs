@@ -34,37 +34,18 @@ namespace ShotgunBoomerang
 
         private Vector2 _levelSize;
         
+
         // Properties
-        /*
-        /// <summary>
-        /// Gets the level's original tile map
-        /// </summary>
-        public List<Tile> StartTileMap { get { return _startTileMap; } }
-        */
 
         /// <summary>
         /// Gets or sets the level's current tile map
         /// </summary>
         public List<Tile> CurrentTileMap { get { return _currentTileMap; } set { _currentTileMap = value; } }
 
-        /*
-        /// <summary>
-        /// Gets the level's original set of enemies
-        /// </summary>
-        public List<IGameEnemy> StartEnemies { get { return _startEnemies; } }
-        */
-
         /// <summary>
         /// Gets or sets the level's current enemies
         /// </summary>
         public List<IGameEnemy> CurrentEnemies { get { return _currentEnemies; } set { _currentEnemies = value; } }
-
-        /*
-        /// <summary>
-        /// Gets the levels original set of projectiles
-        /// </summary>
-        public List<IGameProjectile> StartProjectiles { get { return _startProjectiles; } }
-        */
 
         /// <summary>
         /// Gets or sets the level's current projectiles
@@ -82,47 +63,6 @@ namespace ShotgunBoomerang
         /// </summary>
         public LevelEnd LevelEnd { get { return _levelEnd; } }
         
-
-        /*
-        /// <summary>
-        /// Creates a new level with a given tile map
-        /// </summary>
-        /// <param name="tileMap">The list of tiles the level will have</param>
-        public Level(List<Tile> tileMap, Vector2 levelSize, List<IGameEnemy> enemies, List <IGameProjectile> projectiles, Vector2 playerStart)
-        {
-            // current and original start off equal
-            // but they will be copies of eachother (not references)
-            _startTileMap = tileMap;
-            _currentTileMap = new List<Tile>();
-
-            _levelSize = levelSize;
-
-            foreach(Tile tile in _startTileMap)
-            {
-                _currentTileMap.Add(tile);
-            }
-
-            _startEnemies = enemies;
-            _currentEnemies = new List<IGameEnemy>();
-
-            foreach (IGameEnemy enemy in _startEnemies)
-            {
-                _currentEnemies.Add(enemy);
-                
-            }
-
-            _startProjectiles = projectiles;
-            _currentProjectiles = new List<IGameProjectile>();
-
-            
-            foreach(IGameProjectile projectile in _startProjectiles)
-            {
-                _currentProjectiles.Add(projectile);
-            }
-            
-            _playerStart = playerStart;
-        }
-        */
 
         /// <summary>
         /// Creates a new level by reading in level data from a file

@@ -49,6 +49,7 @@ namespace LevelEditor
         private List<PictureBox> _entities;
         private List<PictureBox> _grass;
         private List<PictureBox> _cave;
+        private List<PictureBox> _mesa;
 
 
         // constructors
@@ -200,7 +201,7 @@ namespace LevelEditor
                 tilePickerThatWasClicked = (PictureBox)sender;
             }
 
-            // set the current tile's color to the color of the button that was clicked
+            // set the current tile's image to the image of the button that was clicked
             pictureBox_CurrentTile.Image = tilePickerThatWasClicked.Image;
         }
 
@@ -361,6 +362,43 @@ namespace LevelEditor
                         {
                             writer.Write("caveTopRight,");
                         }
+                        // save mesa tiles
+                        else if (i == tilePicker_MesaBottomCenter.Image)
+                        {
+                            writer.Write("mesaBottomCenter,");
+                        }
+                        else if (i == tilePicker_MesaBottomLeft.Image)
+                        {
+                            writer.Write("mesaBottomLeft,");
+                        }
+                        else if (i == tilePicker_MesaBottomRight.Image)
+                        {
+                            writer.Write("mesaBottomRight,");
+                        }
+                        else if (i == tilePicker_MesaCenterCenter.Image)
+                        {
+                            writer.Write("mesaCenterCenter,");
+                        }
+                        else if (i == tilePicker_MesaCenterLeft.Image)
+                        {
+                            writer.Write("mesaCenterLeft,");
+                        }
+                        else if (i == tilePicker_MesaCenterRight.Image)
+                        {
+                            writer.Write("mesaCenterRight,");
+                        }
+                        else if (i == tilePicker_MesaTopCenter.Image)
+                        {
+                            writer.Write("mesaTopCenter,");
+                        }
+                        else if (i == tilePicker_MesaTopLeft.Image)
+                        {
+                            writer.Write("mesaTopLeft,");
+                        }
+                        else if (i == tilePicker_MesaTopRight.Image)
+                        {
+                            writer.Write("mesaTopRight,");
+                        }
                         // if it doesn't match any image, it must be empty
                         else
                         {
@@ -433,6 +471,10 @@ namespace LevelEditor
         /// <param name="grid">the 2D array of images which will be placed on screen</param>
         private void BuildMapEditor(Image[,] grid)
         {
+            this.Focus();
+
+            KeyPreview = true;
+
             // initialize the catagory lists and add the proper tile pickers
             _miscTiles = new List<PictureBox>()
             {
@@ -465,6 +507,13 @@ namespace LevelEditor
                 tilePicker_CaveTopLeft, tilePicker_CaveTopCenter, tilePicker_CaveTopRight,
                 tilePicker_CaveCenterLeft, tilePicker_CaveCenterCenter, tilePicker_CaveCenterRight,
                 tilePicker_CaveBottomLeft, tilePicker_CaveBottomCenter, tilePicker_CaveBottomRight,
+            };
+
+            _mesa = new List<PictureBox>()
+            {
+                tilePicker_MesaTopLeft, tilePicker_MesaTopCenter, tilePicker_MesaTopRight,
+                tilePicker_MesaCenterLeft, tilePicker_MesaCenterCenter, tilePicker_MesaCenterRight,
+                tilePicker_MesaBottomLeft, tilePicker_MesaBottomCenter, tilePicker_MesaBottomRight,
             };
 
             // set the selected catagory to the first index
@@ -707,6 +756,43 @@ namespace LevelEditor
                     {
                         i = tilePicker_CaveTopRight.Image;
                     }
+                    // load mesa tiles
+                    else if (currentLine[x] == "mesaBottomCenter")
+                    {
+                        i = tilePicker_MesaBottomCenter.Image;
+                    }
+                    else if (currentLine[x] == "mesaBottomLeft")
+                    {
+                        i = tilePicker_MesaBottomLeft.Image;
+                    }
+                    else if (currentLine[x] == "mesaBottomRight")
+                    {
+                        i = tilePicker_MesaBottomRight.Image;
+                    }
+                    else if (currentLine[x] == "mesaCenterCenter")
+                    {
+                        i = tilePicker_MesaCenterCenter.Image;
+                    }
+                    else if (currentLine[x] == "mesaCenterLeft")
+                    {
+                        i = tilePicker_MesaCenterLeft.Image;
+                    }
+                    else if (currentLine[x] == "mesaCenterRight")
+                    {
+                        i = tilePicker_MesaCenterRight.Image;
+                    }
+                    else if (currentLine[x] == "mesaTopCenter")
+                    {
+                        i = tilePicker_MesaTopCenter.Image;
+                    }
+                    else if (currentLine[x] == "mesaTopLeft")
+                    {
+                        i = tilePicker_MesaTopLeft.Image;
+                    }
+                    else if (currentLine[x] == "mesaTopRight")
+                    {
+                        i = tilePicker_MesaTopRight.Image;
+                    }
 
                     // place the new image in the grid
                     grid[y, x] = i;
@@ -743,27 +829,6 @@ namespace LevelEditor
                 }
             }
 
-            /*
-            for(int y = 0; y < _currentMapGrid.GetLength(0); y++)
-            {
-                for(int x = 0; x < _currentMapGrid.GetLength(1); x++)
-                {
-                    // if theyre within the scrollbar value range, display them on the display grid
-                    if((y >= ScrollBarY.Value && y < ScrollBarY.Value + 32) &&
-                        (x >= ScrollBarX.Value && x < ScrollBarX.Value + 48))
-                    {
-                        _displayGrid[ _currentMapGrid[y, x].Location = new Point((x - ScrollBarX.Value) * _tileSize + 6, (y - ScrollBarY.Value) * _tileSize + 15);
-                        _currentMapGrid[y, x].Show();
-                    }
-                    // otherwise hide them
-                    else
-                    {
-                        _currentMapGrid[y, x].Hide();
-                    }
-                }
-            }
-            */
-
             groupBox_MapView.ResumeLayout();
         }
 
@@ -791,6 +856,10 @@ namespace LevelEditor
                 {
                     tilePicker.Hide();
                 }
+                foreach (PictureBox tilePicker in _mesa)
+                {
+                    tilePicker.Hide();
+                }
             }
 
             // index 1 should be entities
@@ -812,6 +881,10 @@ namespace LevelEditor
                     tilePicker.Hide();
                 }
                 foreach (PictureBox tilePicker in _cave)
+                {
+                    tilePicker.Hide();
+                }
+                foreach (PictureBox tilePicker in _mesa)
                 {
                     tilePicker.Hide();
                 }
@@ -839,9 +912,13 @@ namespace LevelEditor
                 {
                     tilePicker.Hide();
                 }
+                foreach (PictureBox tilePicker in _mesa)
+                {
+                    tilePicker.Hide();
+                }
             }
 
-            // index 3 should be grass
+            // index 3 should be cave
             if (comboBox_TilePickerCatagories.SelectedIndex == 3)
             {
                 // show all the tile pickers in the list 
@@ -862,6 +939,138 @@ namespace LevelEditor
                 foreach (PictureBox tilePicker in _grass)
                 {
                     tilePicker.Hide();
+                }
+                foreach (PictureBox tilePicker in _mesa)
+                {
+                    tilePicker.Hide();
+                }
+            }
+
+            // index 4 should be mesa
+            if (comboBox_TilePickerCatagories.SelectedIndex == 4)
+            {
+                // show all the tile pickers in the list 
+                foreach (PictureBox tilePicker in _mesa)
+                {
+                    tilePicker.Show();
+                }
+
+                // hide all other tile pickers
+                foreach (PictureBox tilePicker in _miscTiles)
+                {
+                    tilePicker.Hide();
+                }
+                foreach (PictureBox tilePicker in _entities)
+                {
+                    tilePicker.Hide();
+                }
+                foreach (PictureBox tilePicker in _grass)
+                {
+                    tilePicker.Hide();
+                }
+                foreach (PictureBox tilePicker in _cave)
+                {
+                    tilePicker.Hide();
+                }
+            }
+        }
+
+        private void LevelEditorForm_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            // sense when the user presses the r key
+            if(e.KeyChar == 'r')
+            {
+                // if grass tiles are selected, allow the user to scroll through them forward
+                if(comboBox_TilePickerCatagories.SelectedIndex == 2)
+                {
+                    for(int i = 0; i < _grass.Count; i++)
+                    {
+                        // find the tile currently selected
+                        if (_grass[i].Image == pictureBox_CurrentTile.Image)
+                        {
+                            // if the tile was one of the grass tiles, go to the next one
+                            pictureBox_CurrentTile.Image = _grass[(i + 1) % 9].Image;
+                            break;
+                        }
+                    }
+                }
+
+                // if cave tiles are selected, allow the user to scroll through them forward
+                if (comboBox_TilePickerCatagories.SelectedIndex == 3)
+                {
+                    for (int i = 0; i < _cave.Count; i++)
+                    {
+                        // find the tile currently selected
+                        if (_cave[i].Image == pictureBox_CurrentTile.Image)
+                        {
+                            // if the tile was one of the grass tiles, go to the next one
+                            pictureBox_CurrentTile.Image = _cave[(i + 1) % 9].Image;
+                            break;
+                        }
+                    }
+                }
+
+                // if mesa tiles are selected, allow the user to scroll through them forward
+                if (comboBox_TilePickerCatagories.SelectedIndex == 4)
+                {
+                    for (int i = 0; i < _mesa.Count; i++)
+                    {
+                        // find the tile currently selected
+                        if (_mesa[i].Image == pictureBox_CurrentTile.Image)
+                        {
+                            // if the tile was one of the grass tiles, go to the next one
+                            pictureBox_CurrentTile.Image = _mesa[(i + 1) % 9].Image;
+                            break;
+                        }
+                    }
+                }
+            }
+            // sense when the user presses the r key
+            if (e.KeyChar == 'q')
+            {
+                // if grass tiles are selected, allow the user to scroll through them forward
+                if (comboBox_TilePickerCatagories.SelectedIndex == 2)
+                {
+                    for (int i = 0; i < _grass.Count; i++)
+                    {
+                        // find the tile currently selected
+                        if (_grass[i].Image == pictureBox_CurrentTile.Image)
+                        {
+                            // if the tile was one of the grass tiles, go to the next one
+                            pictureBox_CurrentTile.Image = _grass[(i - 1) % 9].Image;
+                            break;
+                        }
+                    }
+                }
+
+                // if cave tiles are selected, allow the user to scroll through them forward
+                if (comboBox_TilePickerCatagories.SelectedIndex == 3)
+                {
+                    for (int i = 0; i < _cave.Count; i++)
+                    {
+                        // find the tile currently selected
+                        if (_cave[i].Image == pictureBox_CurrentTile.Image)
+                        {
+                            // if the tile was one of the grass tiles, go to the next one
+                            pictureBox_CurrentTile.Image = _cave[(i - 1) % 9].Image;
+                            break;
+                        }
+                    }
+                }
+
+                // if mesa tiles are selected, allow the user to scroll through them forward
+                if (comboBox_TilePickerCatagories.SelectedIndex == 4)
+                {
+                    for (int i = 0; i < _mesa.Count; i++)
+                    {
+                        // find the tile currently selected
+                        if (_mesa[i].Image == pictureBox_CurrentTile.Image)
+                        {
+                            // if the tile was one of the grass tiles, go to the next one
+                            pictureBox_CurrentTile.Image = _mesa[(i - 1) % 9].Image;
+                            break;
+                        }
+                    }
                 }
             }
         }
