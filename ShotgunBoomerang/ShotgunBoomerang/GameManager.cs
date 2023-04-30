@@ -210,7 +210,17 @@ namespace ShotgunBoomerang
                 this.Content.Load<Texture2D>("TileTextures/grassCenterRight"),
                 this.Content.Load<Texture2D>("TileTextures/grassTopCenter"),
                 this.Content.Load<Texture2D>("TileTextures/grassTopLeft"),
-                this.Content.Load<Texture2D>("TileTextures/grassTopRight")
+                this.Content.Load<Texture2D>("TileTextures/grassTopRight"),
+
+                this.Content.Load<Texture2D>("TileTextures/mesaBottomCenter"),
+                this.Content.Load<Texture2D>("TileTextures/mesaBottomLeft"),
+                this.Content.Load<Texture2D>("TileTextures/mesaBottomRight"),
+                this.Content.Load<Texture2D>("TileTextures/mesaCenterCenter"),
+                this.Content.Load<Texture2D>("TileTextures/mesaCenterLeft"),
+                this.Content.Load<Texture2D>("TileTextures/mesaCenterRight"),
+                this.Content.Load<Texture2D>("TileTextures/mesaTopCenter"),
+                this.Content.Load<Texture2D>("TileTextures/mesaTopLeft"),
+                this.Content.Load<Texture2D>("TileTextures/mesaTopRight"),
             };
 
             // Load SFX

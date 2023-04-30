@@ -300,6 +300,61 @@ namespace ShotgunBoomerang
                             new Tile(texturePack[30],
                             new Vector2(x * 64, y * 64)));
                     }
+                    // load mesa tiles
+                    else if (currentLine[x] == "mesaBottomCenter")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[31],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaBottomLeft")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[32],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaBottomRight")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[33],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaCenterCenter")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[34],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaCenterLeft")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[35],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaCenterRight")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[36],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaTopCenter")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[37],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaTopLeft")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[38],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaTopRight")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[39],
+                            new Vector2(x * 64, y * 64)));
+                    }
                 }
             }
 
