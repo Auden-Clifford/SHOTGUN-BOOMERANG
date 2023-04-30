@@ -13,6 +13,9 @@ using ShapeUtils;
 // Images from:
 // https://wallpaperaccess.com/australian-desert
 // https://stock.adobe.com/search?k=flaming+skull&asset_id=550288691
+// https://www.travelmarbles.com/outbackaustralia/
+// https://www.cnbc.com/2023/02/08/six-senses-is-opening-its-first-hotel-in-australia-in-the-dandenongs.html
+// https://www.wallpaperflare.com/search?wallpaper=blue+cave
 
 namespace ShotgunBoomerang
 {
