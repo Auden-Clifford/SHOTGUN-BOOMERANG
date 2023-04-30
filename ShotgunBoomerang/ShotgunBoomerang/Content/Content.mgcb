@@ -130,6 +130,9 @@
 #begin Levels/Level2.level
 /copy:Levels/Level2.level
 
+#begin Levels/Level3.level
+/copy:Levels/Level3.level
+
 #begin Levels/testLevel1.level
 /copy:Levels/testLevel1.level
 

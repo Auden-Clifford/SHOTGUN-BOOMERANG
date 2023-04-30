@@ -701,7 +701,13 @@ namespace ShotgunBoomerang
 
                     _velocity *= 0.99f;
 
-                    if(dmgTimer <= 0)
+                    if (ms.LeftButton == ButtonState.Pressed &&
+                       prevMs.LeftButton == ButtonState.Released)
+                    {
+                        ShotgunAttack(ms, graphics, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, gameTime);
+                    }
+
+                    if (dmgTimer <= 0)
                     {
                         _drawColor = Color.White;
                         dmgTimer = .5;
