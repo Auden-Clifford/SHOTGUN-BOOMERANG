@@ -236,6 +236,9 @@ namespace ShotgunBoomerang
                 this.Content.Load<Song>("Sounds/gunB"),
                 this.Content.Load<Song>("Sounds/gunC"),
                 this.Content.Load<Song>("Sounds/reload"),
+                this.Content.Load<Song>("Sounds/boomerang_throw_1"),
+                this.Content.Load<Song>("Sounds/boomerang_throw_2"),
+                this.Content.Load<Song>("Sounds/boomerang_throw_3"),
             };
 
             levelSprite = demoDisplay; // Sets the preview image in level select to show the demo level by default. It has to show something

@@ -970,6 +970,12 @@ namespace ShotgunBoomerang
 
         private void BoomerangAttack(MouseState ms, GraphicsDeviceManager graphics, List<IGameProjectile> projectiles)
         {
+            // SFX (chooses one of three random sounds)
+            Random rng = new Random();
+            int randSound = rng.Next(4, 7
+                );
+            MediaPlayer.Play(_playerSounds[randSound]);
+
             Vector2 mousePos = new Vector2(ms.X, ms.Y);
 
             // velocity normal between the mouse and the center of the screen
