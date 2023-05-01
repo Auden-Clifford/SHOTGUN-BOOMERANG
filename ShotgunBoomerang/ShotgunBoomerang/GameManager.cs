@@ -13,6 +13,9 @@ using ShapeUtils;
 // Images from:
 // https://wallpaperaccess.com/australian-desert
 // https://stock.adobe.com/search?k=flaming+skull&asset_id=550288691
+// https://www.travelmarbles.com/outbackaustralia/
+// https://www.cnbc.com/2023/02/08/six-senses-is-opening-its-first-hotel-in-australia-in-the-dandenongs.html
+// https://www.wallpaperflare.com/search?wallpaper=blue+cave
 
 namespace ShotgunBoomerang
 {
@@ -39,11 +42,6 @@ namespace ShotgunBoomerang
         private MouseState ms;
         private MouseState prevMs;
 
-        // many classes will have to keep track of the currently loaded tiles
-        //private List<Tile> currentTileMap;
-        //private List<IGameEnemy> currentEnemies;
-        //private List<IGameProjectile> currentProjectiles;
-
         private Vector2 screenOffset;
 
         private static GraphicsDeviceManager graphics;
@@ -56,10 +54,10 @@ namespace ShotgunBoomerang
 
         // Sound Effects
         private Song deathSound;
-        private Song gunFireA;
-        private Song gunFireB;
-        private Song gunFireC;
-        private Song reload;
+        //private Song gunFireA;
+        //private Song gunFireB;
+        //private Song gunFireC;
+        //private Song reload;
         private List<Song> playerSounds;
 
         // Textures
@@ -78,23 +76,14 @@ namespace ShotgunBoomerang
         private Texture2D twoDisplay;
         private Texture2D threeDisplay;
 
-        //private Texture2D testTileSprite;
-        //private Texture2D playerSpriteSheet;
-        //private Texture2D playerShotgunArm;
-        //private Texture2D snakeSprite;
-        //private Texture2D boomerangSprite;
-        //private Texture2D muzzleSprite;
-        private Texture2D scorpionLeft;
-        private Texture2D scorpionRight;
         private Texture2D bulletSprite;
-        private Texture2D koalaLeft;
-        private Texture2D koalaRight;
+        private Texture2D koalaSprite;
+        private Texture2D vegemiteSprite;
 
         private List<Texture2D> playerTexturePack;
+        private List<Texture2D> levelTexturepack;
 
         private Texture2D controls;
-
-        private List<Texture2D> levelTexturepack;
 
         // Fonts
         private SpriteFont arial12;
@@ -133,8 +122,6 @@ namespace ShotgunBoomerang
         private Rectangle deadRespawnButton;
         private Rectangle deadQuitButton;
 
-        private SnakeEnemy snek;
-
         public GameManager()
         {
             // Sets width and height to match hardware fullscreen
@@ -164,124 +151,107 @@ namespace ShotgunBoomerang
 
             // Load textures
             menuBackground = this.Content.Load<Texture2D>("pixeldesertback");
-            //testTileSprite = this.Content.Load<Texture2D>("TestTile");
-            //playerSpriteSheet = this.Content.Load<Texture2D>("Player_sheet");
-            //playerShotgunArm = this.Content.Load<Texture2D>("player_sgArm");
-            blankRectangleSprite = this.Content.Load<Texture2D>("blankRectangle");
-            //boomerangSprite = this.Content.Load<Texture2D>("Boomerang");
-            //snakeSprite = this.Content.Load<Texture2D>("Snek");
-            scorpionLeft = this.Content.Load<Texture2D>("scorpin_Left");
-            scorpionRight = this.Content.Load<Texture2D>("scorpin_Right");
-            bulletSprite = this.Content.Load<Texture2D>("Bullet");
-            koalaLeft = this.Content.Load<Texture2D>("GunKoala_Left3.0");
-            koalaRight = this.Content.Load<Texture2D>("GunKoala_Right3.0");
-            darkFilter = this.Content.Load<Texture2D>("darkfilter");
-            healthBar = this.Content.Load<Texture2D>("redsquare");
-            ammoBar = this.Content.Load<Texture2D>("ammoui");
-            demoDisplay = this.Content.Load<Texture2D>("demoDisplay");
-            awesomeFlamingSkull = this.Content.Load<Texture2D>("awesomeflamingskull");
-            //muzzleSprite = this.Content.Load<Texture2D>("muzzle");
+            blankRectangleSprite = this.Content.Load<Texture2D>("MiscUI/blankRectangle");
+            darkFilter = this.Content.Load<Texture2D>("MiscUI/darkfilter");
+            healthBar = this.Content.Load<Texture2D>("MiscUI/redsquare");
+            ammoBar = this.Content.Load<Texture2D>("MiscUI/ammoui");
+            demoDisplay = this.Content.Load<Texture2D>("MiscUI/demoDisplay");
+            awesomeFlamingSkull = this.Content.Load<Texture2D>("MiscUI/awesomeflamingskull");
             levelOneBack = this.Content.Load<Texture2D>("levelOneBack");
-            oneDisplay = this.Content.Load<Texture2D>("oneDisplay");
-            controls = this.Content.Load<Texture2D>("controls");
+            oneDisplay = this.Content.Load<Texture2D>("MiscUI/oneDisplay");
+            controls = this.Content.Load<Texture2D>("MiscUI/controls");
+            levelTwoBack = this.Content.Load<Texture2D>("levelTwoBack");
+            levelThreeBack = this.Content.Load<Texture2D>("levelThreeBack");
+            twoDisplay = this.Content.Load<Texture2D>("MiscUI/twoDisplay");
+            threeDisplay = this.Content.Load<Texture2D>("MiscUI/threeDisplay");
 
+            bulletSprite = this.Content.Load<Texture2D>("MiscEntities/Bullet");
+            koalaSprite = this.Content.Load<Texture2D>("EnemyTextures/GunKoala");
+            vegemiteSprite = this.Content.Load<Texture2D>("MiscEntities/vegemite");
+ 
             // these textures are all used within the player class
             playerTexturePack = new List<Texture2D>()
             {
-                this.Content.Load<Texture2D>("player_sheet"),
-                this.Content.Load<Texture2D>("player_sgArm_sheet"),
-                this.Content.Load<Texture2D>("player_sg_blast"),
-                this.Content.Load<Texture2D>("Boomerang")
+                this.Content.Load<Texture2D>("PlayerTextures/player_sheet"),
+                this.Content.Load<Texture2D>("PlayerTextures/player_sgArm_sheet"),
+                this.Content.Load<Texture2D>("PlayerTextures/player_sg_blast"),
+                this.Content.Load<Texture2D>("PlayerTextures/Boomerang_alt_2")
             };
 
             // These textures are all used by the level class
             levelTexturepack = new List<Texture2D>()
             {
-                this.Content.Load<Texture2D>("TestTile"),
-                this.Content.Load<Texture2D>("bricks"),
-                this.Content.Load<Texture2D>("planksCenter"),
-                this.Content.Load<Texture2D>("planksLeft"),
-                this.Content.Load<Texture2D>("planksRight"),
+                this.Content.Load<Texture2D>("TileTextures/TestTile"),
+                this.Content.Load<Texture2D>("TileTextures/bricks"),
+                this.Content.Load<Texture2D>("TileTextures/planksCenter"),
+                this.Content.Load<Texture2D>("TileTextures/planksLeft"),
+                this.Content.Load<Texture2D>("TileTextures/planksRight"),
 
-                this.Content.Load<Texture2D>("Snek"),
-                this.Content.Load<Texture2D>("scorpin_Left"),
-                this.Content.Load<Texture2D>("scorpin_Right"),
-                this.Content.Load<Texture2D>("GunKoala_Left3.0"),
-                this.Content.Load<Texture2D>("GunKoala_Right3.0"),
-                this.Content.Load<Texture2D>("Bullet"),
-                this.Content.Load<Texture2D>("ausFlag"),
-                this.Content.Load<Texture2D>("vegemite"),
+                this.Content.Load<Texture2D>("EnemyTextures/Snek"),
+                this.Content.Load<Texture2D>("EnemyTextures/scorpin_Left"),
+                this.Content.Load<Texture2D>("EnemyTextures/scorpin_Right"),
+                this.Content.Load<Texture2D>("MiscEntities/Bullet"),
+                this.Content.Load<Texture2D>("EnemyTextures/GunKoala"),
+                this.Content.Load<Texture2D>("MiscEntities/ausFlag"),
+                this.Content.Load<Texture2D>("MiscEntities/vegemite"),
+                this.Content.Load<Texture2D>("TileTextures/woodSpike"),
 
-                this.Content.Load<Texture2D>("caveBottomCenter"),
-                this.Content.Load<Texture2D>("caveBottomLeft"),
-                this.Content.Load<Texture2D>("caveBottomRight"),
-                this.Content.Load<Texture2D>("caveCenterCenter"),
-                this.Content.Load<Texture2D>("caveCenterLeft"),
-                this.Content.Load<Texture2D>("caveCenterRight"),
-                this.Content.Load<Texture2D>("caveTopCenter"),
-                this.Content.Load<Texture2D>("caveTopLeft"),
-                this.Content.Load<Texture2D>("caveTopRight"),
+                this.Content.Load<Texture2D>("TileTextures/caveBottomCenter"),
+                this.Content.Load<Texture2D>("TileTextures/caveBottomLeft"),
+                this.Content.Load<Texture2D>("TileTextures/caveBottomRight"),
+                this.Content.Load<Texture2D>("TileTextures/caveCenterCenter"),
+                this.Content.Load<Texture2D>("TileTextures/caveCenterLeft"),
+                this.Content.Load<Texture2D>("TileTextures/caveCenterRight"),
+                this.Content.Load<Texture2D>("TileTextures/caveTopCenter"),
+                this.Content.Load<Texture2D>("TileTextures/caveTopLeft"),
+                this.Content.Load<Texture2D>("TileTextures/caveTopRight"),
 
-                this.Content.Load<Texture2D>("grassBottomCenter"),
-                this.Content.Load<Texture2D>("grassBottomLeft"),
-                this.Content.Load<Texture2D>("grassBottomRight"),
-                this.Content.Load<Texture2D>("grassCenterCenter"),
-                this.Content.Load<Texture2D>("grassCenterLeft"),
-                this.Content.Load<Texture2D>("grassCenterRight"),
-                this.Content.Load<Texture2D>("grassTopCenter"),
-                this.Content.Load<Texture2D>("grassTopLeft"),
-                this.Content.Load<Texture2D>("grassTopRight")
+                this.Content.Load<Texture2D>("TileTextures/grassBottomCenter"),
+                this.Content.Load<Texture2D>("TileTextures/grassBottomLeft"),
+                this.Content.Load<Texture2D>("TileTextures/grassBottomRight"),
+                this.Content.Load<Texture2D>("TileTextures/grassCenterCenter"),
+                this.Content.Load<Texture2D>("TileTextures/grassCenterLeft"),
+                this.Content.Load<Texture2D>("TileTextures/grassCenterRight"),
+                this.Content.Load<Texture2D>("TileTextures/grassTopCenter"),
+                this.Content.Load<Texture2D>("TileTextures/grassTopLeft"),
+                this.Content.Load<Texture2D>("TileTextures/grassTopRight"),
+
+                this.Content.Load<Texture2D>("TileTextures/mesaBottomCenter"),
+                this.Content.Load<Texture2D>("TileTextures/mesaBottomLeft"),
+                this.Content.Load<Texture2D>("TileTextures/mesaBottomRight"),
+                this.Content.Load<Texture2D>("TileTextures/mesaCenterCenter"),
+                this.Content.Load<Texture2D>("TileTextures/mesaCenterLeft"),
+                this.Content.Load<Texture2D>("TileTextures/mesaCenterRight"),
+                this.Content.Load<Texture2D>("TileTextures/mesaTopCenter"),
+                this.Content.Load<Texture2D>("TileTextures/mesaTopLeft"),
+                this.Content.Load<Texture2D>("TileTextures/mesaTopRight"),
             };
 
             // Load SFX
-            deathSound = this.Content.Load<Song>("BTBRiff");
+            deathSound = this.Content.Load<Song>("Sounds/BTBRiff");
             
-            gunFireA = this.Content.Load<Song>("gunA");
-            gunFireB = this.Content.Load<Song>("gunB");
-            gunFireC = this.Content.Load<Song>("gunC");
-            reload = this.Content.Load<Song>("reload");
-            playerSounds = new List<Song>() { gunFireA, gunFireB, gunFireC , reload};
+            // sound effects used by the player
+            playerSounds = new List<Song>() 
+            {
+                this.Content.Load<Song>("Sounds/gunA"),
+                this.Content.Load<Song>("Sounds/gunB"),
+                this.Content.Load<Song>("Sounds/gunC"),
+                this.Content.Load<Song>("Sounds/reload"),
+            };
 
             levelSprite = demoDisplay; // Sets the preview image in level select to show the demo level by default. It has to show something
 
             // Load fonts
-            arial12 = this.Content.Load<SpriteFont>("Arial12");
-            arial36 = this.Content.Load<SpriteFont>("Arial36");
+            arial12 = this.Content.Load<SpriteFont>("MiscUI/Arial12");
+            arial36 = this.Content.Load<SpriteFont>("MiscUI/Arial36");
 
-            // create the test level
-            /*
-            testLevel = new Level(
-                GenerateTestLevel(),
-                new List<IGameEnemy>(),
-                new List<IGameProjectile>(),
-                new Vector2(testTileSprite.Width, 
-                -testTileSprite.Width * 3));
-            */
-
-            demoLevel = new Level(levelTexturepack, "Levels/testLevel3.level");
-            levelOne = new Level(levelTexturepack, "Levels/Level1_V1Alt.level"); //remember to replace the default textures
-
-            //NOT level 2. just a test alt for level 1
-            //levelTwo = new Level(demoLevelTexturepack, "../../../../Levels/Level1_V1Alt.level");
-
+            demoLevel = new Level(levelTexturepack, "Content/Levels/testLevel3.level");
+            levelOne = new Level(levelTexturepack, "Content/Levels/Level1_V1Alt.level"); //remember to replace the default textures
+            levelTwo = new Level(levelTexturepack, "Content/Levels/Level2.level");
+            levelThree = new Level(levelTexturepack, "Content/Levels/Level3.level");
 
             // set up the player
             player = new Player(playerTexturePack, demoLevel.PlayerStart, 100, playerSounds);
-
-            //Test enemy
-            /*
-            snek = new SnakeEnemy(
-                snakeSprite,
-                new Vector2(
-                    testLevel.PlayerStart.X + (testTileSprite.Width * 3),
-                    testLevel.PlayerStart.Y + (testTileSprite.Height)),
-                    100,
-                    20,
-                    2);
-            testLevel.StartEnemies.Add(snek);
-            testLevel.CurrentEnemies.Add(snek);
-            testLevel.StartEnemies.Add(snek);
-            */
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
             pauseButtonDebug = new Rectangle(graphics.PreferredBackBufferWidth / 2 - 264 + 350, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);
@@ -304,7 +274,7 @@ namespace ShotgunBoomerang
         }
 
         /// <summary>
-        /// Update!! This is where the game states are managed!!
+        /// Update!! This is where the game states and main game logic are managed!!
         /// </summary>
         /// <param name="gameTime"></param>
         protected override void Update(GameTime gameTime)
@@ -362,7 +332,6 @@ namespace ShotgunBoomerang
                         gameState = GameState.Gameplay;
                     }
 
-                    /*
                     // Play level two
                     if (buttonPlayTwo.Contains(ms.Position) && ms.LeftButton == ButtonState.Pressed && prevMs.LeftButton != ButtonState.Pressed)
                     {
@@ -378,7 +347,6 @@ namespace ShotgunBoomerang
                         player.Position = currentLevel.PlayerStart;
                         gameState = GameState.Gameplay;
                     }
-                    */
 
                     break;
 
@@ -423,7 +391,7 @@ namespace ShotgunBoomerang
                 case GameState.Gameplay:
 
                     // Update the player
-                    player.Update(kb, prevKb, ms, prevMs, currentLevel.CurrentTileMap, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, graphics, gameTime);
+                    player.Update(kb, prevKb, ms, prevMs, currentLevel, graphics, gameTime);
 
                     // Updating player health and ammo if godmode options are enabled
                     if (infiniteHP && player.Health != 100)
@@ -454,19 +422,6 @@ namespace ShotgunBoomerang
                     if (kb.IsKeyDown(Keys.OemTilde) && prevKb.IsKeyUp(Keys.OemTilde))
                     {
                         currentLevel.ResetLevel(player);
-                    }
-
-                    if(kb.IsKeyDown(Keys.I) && prevKb.IsKeyUp(Keys.I))
-                    {
-                        currentLevel.CurrentEnemies.Add(new KoalaTree(
-                            koalaLeft,
-                            koalaRight,
-                            new Vector2(ms.X, ms.Y) + screenOffset,
-                            100,
-                            25,
-                            bulletSprite
-                            ));
-                        
                     }
                     
                     break;
@@ -579,8 +534,8 @@ namespace ShotgunBoomerang
                     // Level Buttons
                     DrawButton(ms, buttonPlayDemo, "Demo");
                     DrawButton(ms, buttonPlayOne, "Stage One");
-                    DrawButton(ms, buttonPlayTwo, "COMING SOON"); // SHOULD SAY "Stage Two"
-                    DrawButton(ms, buttonPlayThree, "COMING SOON"); // SHOULD SAY "Stage Three"
+                    DrawButton(ms, buttonPlayTwo, "Stage Two");
+                    DrawButton(ms, buttonPlayThree, "Stage Three");
 
                     // Changes text and sprite depending on hover
                     if (buttonPlayDemo.Contains(ms.Position))
@@ -590,18 +545,18 @@ namespace ShotgunBoomerang
                     }
                     else if (buttonPlayOne.Contains(ms.Position))
                     {
-                        levelText = "Play stage one.";
+                        levelText = "Play stage one - the local village.";
                         levelSprite = oneDisplay;
                     }
                     else if (buttonPlayTwo.Contains(ms.Position))
                     {
-                        levelText = "COMING SOON";
-                        //levelSprite = twoDisplay;
+                        levelText = "Play stage two - the deep dark cave.";
+                        levelSprite = twoDisplay;
                     }
                     else if (buttonPlayThree.Contains(ms.Position))
                     {
-                        levelText = "COMING SOON";
-                        //levelSprite = threeDisplay;
+                        levelText = "Play stage three - the arid outback.";
+                        levelSprite = threeDisplay;
                     }
                     else // Note that level sprite will remain the same as whatever was last hovered over
                     {
@@ -697,64 +652,31 @@ namespace ShotgunBoomerang
                     _spriteBatch.Draw(darkFilter, new Rectangle(0, 0, graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
 
                     _spriteBatch.DrawString(arial36, "STAGE CLEAR", new Vector2(graphics.PreferredBackBufferWidth / 2 - arial36.MeasureString("STAGE CLEAR").X / 2,
-                        (graphics.PreferredBackBufferHeight / 2) - 250), Color.Black);
+                        (graphics.PreferredBackBufferHeight / 2) - 255), Color.White);
 
                     _spriteBatch.DrawString(arial12, "Press Enter to return to menu", new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Press Enter to return to menu").X / 2,
-                         (graphics.PreferredBackBufferHeight / 2) - 200), Color.Black);
+                         (graphics.PreferredBackBufferHeight / 2) - 200), Color.White);
 
                     _spriteBatch.DrawString(arial12, "Score: " + (int)player.Score, new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Score: " + (int)player.Score).X / 2,
-                         (graphics.PreferredBackBufferHeight / 2) - 150), Color.Black);
+                         (graphics.PreferredBackBufferHeight / 2) - 150), Color.White);
 
                     _spriteBatch.DrawString(arial12, "Kills: " + player.Kills, new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Kills: " + player.Kills).X / 2,
-                         (graphics.PreferredBackBufferHeight / 2) - 130), Color.Black);
+                         (graphics.PreferredBackBufferHeight / 2) - 130), Color.White);
 
                     _spriteBatch.DrawString(arial12, "Time: " + (int)player.Timer + " seconds", new Vector2(graphics.PreferredBackBufferWidth / 2 - arial12.MeasureString("Time: " + (int)player.Timer + " seconds").X / 2,
-                        (graphics.PreferredBackBufferHeight / 2) - 110), Color.Black);
+                        (graphics.PreferredBackBufferHeight / 2) - 110), Color.White);
 
                     break;
             }
 
             // If debug enabled, print position & speed stats on screen
-            ShapeBatch.Begin(GraphicsDevice);
             if (debugOn)
             { DrawDebug(); }
-            ShapeBatch.End();
 
             // Important code! Leave at the end of the method
-            _spriteBatch.End(); 
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
-
-        /*
-        /// <summary>
-        /// Generates the demo level
-        /// </summary>
-        /// <returns></returns>
-        private List<Tile> GenerateTestLevel()
-        {
-            List<Tile> tileMap = new List<Tile>();
-
-
-            //Adds a wall at the beginning
-            tileMap.Add(new Tile(testTileSprite, new Vector2(0, -testTileSprite.Height)));
-
-
-            // create a 32-tile long floor
-            int i = 0;
-
-            for(i = 0; i < 32; i++)
-            {
-                tileMap.Add(new Tile(testTileSprite, 
-                    new Vector2(i * testTileSprite.Width, 
-                    0)));
-            }
-
-            //Adds a wall at the end
-            tileMap.Add(new Tile(testTileSprite, new Vector2((i - 1) * testTileSprite.Width, -testTileSprite.Height)));
-
-            return tileMap;
-        }
-        */
 
         /// <summary>
         /// Draws the debug text and hitboxes. Helper Method!
@@ -785,7 +707,36 @@ namespace ShotgunBoomerang
             _spriteBatch.DrawString(arial12, $"Time: {(int)player.Timer}", new Vector2(10, 230), Color.White);
             _spriteBatch.DrawString(arial12, $"Score: {(int)player.Score}", new Vector2(10, 250), Color.White);
 
+            // search for a boomerang if it is currently in play
+            Boomerang boomerang = null;
+
+            foreach(IGameProjectile projectile in currentLevel.CurrentProjectiles)
+            {
+                if(projectile is Boomerang)
+                {
+                    boomerang = (Boomerang)projectile;
+                }
+            }
+
+            // only print boomerang stats if one is found
+            if(boomerang != null)
+            {
+                // print the boomerang's X and Y
+                _spriteBatch.DrawString(arial12, $"Boomerang Coordinates: {boomerang.Position.X}, {boomerang.Position.Y}", new Vector2(10, 290), Color.White);
+
+                // print the boomerang's velocity
+                _spriteBatch.DrawString(arial12, $"Boomerang Velocity: {boomerang.Velocity.X}, {boomerang.Velocity.Y}", new Vector2(10, 310), Color.White);
+
+                // print the boomerang's state
+                _spriteBatch.DrawString(arial12, $"Boomerang state: {boomerang.CurrentState}", new Vector2(10, 330), Color.White);
+            }
+            
+
+
+            _spriteBatch.End();
+
             // draw hitboxes
+            ShapeBatch.Begin(GraphicsDevice);
 
             // player hitbox
             ShapeBatch.BoxOutline(
@@ -809,10 +760,6 @@ namespace ShotgunBoomerang
             Vector2 mouseCenterNormal = Vector2.Normalize(new Vector2(ms.Position.X, ms.Position.Y) - screenCenter);
 
             float angle = MathF.Atan2(-mouseCenterNormal.Y, mouseCenterNormal.X);
-           
-            
-
-            //angle = -MathF.Atan(mouseCenterNormal.Y / mouseCenterNormal.X);
 
             try
             {
@@ -847,23 +794,25 @@ namespace ShotgunBoomerang
                 ShapeBatch.BoxOutline(
                     currentEnemy.Position.X - screenOffset.X,
                     currentEnemy.Position.Y - screenOffset.Y,
-                    currentEnemy.Sprite.Width,
-                    currentEnemy.Sprite.Height,
+                    currentEnemy.Width,
+                    currentEnemy.Height,
                     Color.White);
             }
 
+            foreach(IGameProjectile projectile in  currentLevel.CurrentProjectiles)
+            {
+                MobileEntity currentProjectile = projectile as MobileEntity;
 
-            /*
-            // print the boomerang's X and Y
-            _spriteBatch.DrawString(arial12, $"Boomerang Coordinates: {boomerang.Position.X}, {boomerang.Position.Y}", new Vector2(10, 130), Color.White);
+                ShapeBatch.BoxOutline(
+                    currentProjectile.Position.X - screenOffset.X,
+                    currentProjectile.Position.Y - screenOffset.Y,
+                    currentProjectile.Width,
+                    currentProjectile.Height,
+                    Color.White);
+            }
 
-            // print the boomerang's velocity
-            _spriteBatch.DrawString(arial12, $"Boomerang Velocity: {boomerang.Velocity.X}, {boomerang.Velocity.Y}", new Vector2(10, 150), Color.White);
-
-            // print the boomerang's state
-            _spriteBatch.DrawString(arial12, $"Boomerang state: {boomerang.CurrentState}", new Vector2(10, 170), Color.White);
-            */
-
+            ShapeBatch.End();
+            _spriteBatch.Begin();
         }
 
         /// <summary>
@@ -914,11 +863,21 @@ namespace ShotgunBoomerang
         public void DrawBackground()
         {
             if (currentLevel == levelOne)
-            { _spriteBatch.Draw(levelOneBack, new Rectangle(0, 0,
-                graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White); }
+            {
+                _spriteBatch.Draw(levelOneBack, new Rectangle(0, 0,
+                graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            }
 
-            else if (currentLevel == levelTwo) { }
-            else if (currentLevel == levelThree) { }
+            else if (currentLevel == levelTwo)
+            {
+                _spriteBatch.Draw(levelTwoBack, new Rectangle(0, 0,
+                graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            }
+            else if (currentLevel == levelThree)
+            {
+                _spriteBatch.Draw(levelThreeBack, new Rectangle(0, 0,
+                graphics.PreferredBackBufferWidth, graphics.PreferredBackBufferHeight), Color.White);
+            }
         }
     }
 }

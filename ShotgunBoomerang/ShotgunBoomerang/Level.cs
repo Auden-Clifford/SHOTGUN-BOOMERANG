@@ -34,11 +34,8 @@ namespace ShotgunBoomerang
 
         private Vector2 _levelSize;
         
+
         // Properties
-        /// <summary>
-        /// Gets the level's original tile map
-        /// </summary>
-        public List<Tile> StartTileMap { get { return _startTileMap; } }
 
         /// <summary>
         /// Gets or sets the level's current tile map
@@ -46,19 +43,9 @@ namespace ShotgunBoomerang
         public List<Tile> CurrentTileMap { get { return _currentTileMap; } set { _currentTileMap = value; } }
 
         /// <summary>
-        /// Gets the level's original set of enemies
-        /// </summary>
-        public List<IGameEnemy> StartEnemies { get { return _startEnemies; } }
-
-        /// <summary>
         /// Gets or sets the level's current enemies
         /// </summary>
         public List<IGameEnemy> CurrentEnemies { get { return _currentEnemies; } set { _currentEnemies = value; } }
-
-        /// <summary>
-        /// Gets the levels original set of projectiles
-        /// </summary>
-        public List<IGameProjectile> StartProjectiles { get { return _startProjectiles; } }
 
         /// <summary>
         /// Gets or sets the level's current projectiles
@@ -70,55 +57,18 @@ namespace ShotgunBoomerang
         /// </summary>
         public Vector2 PlayerStart { get { return _playerStart; } }
 
+        
         /// <summary>
         /// Get's the level's LevelEnd object
         /// </summary>
         public LevelEnd LevelEnd { get { return _levelEnd; } }
-
-        /// <summary>
-        /// Creates a new level with a given tile map
-        /// </summary>
-        /// <param name="tileMap">The list of tiles the level will have</param>
-        public Level(List<Tile> tileMap, Vector2 levelSize, List<IGameEnemy> enemies, List <IGameProjectile> projectiles, Vector2 playerStart)
-        {
-            // current and original start off equal
-            // but they will be copies of eachother (not references)
-            _startTileMap = tileMap;
-            _currentTileMap = new List<Tile>();
-
-            _levelSize = levelSize;
-
-            foreach(Tile tile in _startTileMap)
-            {
-                _currentTileMap.Add(tile);
-            }
-
-            _startEnemies = enemies;
-            _currentEnemies = new List<IGameEnemy>();
-
-            foreach (IGameEnemy enemy in _startEnemies)
-            {
-                _currentEnemies.Add(enemy);
-                
-            }
-
-            _startProjectiles = projectiles;
-            _currentProjectiles = new List<IGameProjectile>();
-
-            
-            foreach(IGameProjectile projectile in _startProjectiles)
-            {
-                _currentProjectiles.Add(projectile);
-            }
-            
-            _playerStart = playerStart;
-        }
+        
 
         /// <summary>
         /// Creates a new level by reading in level data from a file
         /// (this process requires a list of textures in a specific order)
         /// </summary>
-        /// <param name="texturePack">List of all the textures this level uses</param>
+        /// <param name="texturePack">List of all the textures levels use</param>
         /// <param name="filePath">path to open the level file</param>
         public Level(List<Texture2D> texturePack, string filePath)
         {
@@ -185,9 +135,9 @@ namespace ShotgunBoomerang
                                 new List<Texture2D>()
                                 {
                                     texturePack[5],
-                                    texturePack[10]
+                                    texturePack[11]
                                 },
-                            new Vector2(x * 64, y * 64)));
+                                new Vector2(x * 64, y * 64)));
                     }
                     // load the playerStart
                     else if (currentLine[x] == "playerStart")
@@ -207,129 +157,202 @@ namespace ShotgunBoomerang
                                 3,
                                 9,
                                 texturePack[8]));
+                    }else if (currentLine[x] == "koalaTree")
+                    {
+                        _startEnemies.Add(
+                            new KoalaTree(
+                                new List<Texture2D>()
+                                {
+                                    texturePack[9],
+                                    texturePack[8],
+                                    texturePack[11]
+                                },
+                                new Vector2(x * 64, y * 64)));
                     }
                     // load the levelEnd
                     else if (currentLine[x] == "levelEnd")
                     {
-                        _levelEnd = new LevelEnd(texturePack[9],
+                        _levelEnd = new LevelEnd(texturePack[10],
                             new Vector2(x * 64, y * 64));
                     }
                     // load vegemite "projectiles"
                     else if (currentLine[x] == "vegemite")
                     {
                         _startProjectiles.Add(
-                            new Vegemite(texturePack[10],
+                            new Vegemite(texturePack[11],
                             new Vector2(x * 64, y * 64),
                             Vector2.Zero));
+                    }
+                    // load spike tiles
+                    else if (currentLine[x] == "woodSpike")
+                    {
+                        _startTileMap.Add(
+                            new DamageTile(texturePack[12],
+                            new Vector2(x * 64, y * 64)));
                     }
                     // load cave tiles
                     else if (currentLine[x] == "caveBottomCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[11],
+                            new Tile(texturePack[13],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveBottomLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[12],
+                            new Tile(texturePack[14],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveBottomRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[13],
+                            new Tile(texturePack[15],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveCenterCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[14],
+                            new Tile(texturePack[16],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveCenterLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[15],
+                            new Tile(texturePack[17],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveCenterRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[16],
+                            new Tile(texturePack[18],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveTopCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[17],
+                            new Tile(texturePack[19],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveTopLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[18],
+                            new Tile(texturePack[20],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveTopRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[19],
+                            new Tile(texturePack[21],
                             new Vector2(x * 64, y * 64)));
                     }
                     // load grass tiles
                     else if (currentLine[x] == "grassBottomCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[20],
+                            new Tile(texturePack[22],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassBottomLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[21],
+                            new Tile(texturePack[23],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassBottomRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[22],
+                            new Tile(texturePack[24],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassCenterCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[23],
+                            new Tile(texturePack[25],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassCenterLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[24],
+                            new Tile(texturePack[26],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassCenterRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[25],
+                            new Tile(texturePack[27],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassTopCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[26],
+                            new Tile(texturePack[28],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassTopLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[27],
+                            new Tile(texturePack[29],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassTopRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[28],
+                            new Tile(texturePack[30],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    // load mesa tiles
+                    else if (currentLine[x] == "mesaBottomCenter")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[31],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaBottomLeft")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[32],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaBottomRight")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[33],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaCenterCenter")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[34],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaCenterLeft")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[35],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaCenterRight")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[36],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaTopCenter")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[37],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaTopLeft")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[38],
+                            new Vector2(x * 64, y * 64)));
+                    }
+                    else if (currentLine[x] == "mesaTopRight")
+                    {
+                        _startTileMap.Add(
+                            new Tile(texturePack[39],
                             new Vector2(x * 64, y * 64)));
                     }
                 }
@@ -396,22 +419,26 @@ namespace ShotgunBoomerang
             Player player,
             GameTime gameTime)
         {
-            // tiles dont have an update yet so disregard this
-            /*
+
+            
             foreach (Tile tile in _currentTileMap)
             {
-                tile.Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player);
+                if(tile is DamageTile)
+                {
+                    DamageTile damageTile = tile as DamageTile;
+                    damageTile.Update(this, player, gameTime);
+                }
             }
-            */
+            
 
             for (int i = _currentEnemies.Count - 1; i >= 0; i--)
             {
-                _currentEnemies[i].Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player, gameTime);
+                _currentEnemies[i].Update(this, player, gameTime);
             }
 
             for(int i = _currentProjectiles.Count- 1; i >= 0; i--)
             {
-                _currentProjectiles[i].Update(kb, prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player, gameTime);
+                _currentProjectiles[i].Update(this, player, gameTime);
             }
 
             if(player.Position.Y > _levelSize.Y * 64)
@@ -419,7 +446,7 @@ namespace ShotgunBoomerang
                 player.Health = 0;
             }
 
-            _levelEnd.Update(kb,prevKb, ms, prevMs, _currentTileMap, _currentEnemies, _currentProjectiles, player, gameTime);
+            _levelEnd.Update(this, player, gameTime);
         }
 
         /// <summary>

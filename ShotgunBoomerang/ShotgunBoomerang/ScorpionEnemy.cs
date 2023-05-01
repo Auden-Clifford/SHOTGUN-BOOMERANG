@@ -211,7 +211,18 @@ namespace ShotgunBoomerang
                 //range of it.
                 case ScorpionState.Idle:
                     Move();
-                    //ResolveTileCollisions(tileMap);
+                    if(!CheckForLedge(direction, tileMap))
+                    {
+                        if(direction == Direction.Left)
+                        {
+                            direction = Direction.Right;
+                        }
+                        else
+                        {
+                            direction = Direction.Left;
+                        }
+                    }
+                    ResolveTileCollisions(tileMap);
 
                     //If the player comes within range, increase the scorps speed and change to the 
                     //skitter state, where the scorp quickly runs away from the player and than
@@ -245,7 +256,7 @@ namespace ShotgunBoomerang
                 case ScorpionState.Skitter:
 
                     Move();
-                    //ResolveTileCollisions(tileMap);
+                    ResolveTileCollisions(tileMap);
 
 
                     //Upon hitting a wall, detected by skitterEnd which is only turned on true once
@@ -276,7 +287,7 @@ namespace ShotgunBoomerang
                         direction = Direction.Right;
                     }
 
-                    //ResolveTileCollisions(tileMap);
+                    ResolveTileCollisions(tileMap);
                     break;
             }
 
@@ -311,11 +322,11 @@ namespace ShotgunBoomerang
                     //If the player is to the right, spawn a bullet going right
                     if (player.X < _position.X)
                     {
-                        projectilesList.Add(new Bullet(bulletSprite, _position, 10, -2));
+                        projectilesList.Add(new Bullet(bulletSprite, _position, new Vector2(-10, 0)));
                     }
                     else if (player.X > _position.X)
                     {
-                        projectilesList.Add(new Bullet(bulletSprite, _position, 10, 2));
+                        projectilesList.Add(new Bullet(bulletSprite, _position, new Vector2(10, 0)));
                     }
                 }
 
@@ -514,7 +525,7 @@ namespace ShotgunBoomerang
             foreach (Tile tile in tileMap)
             {
                 // if the player is intersecting the tile
-                if (tile.CheckCollision(this))
+                if (this.CheckCollision(tile))
                 {
                     // add it's hitbox to the list
                     intersectionsList.Add(tile.HitBox);

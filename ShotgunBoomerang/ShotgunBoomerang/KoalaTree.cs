@@ -18,6 +18,8 @@ namespace ShotgunBoomerang
     }
     internal class KoalaTree : MobileEntity, IGameEnemy
     {
+        private Texture2D _bulletSprite;
+        private Texture2D _vegemiteSprite;
 
         private DirectionState direction = DirectionState.Right;
         private Texture2D leftTexture;
@@ -29,98 +31,130 @@ namespace ShotgunBoomerang
         private float counter;
         private float initialTimer;
         private float damagedTimer;
+        private Vector2 _startPosition;
 
+        private Direction _currentDirection;
+        private bool _damaged;
 
-        public KoalaTree(Texture2D leftSprite, Texture2D rightSprite, Vector2 position, float maxHealth, float damage, Texture2D bulletSprite)
+        //private Texture2D leftTexture;
+        //private Texture2D rightTexture;
+
+        private int _playerDetectionDistance;
+        private double _shotTimer;
+        private double _shotTime;
+        //private float _counter;
+        //private float _initialTimer;
+        private double _damagedTimer;
+        private double _damagedTime;
+
+        private Color _drawColor;
+
+        /// <summary>
+        /// Creates a new KoalaTree enemy at a given position
+        /// </summary>
+        /// <param name="TexturePack">List of textures used by this enemy</param>
+        /// <param name="position">The enemy's position</param>
+        public KoalaTree(List<Texture2D> texturePack, Vector2 position)
         {
-            this._sprite = leftSprite;
-            this._position = position;
-            this._maxHealth = maxHealth;
-            this._health = maxHealth;
-            this._damage = damage;
-            this.bulletSprite = bulletSprite;
-            this._height = 128;
-            this._width = 128;
-
-            leftTexture = leftSprite;
-            rightTexture = rightSprite;
-            tileDetectionDistance = 8;
-            counter = 0;
-
-        }
-
-        public void Update(List<Tile> tileMap, List<IGameProjectile> projectiles, Player player, GameTime gameTime)
-        {
+            // The main sprite should be the first one
+            _sprite = texturePack[0];
             if(player.X < _position.X)
             {
                 direction = DirectionState.Left;
 
+            // the bullet sprite should be the second one
+            _bulletSprite = texturePack[1];
             }else if(player.Y >= _position.Y)
             {
                 direction = DirectionState.Right;
             }
 
-            Attack(player, projectiles, 10, 1.0f, gameTime);
+            // the vegemite sprite should be the third one
+            _vegemiteSprite = texturePack[2];
 
-            ResolveTileCollisions(tileMap);
+            _width = _sprite.Width;
+            _height = _sprite.Height;
+
+            _position = position;
+            _startPosition = position;
+            //_counter = 0;
+            _currentDirection = Direction.Right;
+            _damage = 20;
+            _damaged = false;
+            
+            _maxHealth = 180;
+            _health = _maxHealth;
+            _playerDetectionDistance = 512;
+            _velocity = Vector2.Zero;
+            _drawColor = Color.White;
+
+            _shotTimer = 0; // timer variable
+            _shotTime = 1; // amount of time on said timer variable
+
+            _damagedTimer = 0; // timer variable
+            _damagedTime = .25; // amount of time on said timer variable
+
+            _acceleration = Vector2.Zero;
         }
 
-
+        /// <summary>
+        /// Draws the koala facing the proper direction. 
+        /// the koala will always face the player
+        /// </summary>
+        /// <param name="sb">Spritebatch in use</param>
+        /// <param name="screenOffset">offset of the screen coordinates from the world coordinates</param>
         public override void Draw(SpriteBatch sb, Vector2 screenOffset)
         {
             //Depending on the direction enum, either face the sprite left or right
-            
-            switch (direction)
+            switch (_currentDirection)
             {
-                case DirectionState.Left:
-                    _sprite = leftTexture;
+                // draw facing the correct direction
+                case Direction.Left:
+                    sb.Draw(
+                        _sprite,
+                        _position - screenOffset,
+                        null,
+                        _drawColor,
+                        0,
+                        new Vector2(0, 0),
+                        1,
+                        SpriteEffects.None,
+                        0);
                     break;
 
-                case DirectionState.Right:
-                    _sprite = rightTexture;
+                case Direction.Right:
+                    sb.Draw(
+                        _sprite,
+                        _position - screenOffset,
+                        null,
+                        _drawColor,
+                        0,
+                        new Vector2(0, 0),
+                        1,
+                        SpriteEffects.FlipHorizontally,
+                        0);
                     break;
             }
+        }
 
-            //Draw the sprite red if damaged
-            if (!damaged)
+        public override void Update(
+            Level currentLevel,
+            Player player,
+            GameTime gameTime
+            )
+        {
+            ApplyPhysics();
+            ResolveTileCollisions(currentLevel.CurrentTileMap);
+
+            // turn to face the player
+            if (player.X < _position.X)
             {
-                sb.Draw(_sprite, _position - screenOffset, Color.White);
-            }
-            else
+                _currentDirection = Direction.Left;
+
+            }else if(player.Y >= _position.Y)
             {
-                sb.Draw(_sprite, _position - screenOffset, Color.Red);
-                damagedTimer -= 0.1f;
-                if(damagedTimer < 0)
-                {
-                    damaged = false;
-                }
+                _currentDirection = Direction.Right;
             }
-        }
-
-
-        /// <summary>
-        /// Enemy is stationary.
-        /// This function exists only to satisfy the interface
-        /// </summary>
-        public void Move()
-        {
-            //Enemy does not move
-        }
-
-        public bool CheckCollision(MobileEntity other)
-        {
-            return true;
-        }
-
-        /// <summary>
-        /// Resets the scorp
-        /// </summary>
-        public void Reset()
-        {
-            _health = _maxHealth;
-            //isAlive = true;
-            //onGround = false;
-        }
 
         /// <summary>
         /// Apply damage to the enemy
@@ -137,93 +171,66 @@ namespace ShotgunBoomerang
             }
         }
 
-        /// <summary>
-        /// Checks current health and returns true if the koala has health left and false if it doesn't
-        /// </summary>
-        /// <returns></returns>
-        public bool CheckHealth()
-        {
-            if(_health > 0)
+            // detect if the player is within range
+            if((player.Position - _position).Length() < _playerDetectionDistance)
             {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-
-
-        /// <summary>
-        /// Appeases the gods
-        /// 
-        /// Appeases conflict between interface and inheritance
-        /// </summary>
-        /// <param name="player">The player</param>
-        public void Attack(Player player)
-        {
-            
-        }
-
-        public void Attack(Player player, List<IGameProjectile> projectilesList, float damage, float timer, GameTime gameTime)
-        {
-            //If the player is within range, begin the timer
-            //Once it goes off, reset the timer and shoot a projectile
-            if (CheckRange(player))
-            {
-                shootingTimer = timer;
-                initialTimer = shootingTimer;
-
-                //Shoots once every second
-                counter += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                if (counter >= shootingTimer)
+                // if the timer is still running do nothing
+                if(_shotTimer >= 0)
                 {
-                    shootingTimer = initialTimer;
-                    counter = 0;
+                    _shotTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+                }
+                // when the timer is up, shoot and reset the timer
+                else
+                {
+                    currentLevel.CurrentProjectiles.Add(
+                        new Bullet(
+                            _bulletSprite,
+                            CenterPoint,
+                            Vector2.Normalize(player.Position - _position) * 10));
+                    _shotTimer = _shotTime;
+                }
+            }
 
-                    projectilesList.Add(new Bullet(bulletSprite, CenterPoint, damage, 3, player.CenterPoint));
+            // if the enemy took damage, change the color
+            if(_damaged)
+            {
+                _damagedTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+                _drawColor = Color.Red; // the enemy will draw red when damaged
+
+                // if the enemy died, remove it from the list
+                // the enemy has a 1 in 10 chance of dropping vegemite upon death
+                if (Health <= 0)
+                {
+                    Random dropRng = new Random();
+                    if (dropRng.Next(10) == 0)
+                    {
+                        currentLevel.CurrentProjectiles.Add(
+                            new Vegemite(
+                                _vegemiteSprite,
+                                _position,
+                                _velocity));
+                    }
+
+                    currentLevel.CurrentEnemies.Remove(this);
                 }
 
-
-            }
-        }
-
-        //Checks if the player is within the desired bounds around the enemy.
-        //Can be tweaked by changing the tileDetectionDistance assigned in the constructor
-        public bool CheckRange(Player player)
-        {
-            if (
-                player.X > _position.X - (tileDetectionDistance * 64) //Checks if the player is on the left side
-                &&
-                player.X < _position.X + (tileDetectionDistance * 64) //Checks if the player is on the right side
-                &&
-                player.Y <= _position.Y + (64) //Checks if the player isn't too low
-                &&
-                player.Y >= _position.Y - (tileDetectionDistance * 64) //Checks if the player isn't too high
-                )
-            {
-                return true;
-            }
-            else
-            {
-                return false;
+                // transition out of damaged state when time is up
+                if(_damagedTimer <= 0)
+                {
+                    _damaged = false;
+                    _drawColor = Color.White;
+                }
             }
         }
 
         /// <summary>
-        /// Definitely not just Auden's code I took cause it wasn't necessary to do the work again
-        /// 
+        /// Allows the koala tree to properly collide with surfaces
         /// </summary>
-        /// <param name="tileMap"></param>
+        /// <param name="tileMap">list of tiles in the level</param>
         protected override void ResolveTileCollisions(List<Tile> tileMap)
         {
-            //gravity is applied beforehand
-
-            ApplyPhysics();
-
-            // get the player's hitbox
-            Rectangle hitBox = this.HitBox;
+            // get a copy of the enemy's hitbox
+            Rectangle enemyHitBox = this.HitBox;
 
             // temporary list for all intersections
             List<Rectangle> intersectionsList = new List<Rectangle>();
@@ -232,8 +239,8 @@ namespace ShotgunBoomerang
             // to find which ones are interseting
             foreach (Tile tile in tileMap)
             {
-                // if the player is intersecting the tile
-                if (tile.CheckCollision(this))
+                // if the enemy is intersecting the tile
+                if (this.CheckCollision(tile))
                 {
                     // add it's hitbox to the list
                     intersectionsList.Add(tile.HitBox);
@@ -255,106 +262,53 @@ namespace ShotgunBoomerang
                 }
 
                 // resolve the largest collision
-                Rectangle intersectRect = Rectangle.Intersect(hitBox, largest);
+                Rectangle intersectRect = Rectangle.Intersect(HitBox, largest);
 
                 //check for a horizontal collision (intersection is taller than it is wide)
                 if (intersectRect.Width <= intersectRect.Height)
                 {
-
-                    //Fixes problem where very small and brief horizontal collisions cause reversal
-                    if (intersectRect.Height >= 16)
-                    {
-                        if (direction == DirectionState.Left)
-                        {
-                            direction = DirectionState.Right;
-                        }
-                        else if (direction == DirectionState.Right)
-                        {
-                            direction = DirectionState.Left;
-                        }
-
-
-                    }
-                    // if the player X is less than (further left than) the intersection's x
-                    // move the player left
+                    // if the enemy X is less than (further left than) the intersection's x
+                    // move the enemy left
                     if (this._position.X < intersectRect.X)
                     {
-                        hitBox.X -= intersectRect.Width;
+                        enemyHitBox.X -= intersectRect.Width;
 
-                        //the player's X velocity cannot be positive when touching the right wall
-                        // this._velocity.X = Math.Clamp(_velocity.X, float.MinValue, 0);
-
-
-
-
-
-
-                        if (intersectRect.Height >= 16)
-                        {
-                            //goingLeft = !goingLeft;
-                            this._velocity.X *= -1;
-
-
-                            //_acceleration.X *= -1;
-
-                        }
-
-
+                        //the enemy's X velocity cannot be positive when touching the right wall
+                        this._velocity.X = Math.Clamp(_velocity.X, float.MinValue, 0);
                     }
                     // otherwise move right
                     else
                     {
-                        hitBox.X += intersectRect.Width;
+                        enemyHitBox.X += intersectRect.Width;
 
-                        //the player's X velocity cannot be negative when touching the left wall
-                        //this._velocity.X = Math.Clamp(_velocity.X, 0, float.MaxValue);
-
-
-                        if (intersectRect.Height >= 16)
-                        {
-                            //goingLeft = !goingLeft;
-                            this._velocity.X *= -1;
-
-
-                            //_acceleration.X *= -1;
-                        }
-
-
+                        //the enemy's X velocity cannot be negative when touching the left wall
+                        this._velocity.X = Math.Clamp(_velocity.X, 0, float.MaxValue);
                     }
 
-
-
-                    //goingLeft = !goingLeft;
-
-
-
-                    this._position.X = hitBox.X;
+                    this._position.X = enemyHitBox.X;
                 }
                 // otherwise this must be a vertical collision
                 else
                 {
-                    // if the player Y is less than (further up than) the rectangle Y
-                    // move the player up
+                    // if the enemy Y is less than (further up than) the rectangle Y
+                    // move the enemy up
                     if (this._position.Y < intersectRect.Y)
                     {
-                        hitBox.Y -= intersectRect.Height;
+                        enemyHitBox.Y -= intersectRect.Height;
 
-                        // this means the player is in contact with the ground
-                        //onGround = true;
-
-                        //the player's Y velocity cannot be negative when touching the ground
+                        //the enemy's Y velocity cannot be negative when touching the ground
                         this._velocity.Y = Math.Clamp(_velocity.Y, float.MinValue, 0);
                     }
                     // otherwise the player has hit thier head, move down
                     else
                     {
-                        hitBox.Y += intersectRect.Height;
+                        enemyHitBox.Y += intersectRect.Height;
 
-                        //the player's Y velocity cannot be positive when touching the cieling
+                        //the enemy's Y velocity cannot be positive when touching the cieling
                         this._velocity.Y = Math.Clamp(_velocity.Y, 0, float.MaxValue);
                     }
 
-                    this._position.Y = hitBox.Y;
+                    this._position.Y = enemyHitBox.Y;
                 }
 
                 // reset the intersections list and check again
@@ -364,8 +318,8 @@ namespace ShotgunBoomerang
                 // to find which ones are interseting
                 foreach (Tile tile in tileMap)
                 {
-                    // if the player is intersecting the tile
-                    if (tile.HitBox.Intersects(hitBox))
+                    // if the enemy is intersecting the tile
+                    if (tile.HitBox.Intersects(enemyHitBox))
                     {
                         // add it's hitbox to the list
                         intersectionsList.Add(tile.HitBox);
@@ -374,7 +328,36 @@ namespace ShotgunBoomerang
             }
         }
 
+        /// <summary>
+        /// Contains logic for an enemy taking a hit from a given source
+        /// </summary>
+        /// <param name="attacker">Source of the damage</param>
+        /// <param name="damage">Amount of damage to take</param>
+        public void TakeHit(GameObject attacker, float damage)
+        {
+            if (!_damaged)
+            {
+                _health -= damage;
+                _damagedTimer = _damagedTime;
+                _damaged = true;
+            }
+        }
 
+        /// <summary>
+        /// Resets the enemy to how it 
+        /// was at the start of the level
+        /// </summary>
+        public void Reset()
+        {
+            _health = _maxHealth;
+            _damaged = false;
+            _damagedTimer = 0;
+            _shotTimer = 0;
 
+            // the koala shouldn't move, but just in case
+            _position.X = _startPosition.X;
+            _position.Y = _startPosition.Y;
+            _velocity = Vector2.Zero;
+        }
     }
 }

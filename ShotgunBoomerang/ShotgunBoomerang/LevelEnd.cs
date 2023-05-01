@@ -49,15 +49,9 @@ namespace ShotgunBoomerang
         /// <param name="player">The player</param>
         /// <param name="gameTime">The game time</param>
         public override void Update(
-            KeyboardState kb, 
-            KeyboardState prevKb, 
-            MouseState ms,
-            MouseState prevMs, 
-            List<Tile> tileMap, 
-            List<IGameEnemy> enemies,
-            List<IGameProjectile> projectiles, 
+            Level currentLevel,
             Player player, 
-            Microsoft.Xna.Framework.GameTime gameTime)
+            GameTime gameTime)
         {
             if(this.HitBox.Intersects(player.HitBox))
             {
