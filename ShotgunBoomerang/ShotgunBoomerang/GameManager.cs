@@ -308,8 +308,10 @@ namespace ShotgunBoomerang
                 // We can move back to the MAIN MENU, or move to GAMEPLAY.
                 case GameState.LevelSelect:
 
-                    // Turning off debug outside of the level
+                    // Turning off debug and cheats outside of the level
                     debugOn = false;
+                    infiniteAmmo = false;
+                    infiniteHP = false;
 
                     // Return to main menu screen
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))
