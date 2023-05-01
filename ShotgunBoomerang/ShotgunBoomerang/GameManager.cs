@@ -443,6 +443,7 @@ namespace ShotgunBoomerang
                             20,
                             3,
                             0.5f,
+                            7,
                             bulletSprite));
                     }
                     

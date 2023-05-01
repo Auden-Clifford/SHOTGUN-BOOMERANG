@@ -40,6 +40,7 @@ namespace ShotgunBoomerang
         private float damagedTimer;
         private float defaultSpeed;
         private float contactDamage;
+        private float bulletSpeed;
 
         private int horizontalDetectionDistance;
         private int verticalDetectionDistance;
@@ -56,7 +57,17 @@ namespace ShotgunBoomerang
         private Direction direction;
 
 
-        public Koala(Texture2D leftSprite, Texture2D rightSprite, Vector2 position, float maxHealth, float damage, float contactDamage, float moveSpeed, float shotTimer, Texture2D bulletSprite)
+        public Koala(
+            Texture2D leftSprite,
+            Texture2D rightSprite,
+            Vector2 position,
+            float maxHealth,
+            float damage,
+            float contactDamage,
+            float moveSpeed,
+            float shotTimer,
+            float bulletSpeed,
+            Texture2D bulletSprite)
         {
             this.leftSprite = leftSprite;
             this.rightSprite = rightSprite;
@@ -68,6 +79,7 @@ namespace ShotgunBoomerang
             this._sprite = rightSprite;
             this.shotTimer = shotTimer;
             this.initialTimer = shotTimer;
+            this.bulletSpeed = bulletSpeed;
             this.bulletSprite = bulletSprite;
             this._velocity = new Vector2(moveSpeed, 0);
             this.defaultSpeed = moveSpeed;
@@ -75,7 +87,7 @@ namespace ShotgunBoomerang
             this._height = 64;
             horizontalDetectionDistance = 10;
             verticalDetectionDistance = 5;
-            shootingRange = 6;
+            shootingRange = 7;
 
             startPos = new Vector2(_position.X, _position.Y);
             direction = Direction.Right;
@@ -188,7 +200,7 @@ namespace ShotgunBoomerang
                 //While the player is within range, continously shoot at them.
                 case KoalaState.Shooting:
 
-                    Attack(player, currentLevel.CurrentProjectiles, 5, 20, 1.0f, gameTime);
+                    Attack(player, currentLevel.CurrentProjectiles, bulletSpeed, _damage, shotTimer, gameTime);
 
                     _velocity.X = defaultSpeed / 2;
                     ApplyPhysics();
@@ -419,7 +431,8 @@ namespace ShotgunBoomerang
                     new Bullet(
                         bulletSprite,
                         CenterPoint,
-                        speed
+                        speed,
+                        _damage
                         ));
                 }
                 else
@@ -428,7 +441,8 @@ namespace ShotgunBoomerang
                     new Bullet(
                         bulletSprite,
                         CenterPoint,
-                        -(speed)
+                        -(speed),
+                        _damage
                         ));
                 }
                 

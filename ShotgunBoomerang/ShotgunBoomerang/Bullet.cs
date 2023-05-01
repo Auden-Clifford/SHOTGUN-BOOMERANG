@@ -46,7 +46,7 @@ namespace ShotgunBoomerang
             _maxHealth= 0;
         }
 
-        public Bullet(Texture2D sprite, Vector2 position, float speed)
+        public Bullet(Texture2D sprite, Vector2 position, float speed, float damage)
         {
             _sprite = sprite;
             _position = position;
@@ -60,7 +60,7 @@ namespace ShotgunBoomerang
             aimedShot = false;
             parried = false;
 
-            _damage = 10;
+            _damage = damage;
 
             // initialize unused variables as well
             _acceleration = Vector2.Zero;

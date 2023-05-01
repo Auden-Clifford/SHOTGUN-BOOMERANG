@@ -211,10 +211,11 @@ namespace ShotgunBoomerang
                             deathKoalaRight,
                             _position,
                             180,
-                            10,
-                            10,
-                            2,
-                            0.5f,
+                            20,
+                            20,
+                            3,
+                            0.33f,
+                            7,
                             _bulletSprite));
                     }
                     currentLevel.CurrentEnemies.Remove(this);
