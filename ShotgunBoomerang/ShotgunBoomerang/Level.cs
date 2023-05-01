@@ -428,7 +428,6 @@ namespace ShotgunBoomerang
                     damageTile.Update(this, player, gameTime);
                 }
             }
-            
 
             for (int i = _currentEnemies.Count - 1; i >= 0; i--)
             {
