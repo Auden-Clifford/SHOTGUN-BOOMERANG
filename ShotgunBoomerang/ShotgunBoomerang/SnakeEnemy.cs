@@ -19,20 +19,19 @@ namespace ShotgunBoomerang
     }
     internal class SnakeEnemy : MobileEntity, IGameEnemy
     {
-        //private Vector2 bump;
-        //private bool isAlive;
-        //private bool onGround;
-        //private float defaultSpeed;
+        // Fields
+
         private Vector2 _startPos;
         private double _damageTimer;
         private double _frightenTimer;
-        //private bool damaged;
+
         private SnakeState _currentState;
 
         private Texture2D _vegemiteDropSprite;
         private bool _inContactWithGround;
 
         
+        // Constructor
 
         public SnakeEnemy(List<Texture2D> texturePack, Vector2 position)
 
@@ -59,36 +58,14 @@ namespace ShotgunBoomerang
             _width = _sprite.Width;
             _height = _sprite.Height;
 
-            //Default speed is used to reset the velocity X value after it is clamped
-            //during collision resolution
-            //defaultSpeed = moveSpeed;
-
-            //goingLeft = false;
-            //bump = new Vector2(2, -3); //set vector causing major issues
-            //isAlive = true;
-            //onGround = false;
-            //damaged = false;
-
             _damageTimer = 0;
             _frightenTimer = 0;
 
             _inContactWithGround = true;
         }
 
-        
-        public void Reset()
-        {
-            _health = _maxHealth;
-            _position.X = _startPos.X;
-            _position.Y = _startPos.Y;
-            //isAlive = true;
-            //onGround = false;
-            _velocity = new Vector2(0, 0);
-            _currentState = SnakeState.Patrol;
-            _damageTimer = 0;
-            _frightenTimer = 0;
-        }
-        
+
+        // Methods        
         
         /// <summary>
         /// Draws the snake
@@ -109,6 +86,7 @@ namespace ShotgunBoomerang
                     sb.Draw(_sprite, _position - offset, Color.White);
                     break;
 
+                // draw normally while airborne
                 case SnakeState.Airborne:
                     sb.Draw(_sprite, _position - offset, Color.White);
                     break;
@@ -118,23 +96,6 @@ namespace ShotgunBoomerang
                     sb.Draw(_sprite, _position - offset, Color.Red);
                     break;
             }
-            /*
-            //Draws red if damaged
-            if (_currentState == EnemyState.Damaged)
-            {
-                sb.Draw(Sprite, _position - offset, Color.Red);
-                timer -= 0.1f;
-            }
-            else if(isAlive)
-            {
-                sb.Draw(Sprite, _position - offset, Color.White);
-                timer = 0.5f;
-                if (damaged)
-                {
-                    damaged = false;
-                }
-            }
-            */
         }
 
         /// <summary>
@@ -251,165 +212,7 @@ namespace ShotgunBoomerang
                     }
                     break;
             }
-
-            /*
-            Attack(player);
-            //Move();
-
-            _position += _velocity;
-
-            //ApplyPhysics();
-
-            ResolveTileCollisions(tileMap);
-            */
         }
-
-        /*
-        /// <summary>
-        /// If a collision is detected against the player, damage and bump them
-        /// </summary>
-        /// <param name="player">The player</param>
-        public void Attack(Player player)
-        {
-            player.TakeHit(this, _damage);
-            
-            if (CheckCollision(player))
-            {
-                player.TakeDamage(_damage);
-                if(player.Position.X >= this.Position.X)
-                {
-                    bump.X = 2;
-                }
-                else //If player is to the left of the enemy
-                {
-                    bump.X = -2;
-                }
-
-                player.Velocity += bump;
-                bump.X = 2;
-                
-            }
-            
-        }
-        */
-
-        /// <summary>
-        /// Take damage
-        /// </summary>
-        /// <param name="damage">Amount of damage to take</param>
-        public void TakeHit(GameObject attacker, float damage)
-        {
-            _health -= damage;
-
-            // get the normalized vector between the player's centerpoint and the enemy's centerpoint
-            Vector2 attackerNormal = Vector2.Normalize(CenterPoint - attacker.CenterPoint);
-
-            // throw the enemy away from it's attacker (throw force scales with damage)
-            _velocity = attackerNormal * (damage / 2);
-
-            _currentState = SnakeState.Damaged;
-
-            _damageTimer = 0.5f;
-
-            /*
-            if (!damaged)
-            {
-                _health -= damage;
-                CheckHealth();
-                timer = 0.5f;
-                damaged = true;
-                if (player.X < this.X)
-                {
-                    bump.X = 2;
-                }
-                else if (player.X > this.X)
-                {
-                    bump.X = -2;
-                }
-
-                _velocity += bump * 3;
-                //_position += bump * 3;
-                bump.X = 2;
-            }
-            */
-        }
-
-        /*
-        /// <summary>
-        /// Checks health to see if the enemy has died
-        /// </summary>
-        public bool CheckHealth()
-        {
-            if(_health <= 0)
-            {
-                isAlive = false;
-                
-            }
-            return isAlive;
-        }
-        */
-        
-        /*
-        protected override void ApplyPhysics()
-        {
-            // apply gravity to velocity
-            _velocity.Y += GameManager.Gravity;
-
-            // apply velocity to position
-            _position.Y += _velocity.Y;
-        }
-        */
-
-        /// <summary>
-        /// Gets or sets the X of the enemy
-        /// </summary>
-        public float X
-        {
-            get { return this._position.X; }
-            set { this._position.X = value; }
-        }
-
-        /*
-        /// <summary>
-        /// Moves the enemy automatically, switching directions if the enemy collides with a wall
-        /// </summary>
-        public void Move()
-        {
-            
-            _position += _velocity;
-
-            
-            if (!goingLeft) //If going right
-            {
-                //_position.X += _velocity.X;
-                _position += _velocity;
-            }
-            else //If going left
-            {
-                //_position.X -= _velocity.X;
-                _position -= _velocity;
-            }
-            
-
-            
-            if (_velocity.X > defaultSpeed)
-            {
-                _velocity.X -= 0.1f;
-            }
-            else if (_velocity.X < defaultSpeed)
-            {
-                _velocity.X += 0.1f;
-            }
-            
-
-            
-            if (_velocity.X > defaultSpeed - 0.15f && _velocity.X < defaultSpeed + 0.15f)
-            {
-                _velocity.X = defaultSpeed;
-            }
-            
-        }
-        */
 
         /// <summary>
         /// Definitely not just Auden's code I took cause it wasn't necessary to do the work again
@@ -470,23 +273,6 @@ namespace ShotgunBoomerang
 
                         //the player's X velocity cannot be positive when touching the right wall
                         this._velocity.X = Math.Clamp(_velocity.X, float.MinValue, 0);
-
-                        
-
-                        //I implemented this conditional because I was concerned that the snake was getting caught
-                        //on the lip of the next tile.
-                        //It wasn't, but the limit doesn't affect the desired behaviour. Removing it makes no difference
-
-                        /*
-                        if (intersectRect.Height >= 16)
-                        {
-                            //goingLeft = !goingLeft;
-                            this._velocity.X *= -1;
-                            //_acceleration.X *= -1;
-
-                        }
-                        */
-                        
                         
                     }
                     // otherwise move right
@@ -494,24 +280,13 @@ namespace ShotgunBoomerang
                     {
                         SnakeHitBox.X += intersectRect.Width;
 
-                        //the player's X velocity cannot be negative when touching the left wall
-                        //this._velocity.X = Math.Clamp(_velocity.X, 0, float.MaxValue);
-
-                        
-                        if (intersectRect.Height >= 16)
-                        {
-                            //goingLeft = !goingLeft;
-                            this._velocity.X *= -1;
-                            //_acceleration.X *= -1;
-                        }
-                        
-
+                        //the snake's X velocity cannot be negative when touching the left wall
+                        this._velocity.X = Math.Clamp(_velocity.X, 0, float.MaxValue);
                     }
 
                     // when a horizontal collision is made, the snake should head in the opposite direction
                     _acceleration *= -1;
 
-                    //goingLeft = !goingLeft
                     this._position.X = SnakeHitBox.X;
                 }
                 // otherwise this must be a vertical collision
@@ -556,6 +331,41 @@ namespace ShotgunBoomerang
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Allows the enemy to take damage from a given source
+        /// </summary>
+        /// <param name="attacker">Source of the damage</param>
+        /// <param name="damage">Amount of damage</param>
+        public void TakeHit(GameObject attacker, float damage)
+        {
+            _health -= damage;
+
+            // get the normalized vector between the player's centerpoint and the enemy's centerpoint
+            Vector2 attackerNormal = Vector2.Normalize(CenterPoint - attacker.CenterPoint);
+
+            // throw the enemy away from it's attacker (throw force scales with damage)
+            _velocity = attackerNormal * (damage / 2);
+
+            _currentState = SnakeState.Damaged;
+
+            _damageTimer = 0.5f;
+        }
+
+        /// <summary>
+        /// Resets the snake to the way it 
+        /// was at the beginning of the level
+        /// </summary>
+        public void Reset()
+        {
+            _health = _maxHealth;
+            _position.X = _startPos.X;
+            _position.Y = _startPos.Y;
+            _velocity = new Vector2(0, 0);
+            _currentState = SnakeState.Patrol;
+            _damageTimer = 0;
+            _frightenTimer = 0;
         }
     }
 }

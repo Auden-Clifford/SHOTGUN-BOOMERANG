@@ -717,14 +717,6 @@ namespace ShotgunBoomerang
 
                     _velocity *= 0.99f;
 
-                    /*
-                    if (ms.LeftButton == ButtonState.Pressed &&
-                       prevMs.LeftButton == ButtonState.Released)
-                    {
-                        ShotgunAttack(ms, graphics, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, gameTime);
-                    }
-                    */
-
                     // player should only be incapacitated
                     // for the first .5 second of i frames
                     if (_iFrameTimer <= 0.75)

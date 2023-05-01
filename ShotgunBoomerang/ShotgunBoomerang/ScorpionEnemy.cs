@@ -20,48 +20,35 @@ namespace ShotgunBoomerang
 
     internal class ScorpionEnemy : MobileEntity, IGameEnemy
     {
-
+        // Fields
         private Texture2D _bulletSprite;
         private Texture2D _vegemiteDropSprite;
 
         private Direction _currentDirection;
-        //private Vector2 defaultSpeed;
-        //private Texture2D leftTexture;
-        //private Texture2D rightTexture;
-        private int _playerDetectionDistance;
-
-
         private ScorpionState _currentState;
-        //private bool skitterEnd;
+
+        private int _playerDetectionDistance;
         private Vector2 _startPosition;
+
         private double _shotTimer;
         private double _shotTime;
-        //private float initialTimer;
         private float _shotCounter;
         private Vector2 _bulletSpeed;
-        private Color _drawColor;
+
         private bool _horizontalCollision;
 
+        private Color _drawColor;
         private double _damageTimer;
         private double _damageTime;
 
-        //private float timer;
 
-        //private bool damaged;
-
-
+        // Constructor
 
         /// <summary>
-        /// Creates a scorpion that shoots at the player.
+        /// Creates a new scorpion enemy at a given location
         /// </summary>
-        /// <param name="leftSprite">A left facing version of the scorpion</param>
-        /// <param name="rightSprite">A right facing version</param>
-        /// <param name="position">The position of the scorp</param>
-        /// <param name="maxHealth">The max health of the scorp</param>
-        /// <param name="damage">How much damage the scorp does</param>
-        /// <param name="moveSpeed">How fast the scorp moves</param>
-        /// <param name="skitterSpeed">How fast it dashes for cover upon seeing the player</param>
-        /// <param name="bulletSprite">The sprite for it's projectile</param>
+        /// <param name="texturePack">List containing all of the textures this enemy needs</param>
+        /// <param name="position">Position of the enemy</param>
         public ScorpionEnemy(List<Texture2D> texturePack, Vector2 position)
         {
             // the main sprite should be the first one
@@ -86,49 +73,22 @@ namespace ShotgunBoomerang
             _health = _maxHealth;
             _damage = 25;
 
-            //this.bulletSprite = bulletSprite;
             _velocity = Vector2.Zero;
             _acceleration = new Vector2(1, 0);
             _bulletSpeed = new Vector2(4, 0);
-            //counter = 0f;
 
             _drawColor = Color.White;
             _shotTimer = 0;
             _shotTime = .5;
             _shotCounter = 3;
 
-
-            //damaged = false;
-            //defaultSpeed = new Vector2(moveSpeed, 0);
             _playerDetectionDistance = 640;
 
             _horizontalCollision = false;
 
             _damageTimer = 0;
             _damageTime = 0.5;
-
-
-            /*
-            if (_currentDirection == Direction.Left)
-            {
-                _velocity.X *= -1;
-            }
-            */
         }
-
-        /*
-        /// <summary>
-        /// Updates the object's position and velocity based on physics interactions
-        /// </summary>
-        protected override void ApplyPhysics()
-        {
-            // apply gravity to velocity
-            _velocity.Y += GameManager.Gravity;
-
-            // apply velocity to position
-            _position.Y += _velocity.Y;
-        }
-        */
 
         /// <summary>
         /// Deals with the logic for drawing the scorp
@@ -167,41 +127,6 @@ namespace ShotgunBoomerang
                         0);
                     break;
             }
-
-            /*
-            //Draw the sprite red if damaged
-            if (!damaged)
-            {
-                sb.Draw(_sprite, _position - screenOffset, Color.White);
-            }
-            else
-            {
-                sb.Draw(_sprite, _position + screenOffset, Color.Red);
-            }
-            */
-
-
-            //sb.Draw(_sprite, new Vector2(_position.X, _position.Y) - screenOffset, Color.Red);
-
-            //Test to show the bounds of the detection
-            /*
-            Vector2 leftBottom = new Vector2(_position.X - (tileDetectionDistance * _sprite.Width), _position.Y + ((tileDetectionDistance / 4) * _sprite.Height));
-            Vector2 rightBottom = new Vector2(_position.X + (tileDetectionDistance * _sprite.Width), _position.Y + ((tileDetectionDistance / 4) * _sprite.Height));
-            Vector2 leftUpper = new Vector2(_position.X - (tileDetectionDistance * _sprite.Width), _position.Y - ((tileDetectionDistance) * _sprite.Height));
-            Vector2 rightUpper = new Vector2(_position.X + (tileDetectionDistance * _sprite.Width), _position.Y - ((tileDetectionDistance) * _sprite.Height));
-            sb.Draw(_sprite, leftBottom - screenOffset, Color.Black);
-            sb.Draw(_sprite, rightBottom - screenOffset, Color.Black);
-            sb.Draw(_sprite, leftUpper - screenOffset, Color.Black);
-            sb.Draw(_sprite, rightUpper - screenOffset, Color.Black);
-            */
-
-            //Test to show the distance on the ledge checking
-
-
-            //sb.Draw(rightTexture, rightLCPos - screenOffset, Color.Red);
-
-
-
         }
 
 
@@ -217,70 +142,21 @@ namespace ShotgunBoomerang
             Player player,
             GameTime gameTime)
         {
-            /*
-            Move();
-            Attack(player);
-            if (CheckAttackRange(player))
-            {
-                skitterEnd = false;
-                if (player.X < _position.X)
-                {
-                    _velocity.X = (Math.Abs(_velocity.X)) * 1.25f;
-                    direction = directionState.Left;
-                }
-                else if (player.X >= _position.X)
-                {
-                    _velocity.X = (float)(Math.Abs(_velocity.X) * -1) * 1.25f;
-                    direction = directionState.Right;
-                }
-                enemyState = EnemyState.Skitter;
-
-            }
-            CheckForLedge(direction, tileMap);
-            ResolveTileCollisions(tileMap);
-            */
-
-            //****
-            //BY THE WAY: if you write something outside the switch statement it
-            //still happens, so you can write you physics and collision methods here
-            //****
-
+            // keep track of friction amount
             float runFriction = 0.8f;
 
+            // apply gravity/velocity
             ApplyPhysics();
 
             ResolveTileCollisions(currentLevel.CurrentTileMap);
 
-            /*
-            // check if the scorpion is dead and if it is, remove it from the enemies list
-            if (!CheckHealth())
-            {
-                currentLevel.CurrentEnemies.Remove(this);
-            }
-            */
-
-            // set draw color to white by default
-
-
             switch (_currentState)
             {
-
-
                 //Handles logic for before encountering the player.
                 //The scorp will simply move back and forth between walls until the player comes within
                 //range of it.
                 case ScorpionState.Idle:
-                    //Move();
-
-                    /*
-                    if(CheckForLedge(currentLevel.CurrentTileMap))
-                    {
-                        // reverse directions when a ledge is detected
-                        _acceleration *= -1;
-                    }
-                    */
                     
-
                     _velocity.X += _acceleration.X;
                     _velocity *= runFriction;
 
@@ -294,42 +170,19 @@ namespace ShotgunBoomerang
                         _currentDirection = Direction.Left;
                     }
 
-                    //ResolveTileCollisions(currentLevel.CurrentTileMap);
-
                     //If the player comes within range, change to the 
                     //skitter state, where the scorp quickly runs away from the player and than
                     //gets ready to shoot at them
                     if ((player.Position - _position).Length() < _playerDetectionDistance)
                     {
-                        //skitterEnd = false;
-
-                        /*
-                        if (player.X < _position.X) //If the player is to the left of the scorp
-                        {
-                            _velocity.X = (Math.Abs(_velocity.X)) * 2;
-                            _currentDirection = Direction.Right;
-                        }
-                        else if (player.X >= _position.X) //If the player is to the right/directly above
-                        {
-                            _velocity.X = (float)(Math.Abs(_velocity.X) * -1) * 2;
-                            _currentDirection = Direction.Left;
-                        }
-                        */
-
                         _currentState = ScorpionState.Skitter;
-
                     }
                     break;
-
-
 
 
                 //Handles the skitter logic. 
                 //Scorp goes until it either hits a wall or a ledge.
                 case ScorpionState.Skitter:
-
-                    //Move();
-                    //ResolveTileCollisions(currentLevel.CurrentTileMap);
 
                     // if the player is to the left, the skitter right
                     if (player.X < _position.X)
@@ -353,12 +206,11 @@ namespace ShotgunBoomerang
 
 
                     //Upon hitting a wall, detected by _horizontalCollision, transition to the shooting state
-                    if (/*CheckForLedge(currentLevel.CurrentTileMap) ||*/ _horizontalCollision)
+                    if (_horizontalCollision)
                     {
                         _currentState = ScorpionState.Shooting;
                     }
                     break;
-
 
 
                 //Handles shooting logic.
@@ -451,221 +303,8 @@ namespace ShotgunBoomerang
 
         }
 
-        /*
-        /// <summary>
-        /// Checks if the player is in range and than fires a projectile in their direction
-        /// </summary>
-        /// <param name="player">The player</param>
-        /// <param name="projectilesList">The current projectiles</param>
-        /// <param name="timer">The timer</param>
-        /// <param name="gameTime"></param>
-        public void Attack(Player player, List<IGameProjectile> projectilesList, float timer, GameTime gameTime)
-        {
 
-            //If the player is within range of the scorp
-            if (CheckAttackRange(player))
-            {
-                _shotTimer = timer;
-                initialTimer = _shotTimer;
-
-                //Shoots once every second
-                counter += (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                
-                if (counter >= _shotTimer)
-                {
-                    _shotTimer = initialTimer;
-                    counter = 0;
-
-                    //If the player is to the left of the scorp, spawn a bullet going left.
-                    //If the player is to the right, spawn a bullet going right
-                    if (player.X < _position.X)
-                    {
-                        projectilesList.Add(new Bullet(bulletSprite, _position, new Vector2(-10, 0)));
-                    }
-                    else if (player.X > _position.X)
-                    {
-                        projectilesList.Add(new Bullet(bulletSprite, _position, new Vector2(10, 0)));
-                    }
-                }
-
-            }
-        }
-        */
-
-        /*
-        /// <summary>
-        /// Appeases the gods
-        /// 
-        /// The interface was being irritating so this was the fastest fix
-        /// </summary>
-        /// <param name="player"></param>
-        public void Attack(Player player)
-        {
-
-        }
-        */
-
-        /*
-        /// <summary>
-        /// Checks whether or not the player is in range for the scorpion to begin attacking
-        /// </summary>
-        /// <param name="player">The player</param>
-        /// <returns>Whether or not the player is in range</returns>
-        public bool CheckAttackRange(Player player)
-        {
-
-            //Checks if the player is within a certain range of the scrop.
-            if (
-                player.X > _position.X - (tileDetectionDistance * _sprite.Width) //Checks if the player is on the left side
-                &&
-                player.X < _position.X + (tileDetectionDistance * _sprite.Width) //Checks if the player is on the right side
-                &&
-                player.Y <= _position.Y + (_sprite.Width) //Checks if the player isn't too low
-                &&
-                player.Y >= _position.Y - (tileDetectionDistance * _sprite.Height) //Checks if the player isn't too high
-                )
-
-            {
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-
-        }
-        */
-
-        /*
-        /// <summary>
-        /// Returns true if a ledge is detected
-        /// </summary>
-        /// <param name="tileMap">The tileMap</param>
-        /// <returns>Whether or not there is a ledge</returns>
-        public bool CheckForLedge(List<Tile> tileMap)
-        {
-            bool collisionDetected = false;
-
-            // should represent a rectangle with width equal to the x velocity (i.e. it is the amount the scorpion will move next frame) and which is one tile in the ground
-            Rectangle detectorRectangle = new Rectangle((int)_position.X + (int)_velocity.X, (int)_position.Y + _width, (int)_velocity.X, 64);
-
-            // if the scorpion is moving right, also add the width of the sprite to the X pos
-            if(_currentDirection == Direction.Right) { detectorRectangle.X += _width;}
-            
-            foreach(Tile tile in tileMap)
-            {
-                if(detectorRectangle.Intersects(tile.HitBox))
-                {
-                    return false;
-                }
-            }
-
-            // if a ledge is detected, immeditatly stop 
-            _velocity = Vector2.Zero;
-
-            return true;
-        }
-        */
-
-        /*
-        /// <summary>
-        /// Check for collision with another object
-        /// </summary>
-        /// <param name="other">The object to check against</param>
-        /// <returns>Whether or not a collision was detected</returns>
-        public bool CheckCollision(MobileEntity other)
-        {
-            return HitBox.Intersects(other.HitBox);
-        }
-        */
-
-        /*
-        /// <summary>
-        /// Returns true if the scorpion still has health
-        /// </summary>
-        /// <returns></returns>
-        public bool CheckHealth()
-        {
-            if (_health <= 0)
-            {
-
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
-        */
-
-        /*
-        /// <summary>
-        /// Adds the velocity to the position
-        /// </summary>
-        public void Move()
-        {
-            _position += _velocity;
-
-
-        }
-        */
-
-
-        /// <summary>
-        /// Resets the scorp
-        /// </summary>
-        public void Reset()
-        {
-            _health = _maxHealth;
-            _position.X = _startPosition.X;
-            _position.Y = _startPosition.Y;
-            //isAlive = true;
-            //onGround = false;
-            _velocity = Vector2.Zero;
-            _currentState = ScorpionState.Idle;
-            _drawColor = Color.White;
-            _damageTimer = 0;
-            _shotCounter = 0;
-            _shotTimer = 0;
-        }
-
-        /// <summary>
-        /// Take damage
-        /// </summary>
-        /// <param name="damage">Amount of damage to take</param>
-        public void TakeHit(GameObject attacker, float damage)
-        {
-            //If the scorp hasn't already been damaged, take damage
-            if (_currentState != ScorpionState.Damaged)
-            {
-                _health -= damage;
-                _damageTimer = _damageTime;
-                
-
-                _currentState = ScorpionState.Damaged;
-
-                // get the normalized vector between the player's centerpoint and the enemy's centerpoint
-                Vector2 attackerNormal = Vector2.Normalize(CenterPoint - attacker.CenterPoint);
-
-                // throw the enemy away from it's attacker (throw force scales with damage)
-                _velocity += attackerNormal * (damage / 2);
-
-                /*
-                if (player.X < _position.X)
-                {
-                    //bump.X = 2;
-                }
-                else if (player.X > _position.X)
-                {
-                    //bump.X = -2;
-                }
-                */
-
-                //_velocity += bump * 3;
-                //bump.X = 2;
-            }
-        }
+        
 
         /// <summary>
         /// Definitely not just Auden's code I took cause it wasn't necessary to do the work again
@@ -809,6 +448,47 @@ namespace ShotgunBoomerang
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Allows the enemy to take damage from a specific source
+        /// </summary>
+        /// <param name="attacker">Source of the damage</param>
+        /// <param name="damage">Amount of damage</param>
+        public void TakeHit(GameObject attacker, float damage)
+        {
+            //If the scorp hasn't already been damaged, take damage
+            if (_currentState != ScorpionState.Damaged)
+            {
+                _health -= damage;
+                _damageTimer = _damageTime;
+
+
+                _currentState = ScorpionState.Damaged;
+
+                // get the normalized vector between the player's centerpoint and the enemy's centerpoint
+                Vector2 attackerNormal = Vector2.Normalize(CenterPoint - attacker.CenterPoint);
+
+                // throw the enemy away from it's attacker (throw force scales with damage)
+                _velocity += attackerNormal * (damage / 2);
+            }
+        }
+
+        /// <summary>
+        /// Resets the scorp to the way it
+        /// was at the beginning of the level
+        /// </summary>
+        public void Reset()
+        {
+            _health = _maxHealth;
+            _position.X = _startPosition.X;
+            _position.Y = _startPosition.Y;
+            _velocity = Vector2.Zero;
+            _currentState = ScorpionState.Idle;
+            _drawColor = Color.White;
+            _damageTimer = 0;
+            _shotCounter = 0;
+            _shotTimer = 0;
         }
     }
 }
