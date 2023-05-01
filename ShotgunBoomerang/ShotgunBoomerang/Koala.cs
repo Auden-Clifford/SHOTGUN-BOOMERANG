@@ -215,6 +215,7 @@ namespace ShotgunBoomerang
             if (!CheckHealth())
             {
                 currentLevel.CurrentEnemies.Remove(this);
+                player.Kills++;
             }
 
 

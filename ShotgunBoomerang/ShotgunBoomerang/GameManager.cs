@@ -196,6 +196,8 @@ namespace ShotgunBoomerang
                 this.Content.Load<Texture2D>("EnemyTextures/scorpion"),
                 this.Content.Load<Texture2D>("MiscEntities/Bullet"),
                 this.Content.Load<Texture2D>("EnemyTextures/GunKoala"),
+                this.Content.Load<Texture2D>("EnemyTextures/Koala_Left"),
+                this.Content.Load<Texture2D>("EnemyTextures/Koala_Right"),
                 this.Content.Load<Texture2D>("MiscEntities/ausFlag"),
                 this.Content.Load<Texture2D>("MiscEntities/vegemite"),
                 this.Content.Load<Texture2D>("TileTextures/woodSpike"),

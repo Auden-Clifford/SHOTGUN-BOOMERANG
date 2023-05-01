@@ -164,21 +164,25 @@ namespace ShotgunBoomerang
                                 {
                                     texturePack[8],
                                     texturePack[7],
-                                    texturePack[10]
+                                    texturePack[12],
+                                    texturePack[9],
+                                    texturePack[10],
+
                                 },
-                                new Vector2(x * 64, y * 64)));
+                                new Vector2(x * 64, y * 64),
+                                true));
                     }
                     // load the levelEnd
                     else if (currentLine[x] == "levelEnd")
                     {
-                        _levelEnd = new LevelEnd(texturePack[9],
+                        _levelEnd = new LevelEnd(texturePack[11],
                             new Vector2(x * 64, y * 64));
                     }
                     // load vegemite "projectiles"
                     else if (currentLine[x] == "vegemite")
                     {
                         _startProjectiles.Add(
-                            new Vegemite(texturePack[10],
+                            new Vegemite(texturePack[12],
                             new Vector2(x * 64, y * 64),
                             Vector2.Zero));
                     }
@@ -186,172 +190,172 @@ namespace ShotgunBoomerang
                     else if (currentLine[x] == "woodSpike")
                     {
                         _startTileMap.Add(
-                            new DamageTile(texturePack[11],
+                            new DamageTile(texturePack[13],
                             new Vector2(x * 64, y * 64)));
                     }
                     // load cave tiles
                     else if (currentLine[x] == "caveBottomCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[12],
+                            new Tile(texturePack[14],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveBottomLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[13],
+                            new Tile(texturePack[15],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveBottomRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[14],
+                            new Tile(texturePack[16],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveCenterCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[15],
+                            new Tile(texturePack[17],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveCenterLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[16],
+                            new Tile(texturePack[18],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveCenterRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[17],
+                            new Tile(texturePack[19],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveTopCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[18],
+                            new Tile(texturePack[20],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveTopLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[19],
+                            new Tile(texturePack[21],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "caveTopRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[20],
+                            new Tile(texturePack[22],
                             new Vector2(x * 64, y * 64)));
                     }
                     // load grass tiles
                     else if (currentLine[x] == "grassBottomCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[21],
+                            new Tile(texturePack[23],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassBottomLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[22],
+                            new Tile(texturePack[24],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassBottomRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[23],
+                            new Tile(texturePack[25],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassCenterCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[24],
+                            new Tile(texturePack[26],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassCenterLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[25],
+                            new Tile(texturePack[27],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassCenterRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[26],
+                            new Tile(texturePack[28],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassTopCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[27],
+                            new Tile(texturePack[29],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassTopLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[28],
+                            new Tile(texturePack[30],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "grassTopRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[29],
+                            new Tile(texturePack[31],
                             new Vector2(x * 64, y * 64)));
                     }
                     // load mesa tiles
                     else if (currentLine[x] == "mesaBottomCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[30],
+                            new Tile(texturePack[32],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "mesaBottomLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[31],
+                            new Tile(texturePack[33],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "mesaBottomRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[32],
+                            new Tile(texturePack[34],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "mesaCenterCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[33],
+                            new Tile(texturePack[35],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "mesaCenterLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[34],
+                            new Tile(texturePack[36],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "mesaCenterRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[35],
+                            new Tile(texturePack[37],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "mesaTopCenter")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[36],
+                            new Tile(texturePack[38],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "mesaTopLeft")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[37],
+                            new Tile(texturePack[39],
                             new Vector2(x * 64, y * 64)));
                     }
                     else if (currentLine[x] == "mesaTopRight")
                     {
                         _startTileMap.Add(
-                            new Tile(texturePack[38],
+                            new Tile(texturePack[40],
                             new Vector2(x * 64, y * 64)));
                     }
                 }

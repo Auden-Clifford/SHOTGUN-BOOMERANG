@@ -36,9 +36,13 @@ namespace ShotgunBoomerang
 
         private Direction _currentDirection;
         private bool _damaged;
+        private bool spawnKoala;
 
         //private Texture2D leftTexture;
         //private Texture2D rightTexture;
+
+        private Texture2D deathKoalaLeft;
+        private Texture2D deathKoalaRight;
 
         private int _playerDetectionDistance;
         private double _shotTimer;
@@ -55,7 +59,8 @@ namespace ShotgunBoomerang
         /// </summary>
         /// <param name="TexturePack">List of textures used by this enemy</param>
         /// <param name="position">The enemy's position</param>
-        public KoalaTree(List<Texture2D> texturePack, Vector2 position)
+        /// <param name="spawnKoala">Whether or not to spawn a Koala on death</param>
+        public KoalaTree(List<Texture2D> texturePack, Vector2 position, bool spawnKoala)
         {
             // The main sprite should be the first one
             _sprite = texturePack[0];
@@ -68,6 +73,10 @@ namespace ShotgunBoomerang
             // the vegemite sprite should be the third one
             _vegemiteSprite = texturePack[2];
 
+            //Death koala should be 4th and 5th textures
+            deathKoalaLeft = texturePack[3];
+            deathKoalaRight = texturePack[4];
+
             _width = _sprite.Width;
             _height = _sprite.Height;
 
@@ -77,6 +86,8 @@ namespace ShotgunBoomerang
             _currentDirection = Direction.Right;
             _damage = 20;
             _damaged = false;
+
+            this.spawnKoala = spawnKoala;
             
             _maxHealth = 180;
             _health = _maxHealth;
@@ -193,6 +204,19 @@ namespace ShotgunBoomerang
                                 _velocity));
                     }
 
+                    if (spawnKoala)
+                    {
+                        currentLevel.CurrentEnemies.Add(new Koala(
+                            deathKoalaLeft,
+                            deathKoalaRight,
+                            _position,
+                            180,
+                            10,
+                            10,
+                            2,
+                            0.5f,
+                            _bulletSprite));
+                    }
                     currentLevel.CurrentEnemies.Remove(this);
                     player.Kills++;
                 }
