@@ -193,8 +193,7 @@ namespace ShotgunBoomerang
                 this.Content.Load<Texture2D>("TileTextures/planksRight"),
 
                 this.Content.Load<Texture2D>("EnemyTextures/Snek"),
-                this.Content.Load<Texture2D>("EnemyTextures/scorpin_Left"),
-                this.Content.Load<Texture2D>("EnemyTextures/scorpin_Right"),
+                this.Content.Load<Texture2D>("EnemyTextures/scorpion"),
                 this.Content.Load<Texture2D>("MiscEntities/Bullet"),
                 this.Content.Load<Texture2D>("EnemyTextures/GunKoala"),
                 this.Content.Load<Texture2D>("MiscEntities/ausFlag"),
@@ -256,7 +255,7 @@ namespace ShotgunBoomerang
             levelThree = new Level(levelTexturepack, "Content/Levels/Level3.level");
 
             // set up the player
-            player = new Player(playerTexturePack, demoLevel.PlayerStart, 100, playerSounds);
+            player = new Player(playerTexturePack, playerSounds, Vector2.Zero);
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
             pauseButtonDebug = new Rectangle(graphics.PreferredBackBufferWidth / 2 - 264 + 350, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);
@@ -314,8 +313,10 @@ namespace ShotgunBoomerang
                 // We can move back to the MAIN MENU, or move to GAMEPLAY.
                 case GameState.LevelSelect:
 
-                    // Turning off debug outside of the level
+                    // Turning off debug and cheats outside of the level
                     debugOn = false;
+                    infiniteAmmo = false;
+                    infiniteHP = false;
 
                     // Return to main menu screen
                     if (kb.IsKeyDown(Keys.Escape) && prevKb.IsKeyUp(Keys.Escape))

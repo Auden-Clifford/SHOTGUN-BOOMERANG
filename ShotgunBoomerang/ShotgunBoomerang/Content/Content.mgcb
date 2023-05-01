@@ -13,30 +13,6 @@
 
 #---------------------------------- Content ---------------------------------#
 
-#begin EnemyTextures/GunKoala_Left3.0.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:EnemyTextures/GunKoala_Left3.0.png
-
-#begin EnemyTextures/GunKoala_Right3.0.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:EnemyTextures/GunKoala_Right3.0.png
-
 #begin EnemyTextures/GunKoala.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -73,7 +49,7 @@
 /processorParam:TextureFormat=Color
 /build:EnemyTextures/Koala_Right.png
 
-#begin EnemyTextures/scorpin_Left.png
+#begin EnemyTextures/scorpion.png
 /importer:TextureImporter
 /processor:TextureProcessor
 /processorParam:ColorKeyColor=255,0,255,255
@@ -83,19 +59,7 @@
 /processorParam:ResizeToPowerOfTwo=False
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
-/build:EnemyTextures/scorpin_Left.png
-
-#begin EnemyTextures/scorpin_Right.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:EnemyTextures/scorpin_Right.png
+/build:EnemyTextures/scorpion.png
 
 #begin EnemyTextures/Snek.png
 /importer:TextureImporter

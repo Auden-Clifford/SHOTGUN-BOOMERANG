@@ -16,6 +16,7 @@ namespace ShotgunBoomerang
         Left,
         Right
     }
+
     internal class KoalaTree : MobileEntity, IGameEnemy
     {
         private Texture2D _bulletSprite;
@@ -193,6 +194,7 @@ namespace ShotgunBoomerang
                     }
 
                     currentLevel.CurrentEnemies.Remove(this);
+                    player.Kills++;
                 }
 
                 // transition out of damaged state when time is up
