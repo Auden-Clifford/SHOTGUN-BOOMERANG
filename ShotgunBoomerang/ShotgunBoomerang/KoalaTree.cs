@@ -11,11 +11,26 @@ using System.Threading.Tasks;
 
 namespace ShotgunBoomerang
 {
+    enum DirectionState
+    {
+        Left,
+        Right
+    }
     internal class KoalaTree : MobileEntity, IGameEnemy
     {
         private Texture2D _bulletSprite;
         private Texture2D _vegemiteSprite;
 
+        private DirectionState direction = DirectionState.Right;
+        private Texture2D leftTexture;
+        private Texture2D rightTexture;
+        private bool damaged;
+        private int tileDetectionDistance;
+        private Texture2D bulletSprite;
+        private float shootingTimer;
+        private float counter;
+        private float initialTimer;
+        private float damagedTimer;
         private Vector2 _startPosition;
 
         private Direction _currentDirection;
@@ -44,8 +59,10 @@ namespace ShotgunBoomerang
             // The main sprite should be the first one
             _sprite = texturePack[0];
 
+
             // the bullet sprite should be the second one
             _bulletSprite = texturePack[1];
+            
 
             // the vegemite sprite should be the third one
             _vegemiteSprite = texturePack[2];
@@ -115,7 +132,7 @@ namespace ShotgunBoomerang
             }
         }
 
-        public override void Update(
+        public void Update(
             Level currentLevel,
             Player player,
             GameTime gameTime
@@ -134,7 +151,6 @@ namespace ShotgunBoomerang
                 _currentDirection = Direction.Right;
             }
 
-            //Attack(player, currentLevel.CurrentProjectiles, 10, 1.0f, gameTime);
 
             // detect if the player is within range
             if((player.Position - _position).Length() < _playerDetectionDistance)
@@ -187,6 +203,8 @@ namespace ShotgunBoomerang
                 }
             }
         }
+
+
 
         /// <summary>
         /// Allows the koala tree to properly collide with surfaces
