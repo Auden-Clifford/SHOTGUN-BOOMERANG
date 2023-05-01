@@ -17,7 +17,7 @@ namespace ShotgunBoomerang
         bool parried;
 
 
-        // Constructor
+        // Constructors
 
         /// <summary>
         /// Creates a new bullet moving horizontally at a specified speed
@@ -35,7 +35,7 @@ namespace ShotgunBoomerang
             _width = _sprite.Width;
             _height = _sprite.Height;
 
-            aimedShot = false;
+            aimedShot = true;
             parried = false;
 
             _damage = 10;
@@ -44,6 +44,28 @@ namespace ShotgunBoomerang
             _acceleration = Vector2.Zero;
             _health= 0;
             _maxHealth= 0;
+        }
+
+        public Bullet(Texture2D sprite, Vector2 position, float speed)
+        {
+            _sprite = sprite;
+            _position = position;
+
+
+            _velocity = new Vector2(speed, 0);
+
+            _width = _sprite.Width;
+            _height = _sprite.Height;
+
+            aimedShot = false;
+            parried = false;
+
+            _damage = 10;
+
+            // initialize unused variables as well
+            _acceleration = Vector2.Zero;
+            _health = 0;
+            _maxHealth = 0;
         }
 
 

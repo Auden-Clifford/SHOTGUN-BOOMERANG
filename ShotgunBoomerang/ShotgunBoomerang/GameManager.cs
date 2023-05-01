@@ -122,6 +122,9 @@ namespace ShotgunBoomerang
         private Rectangle deadRespawnButton;
         private Rectangle deadQuitButton;
 
+        private Texture2D koalaLeft;
+        private Texture2D koalaRight;
+
         public GameManager()
         {
             // Sets width and height to match hardware fullscreen
@@ -167,6 +170,8 @@ namespace ShotgunBoomerang
 
             bulletSprite = this.Content.Load<Texture2D>("MiscEntities/Bullet");
             koalaSprite = this.Content.Load<Texture2D>("EnemyTextures/GunKoala");
+            koalaLeft = this.Content.Load<Texture2D>("EnemyTextures/Koala_Left");
+            koalaRight = this.Content.Load<Texture2D>("EnemyTextures/Koala_Right");
             vegemiteSprite = this.Content.Load<Texture2D>("MiscEntities/vegemite");
  
             // these textures are all used within the player class
@@ -422,6 +427,20 @@ namespace ShotgunBoomerang
                     if (kb.IsKeyDown(Keys.OemTilde) && prevKb.IsKeyUp(Keys.OemTilde))
                     {
                         currentLevel.ResetLevel(player);
+                    }
+
+                    if(kb.IsKeyDown(Keys.I) && prevKb.IsKeyUp(Keys.I))
+                    {
+                        currentLevel.CurrentEnemies.Add(new Koala(
+                            koalaLeft,
+                            koalaRight,
+                            new Vector2(ms.X, ms.Y) + screenOffset,
+                            180,
+                            20,
+                            20,
+                            3,
+                            0.5f,
+                            bulletSprite));
                     }
                     
                     break;
