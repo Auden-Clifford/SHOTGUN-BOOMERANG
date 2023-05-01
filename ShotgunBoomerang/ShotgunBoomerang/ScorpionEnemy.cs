@@ -149,20 +149,14 @@ namespace ShotgunBoomerang
 
 
         /// <summary>
-        /// Handles the update logic for the scorpion
+        /// Method for use in the game's update step; all logic calculated 
+        /// for this object by frame should go into this function.
         /// </summary>
-        /// <param name="tileMap">The list of tiles</param>
-        /// <param name="projectiles">The list of projectiles</param>
+        /// <param name="currentLevel">The level currently being played</param>
         /// <param name="player">The player</param>
-        /// <param name="gameTime"></param>
+        /// <param name="gameTime">tracks in-game time intervals</param>
         public void Update(
-            KeyboardState kb,
-            KeyboardState prevKb,
-            MouseState ms,
-            MouseState prevMs,
-            List<Tile> tileMap,
-            List<IGameEnemy> enemies,
-            List<IGameProjectile> projectiles,
+            Level currentLevel,
             Player player,
             GameTime gameTime)
         {
@@ -193,12 +187,12 @@ namespace ShotgunBoomerang
             //BY THE WAY: if you write something outside the switch statement it
             //still happens, so you can write you physics and collision methods here
             //****
-            ResolveTileCollisions(tileMap);
+            ResolveTileCollisions(currentLevel.CurrentTileMap);
 
             // check if the scorpion is dead and if it is, remove it from the enemies list
             if (!CheckHealth())
             {
-                enemies.Remove(this);
+                currentLevel.CurrentEnemies.Remove(this);
             }
 
 
@@ -211,7 +205,7 @@ namespace ShotgunBoomerang
                 //range of it.
                 case ScorpionState.Idle:
                     Move();
-                    if(!CheckForLedge(direction, tileMap))
+                    if(!CheckForLedge(direction, currentLevel.CurrentTileMap))
                     {
                         if(direction == Direction.Left)
                         {
@@ -222,7 +216,7 @@ namespace ShotgunBoomerang
                             direction = Direction.Left;
                         }
                     }
-                    ResolveTileCollisions(tileMap);
+                    ResolveTileCollisions(currentLevel.CurrentTileMap);
 
                     //If the player comes within range, increase the scorps speed and change to the 
                     //skitter state, where the scorp quickly runs away from the player and than
@@ -256,12 +250,12 @@ namespace ShotgunBoomerang
                 case ScorpionState.Skitter:
 
                     Move();
-                    ResolveTileCollisions(tileMap);
+                    ResolveTileCollisions(currentLevel.CurrentTileMap);
 
 
                     //Upon hitting a wall, detected by skitterEnd which is only turned on true once
                     //a horizontal collision has been detected
-                    if (!CheckForLedge(direction, tileMap) || skitterEnd)
+                    if (!CheckForLedge(direction, currentLevel.CurrentTileMap) || skitterEnd)
                     {
                         currentState = ScorpionState.Shooting;
                     }
@@ -275,7 +269,7 @@ namespace ShotgunBoomerang
                 //If the player is in range, it will begin to shoot bullets at the player.
                 case ScorpionState.Shooting:
                     _velocity.X = 0;
-                    Attack(player, projectiles, 1.0f, gameTime);
+                    Attack(player, currentLevel.CurrentProjectiles, 1.0f, gameTime);
 
 
                     if (player.X < _position.X)
@@ -287,7 +281,7 @@ namespace ShotgunBoomerang
                         direction = Direction.Right;
                     }
 
-                    ResolveTileCollisions(tileMap);
+                    ResolveTileCollisions(currentLevel.CurrentTileMap);
                     break;
             }
 

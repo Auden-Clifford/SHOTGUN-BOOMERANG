@@ -44,7 +44,7 @@ namespace ShotgunBoomerang
             _vegemiteDropSprite = texturePack[1];
 
             _position = position;
-            _startPos = position;
+            _startPos = new Vector2(position.X, position.Y);
             _maxHealth = 100;
             _health = _maxHealth;
             _damage = 20;

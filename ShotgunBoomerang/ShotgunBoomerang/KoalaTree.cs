@@ -71,8 +71,8 @@ namespace ShotgunBoomerang
             _height = _sprite.Height;
 
             _position = position;
-            _startPosition = position;
-            //_counter = 0;
+            _startPosition = new Vector2(position.X, position.Y);
+
             _currentDirection = Direction.Right;
             _damage = 20;
             _damaged = false;
@@ -336,6 +336,7 @@ namespace ShotgunBoomerang
             _damaged = false;
             _damagedTimer = 0;
             _shotTimer = 0;
+            _drawColor = Color.White;
 
             // the koala shouldn't move, but just in case
             _position.X = _startPosition.X;
