@@ -163,6 +163,7 @@ namespace ShotgunBoomerang
             levelTwoBack = this.Content.Load<Texture2D>("levelTwoBack");
             levelThreeBack = this.Content.Load<Texture2D>("levelThreeBack");
             twoDisplay = this.Content.Load<Texture2D>("MiscUI/twoDisplay");
+            threeDisplay = this.Content.Load<Texture2D>("MiscUI/threeDisplay");
 
             bulletSprite = this.Content.Load<Texture2D>("MiscEntities/Bullet");
             koalaSprite = this.Content.Load<Texture2D>("EnemyTextures/GunKoala");
@@ -422,19 +423,6 @@ namespace ShotgunBoomerang
                     {
                         currentLevel.ResetLevel(player);
                     }
-
-                    if(kb.IsKeyDown(Keys.I) && prevKb.IsKeyUp(Keys.I))
-                    {
-                        currentLevel.CurrentEnemies.Add(
-                            new KoalaTree(
-                                new List<Texture2D>()
-                                {
-                                    koalaSprite,
-                                    bulletSprite,
-                                    vegemiteSprite
-                                },
-                                new Vector2(ms.X, ms.Y) + screenOffset));
-                    }
                     
                     break;
 
@@ -568,7 +556,7 @@ namespace ShotgunBoomerang
                     else if (buttonPlayThree.Contains(ms.Position))
                     {
                         levelText = "Play stage three - the arid outback.";
-                        //levelSprite = threeDisplay;
+                        levelSprite = threeDisplay;
                     }
                     else // Note that level sprite will remain the same as whatever was last hovered over
                     {

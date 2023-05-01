@@ -312,6 +312,18 @@
 /processorParam:TextureFormat=Color
 /build:MiscUI/redsquare.png
 
+#begin MiscUI/threeDisplay.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:MiscUI/threeDisplay.png
+
 #begin MiscUI/twoDisplay.png
 /importer:TextureImporter
 /processor:TextureProcessor
