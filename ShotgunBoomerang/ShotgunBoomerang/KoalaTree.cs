@@ -54,8 +54,8 @@ namespace ShotgunBoomerang
             _height = _sprite.Height;
 
             _position = position;
-            _startPosition = position;
-            //_counter = 0;
+            _startPosition = new Vector2(position.X, position.Y);
+
             _currentDirection = Direction.Right;
             _damage = 20;
             _damaged = false;
