@@ -58,16 +58,11 @@ namespace ShotgunBoomerang
         {
             // The main sprite should be the first one
             _sprite = texturePack[0];
-            if(player.X < _position.X)
-            {
-                direction = DirectionState.Left;
+
 
             // the bullet sprite should be the second one
             _bulletSprite = texturePack[1];
-            }else if(player.Y >= _position.Y)
-            {
-                direction = DirectionState.Right;
-            }
+            
 
             // the vegemite sprite should be the third one
             _vegemiteSprite = texturePack[2];
@@ -137,7 +132,7 @@ namespace ShotgunBoomerang
             }
         }
 
-        public override void Update(
+        public void Update(
             Level currentLevel,
             Player player,
             GameTime gameTime
@@ -156,20 +151,6 @@ namespace ShotgunBoomerang
                 _currentDirection = Direction.Right;
             }
 
-        /// <summary>
-        /// Apply damage to the enemy
-        /// </summary>
-        /// <param name="damage"></param>
-        /// <param name="player"></param>
-        public void TakeHit(GameObject atacker, float damage)
-        {
-            if (!damaged)
-            {
-                _health -= damage;
-                damagedTimer = 0.5f;
-                damaged = true;
-            }
-        }
 
             // detect if the player is within range
             if((player.Position - _position).Length() < _playerDetectionDistance)
@@ -222,6 +203,8 @@ namespace ShotgunBoomerang
                 }
             }
         }
+
+
 
         /// <summary>
         /// Allows the koala tree to properly collide with surfaces
