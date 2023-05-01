@@ -123,7 +123,7 @@ namespace ShotgunBoomerang
                 //Comes into range
                 case KoalaState.Idle:
 
-
+                    ApplyPhysics();
                     Move();
 
                     //State change logic:
@@ -143,6 +143,7 @@ namespace ShotgunBoomerang
                 case KoalaState.Following:
 
                     ChasePlayer(player);
+                    ApplyPhysics();
                     Move();
                     if (
                         player.X >= _position.X - (64 * shootingRange)
@@ -172,6 +173,7 @@ namespace ShotgunBoomerang
                 case KoalaState.Charging:
 
                     _velocity.X = defaultSpeed * 3;
+                    ApplyPhysics();
                     Move();
 
                     if (CheckCollision(player))
@@ -189,6 +191,7 @@ namespace ShotgunBoomerang
                     Attack(player, currentLevel.CurrentProjectiles, 5, 20, 1.0f, gameTime);
 
                     _velocity.X = defaultSpeed / 2;
+                    ApplyPhysics();
                     Move();
 
                     if (
@@ -233,6 +236,7 @@ namespace ShotgunBoomerang
                 }
             }
             CheckPlayerContact(player);
+            //ApplyPhysics();
             ResolveTileCollisions(currentLevel.CurrentTileMap);
             
 
@@ -279,11 +283,11 @@ namespace ShotgunBoomerang
         {
             if (direction == Direction.Right)
             {
-                _position += _velocity;
+                _position.X += _velocity.X;
             }
             else if (direction == Direction.Left)
             {
-                _position -= _velocity;
+                _position.X -= _velocity.X;
             }
             
         }
@@ -446,13 +450,13 @@ namespace ShotgunBoomerang
         }
 
         /// <summary>
-        /// Allows the koala tree to properly collide with surfaces
+        /// Allows the koala to properly collide with surfaces
         /// </summary>
         /// <param name="tileMap">list of tiles in the level</param>
         protected override void ResolveTileCollisions(List<Tile> tileMap)
         {
 
-            ApplyPhysics();
+            //ApplyPhysics();
 
             // get a copy of the enemy's hitbox
             Rectangle enemyHitBox = this.HitBox;
