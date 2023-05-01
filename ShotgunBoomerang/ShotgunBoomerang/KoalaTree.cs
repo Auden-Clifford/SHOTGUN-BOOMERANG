@@ -318,6 +318,7 @@ namespace ShotgunBoomerang
             _damaged = false;
             _damagedTimer = 0;
             _shotTimer = 0;
+            _drawColor = Color.White;
 
             // the koala shouldn't move, but just in case
             _position.X = _startPosition.X;
