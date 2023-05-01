@@ -250,7 +250,7 @@ namespace ShotgunBoomerang
             levelThree = new Level(levelTexturepack, "Content/Levels/Level3.level");
 
             // set up the player
-            player = new Player(playerTexturePack, demoLevel.PlayerStart, 100, playerSounds);
+            player = new Player(playerTexturePack, playerSounds, Vector2.Zero);
 
             // A bunch of rectangles for the pause menu (163x100 draws these rectangles at a quarter size of the original file)
             pauseButtonDebug = new Rectangle(graphics.PreferredBackBufferWidth / 2 - 264 + 350, graphics.PreferredBackBufferHeight / 2 - 110, 163, 100);

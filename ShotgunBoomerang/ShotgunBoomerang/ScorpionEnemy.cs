@@ -260,7 +260,6 @@ namespace ShotgunBoomerang
             */
 
             // set draw color to white by default
-            _drawColor = Color.White;
 
 
             switch (_currentState)
@@ -438,10 +437,13 @@ namespace ShotgunBoomerang
                         player.Kills++;
                     }
 
+                    _drawColor = Color.Red;
+
                     // when the time is up, transition idle state
                     if (_damageTimer <= 0)
                     {
                         _currentState = ScorpionState.Idle;
+                        _drawColor = Color.White;
                     }
 
                     break;

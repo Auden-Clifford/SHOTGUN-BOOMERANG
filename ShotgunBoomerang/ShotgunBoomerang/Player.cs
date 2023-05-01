@@ -22,7 +22,7 @@ namespace ShotgunBoomerang
         Airborne,
         Slide,
         Skid,
-        Damaged
+        Incapacitated
     }
 
     internal class Player : MobileEntity
@@ -40,6 +40,10 @@ namespace ShotgunBoomerang
         private bool _isHoldingBoomerang;
         private bool _isCollidingWithGround;
 
+        private bool _hasIFrames;
+        //private double _invincibleTimer;
+        //private double _invincibleTime;
+
         private int _ammo;
         private float _shotgunRadius;
         private float _shotgunAngle;
@@ -54,10 +58,12 @@ namespace ShotgunBoomerang
 
         private double _reloadTimer;
         private double _shotgunBlastTimer;
-        private double dmgTimer; //this might not be handled here. won't implement until it's clear
+
+        private double _iFrameTimer;
+        private double _iFrameTime;
 
         private List<Song> _playerSounds;
-        private double _dmgTimer;
+        //private double _dmgTimer;
         private Color _drawColor;
 
         // Properties
@@ -144,7 +150,7 @@ namespace ShotgunBoomerang
         /// <param name="shotgunArmSprite">The player's arm texture/spritesheet</param>
         /// <param name="position">The player's starting position</param>
         /// <param name="health">The player's starting health</param>
-        public Player(List<Texture2D> texturePack, Vector2 position, float health, List<Song> playerSounds)
+        public Player(List<Texture2D> texturePack, List<Song> playerSounds, Vector2 position)
         {
             // the player's main sprite should be the first sprite
             _sprite = texturePack[0];
@@ -157,33 +163,37 @@ namespace ShotgunBoomerang
 
             // the boomerang's sprite should be the fourth sprite
             _boomerangSprite = texturePack[3];
-            
+
+            _playerSounds = playerSounds;
 
             _position = position;
             _width = _sprite.Width; // the spritesheet is 1 sprites long
             _height = _sprite.Height / 2; // the spritesheet is 2 sprites tall
 
-            _health = health;
+            _maxHealth = 100;
+            _health = _maxHealth;
 
             _velocity = new Vector2(0, 0);
-            _maxHealth = 100;
-            _damage = 60;
             _acceleration = new Vector2(3, 0);
-            _ammo = 2;
-            _isHoldingBoomerang = true;
-            _currentState = PlayerState.Idle;
-            _shotgunRadius = 384;
-            _shotgunAngle = MathF.PI / 4;
-            _isCollidingWithGround = false;
             _jumpForce = 32;
 
-            _playerSounds = playerSounds;
+            _maxHealth = 100;
+            _damage = 60;
+            _ammo = 2;
 
-            _dmgTimer = .5;
-            _reloadTimer = 0;
-            _shotgunBlastTimer = 0;
+            _currentState = PlayerState.Idle;
+            _isHoldingBoomerang = true;
+            _isCollidingWithGround = false;
 
+            _shotgunRadius = 384;
+            _shotgunAngle = MathF.PI / 4;
+            
+            _hasIFrames = false;
+            _iFrameTimer = 0;
+            _iFrameTime = 1;
             _drawColor = Color.White;
+
+            _reloadTimer = 0;
 
             _shotgunBlastTimer = 0;
         }
@@ -207,173 +217,182 @@ namespace ShotgunBoomerang
 
             float angle = MathF.Atan2(mouseCenterNormal.Y, mouseCenterNormal.X);
 
-            switch(_currentDirection)
+            // the player's sprite should flicker on and off while they have damage i frames
+            if((((int)(_iFrameTimer * 100)) % 2 == 0) && _hasIFrames)
             {
-                case Direction.Left:
-                    if(_shotgunBlastTimer > 0)
-                    {
-                    sb.Draw(
-                        _shotgunBlastSprite,
-                        new Vector2(
-                            graphics.PreferredBackBufferWidth / 2,
-                            graphics.PreferredBackBufferHeight / 2),
-                        null,
-                        _drawColor,
-                        angle,
-                        // rotate around the texture's center
-                        new Vector2(_shotgunBlastSprite.Width / 2, _shotgunBlastSprite.Height / 2),
-                        1, // same scale
-                        SpriteEffects.None,
-                        0.0f);
-                    }
-
-                    if (_reloadTimer > 0)
-                    {
-                        sb.Draw(
-                            _shotgunArmSprite,
-                            new Vector2(
-                                graphics.PreferredBackBufferWidth / 2,
-                                graphics.PreferredBackBufferHeight / 2),
-                            new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet,
-                            _drawColor,
-                            angle,
-                            // rotate around the texture's center
-                            new Vector2(_width / 2, _height / 2),
-                            1, // same scale
-                            SpriteEffects.None,
-                            0.0f);
-                    }
-                    else
-                    {
-                        sb.Draw(
-                            _shotgunArmSprite,
-                            new Vector2(
-                                graphics.PreferredBackBufferWidth / 2,
-                                graphics.PreferredBackBufferHeight / 2),
-                            new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
-                            _drawColor,
-                            angle,
-                            // rotate around the texture's center
-                            new Vector2(_width / 2, _height / 2),
-                            1, // same scale
-                            SpriteEffects.None,
-                            0.0f);
-                    }
-                    
-                    if (_isHoldingBoomerang)
-                    {
-                        sb.Draw(
-                            _sprite,
-                            new Vector2(
-                            graphics.PreferredBackBufferWidth / 2
-                            - _width / 2,
-                            graphics.PreferredBackBufferHeight / 2
-                            - _height / 2),
-                            new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
-                            _drawColor);
-                    }
-                    else
-                    {
-                        sb.Draw(
-                            _sprite,
-                            new Vector2(
-                            graphics.PreferredBackBufferWidth / 2
-                            - _width / 2,
-                            graphics.PreferredBackBufferHeight / 2
-                            - _height / 2),
-                            new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
-                            _drawColor);
-                    }
-                    break;
-
-                case Direction.Right:
-                    // flip the sprite when the player looks right
-                    if(_shotgunBlastTimer > 0)
-                    {
-                    sb.Draw(
-                        _shotgunBlastSprite,
-                        new Vector2(
-                            graphics.PreferredBackBufferWidth / 2,
-                            graphics.PreferredBackBufferHeight / 2),
-                        null,
-                        _drawColor,
-                        angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
-                        // rotate around the texture's center
-                        new Vector2(_shotgunBlastSprite.Width / 2, _shotgunBlastSprite.Height / 2),
-                        1, // same scale
-                        SpriteEffects.FlipHorizontally,
-                        0.0f);
-                    }
-
-                    if (_reloadTimer > 0)
-                    {
-                        sb.Draw(
-                            _shotgunArmSprite,
-                            new Vector2(
-                                graphics.PreferredBackBufferWidth / 2,
-                                graphics.PreferredBackBufferHeight / 2),
-                            new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet,
-                            _drawColor,
-                            angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
-                            // rotate around the texture's center
-                            new Vector2(_width / 2, _height / 2),
-                            1, // same scale
-                            SpriteEffects.FlipHorizontally,
-                            0.0f);
-                    }
-                    else
-                    {
-                        sb.Draw(
-                            _shotgunArmSprite,
-                            new Vector2(
-                                graphics.PreferredBackBufferWidth / 2,
-                                graphics.PreferredBackBufferHeight / 2),
-                            new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
-                            _drawColor,
-                            angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
-                            // rotate around the texture's center
-                            new Vector2(_width / 2, _height / 2),
-                            1, // same scale
-                            SpriteEffects.FlipHorizontally,
-                            0.0f);
-                    }
-
-                    if (_isHoldingBoomerang)
-                    {
-                        sb.Draw(
-                            _sprite,
-                            new Vector2(
-                            graphics.PreferredBackBufferWidth / 2
-                            - _width / 2,
-                            graphics.PreferredBackBufferHeight / 2
-                            - _height / 2),
-                            new Rectangle(0, 0, _width, _height), // will print the bottom-right sprite in the sheet
-                            _drawColor,
-                            0,
-                            new Vector2(0, 0),
-                            1,
-                            SpriteEffects.FlipHorizontally,
-                            0);
-                    }
-                    else
-                    {
-                        sb.Draw(
-                            _sprite,
-                            new Vector2(
-                            graphics.PreferredBackBufferWidth / 2
-                            - _width / 2,
-                            graphics.PreferredBackBufferHeight / 2
-                            - _height / 2),
-                            new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
-                            _drawColor,
-                            0,
-                            new Vector2(0,0),
-                            1,
-                            SpriteEffects.FlipHorizontally,
-                            0);
-                    }
-                    break;
+                // on the off frame, draw nothing
             }
+            else
+            {
+                switch (_currentDirection)
+                {
+                    case Direction.Left:
+                        if (_shotgunBlastTimer > 0)
+                        {
+                            sb.Draw(
+                                _shotgunBlastSprite,
+                                new Vector2(
+                                    graphics.PreferredBackBufferWidth / 2,
+                                    graphics.PreferredBackBufferHeight / 2),
+                                null,
+                                _drawColor,
+                                angle,
+                                // rotate around the texture's center
+                                new Vector2(_shotgunBlastSprite.Width / 2, _shotgunBlastSprite.Height / 2),
+                                1, // same scale
+                                SpriteEffects.None,
+                                0.0f);
+                        }
+
+                        if (_reloadTimer > 0)
+                        {
+                            sb.Draw(
+                                _shotgunArmSprite,
+                                new Vector2(
+                                    graphics.PreferredBackBufferWidth / 2,
+                                    graphics.PreferredBackBufferHeight / 2),
+                                new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet,
+                                _drawColor,
+                                angle,
+                                // rotate around the texture's center
+                                new Vector2(_width / 2, _height / 2),
+                                1, // same scale
+                                SpriteEffects.None,
+                                0.0f);
+                        }
+                        else
+                        {
+                            sb.Draw(
+                                _shotgunArmSprite,
+                                new Vector2(
+                                    graphics.PreferredBackBufferWidth / 2,
+                                    graphics.PreferredBackBufferHeight / 2),
+                                new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
+                                _drawColor,
+                                angle,
+                                // rotate around the texture's center
+                                new Vector2(_width / 2, _height / 2),
+                                1, // same scale
+                                SpriteEffects.None,
+                                0.0f);
+                        }
+
+                        if (_isHoldingBoomerang)
+                        {
+                            sb.Draw(
+                                _sprite,
+                                new Vector2(
+                                graphics.PreferredBackBufferWidth / 2
+                                - _width / 2,
+                                graphics.PreferredBackBufferHeight / 2
+                                - _height / 2),
+                                new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
+                                _drawColor);
+                        }
+                        else
+                        {
+                            sb.Draw(
+                                _sprite,
+                                new Vector2(
+                                graphics.PreferredBackBufferWidth / 2
+                                - _width / 2,
+                                graphics.PreferredBackBufferHeight / 2
+                                - _height / 2),
+                                new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
+                                _drawColor);
+                        }
+                        break;
+
+                    case Direction.Right:
+                        // flip the sprite when the player looks right
+                        if (_shotgunBlastTimer > 0)
+                        {
+                            sb.Draw(
+                                _shotgunBlastSprite,
+                                new Vector2(
+                                    graphics.PreferredBackBufferWidth / 2,
+                                    graphics.PreferredBackBufferHeight / 2),
+                                null,
+                                _drawColor,
+                                angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
+                                                  // rotate around the texture's center
+                                new Vector2(_shotgunBlastSprite.Width / 2, _shotgunBlastSprite.Height / 2),
+                                1, // same scale
+                                SpriteEffects.FlipHorizontally,
+                                0.0f);
+                        }
+
+                        if (_reloadTimer > 0)
+                        {
+                            sb.Draw(
+                                _shotgunArmSprite,
+                                new Vector2(
+                                    graphics.PreferredBackBufferWidth / 2,
+                                    graphics.PreferredBackBufferHeight / 2),
+                                new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet,
+                                _drawColor,
+                                angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
+                                                  // rotate around the texture's center
+                                new Vector2(_width / 2, _height / 2),
+                                1, // same scale
+                                SpriteEffects.FlipHorizontally,
+                                0.0f);
+                        }
+                        else
+                        {
+                            sb.Draw(
+                                _shotgunArmSprite,
+                                new Vector2(
+                                    graphics.PreferredBackBufferWidth / 2,
+                                    graphics.PreferredBackBufferHeight / 2),
+                                new Rectangle(0, 0, _width, _height), // will print the top-right sprite in the sheet
+                                _drawColor,
+                                angle + MathF.PI, // when the texture flips, push the sprite around in the other direction
+                                                  // rotate around the texture's center
+                                new Vector2(_width / 2, _height / 2),
+                                1, // same scale
+                                SpriteEffects.FlipHorizontally,
+                                0.0f);
+                        }
+
+                        if (_isHoldingBoomerang)
+                        {
+                            sb.Draw(
+                                _sprite,
+                                new Vector2(
+                                graphics.PreferredBackBufferWidth / 2
+                                - _width / 2,
+                                graphics.PreferredBackBufferHeight / 2
+                                - _height / 2),
+                                new Rectangle(0, 0, _width, _height), // will print the bottom-right sprite in the sheet
+                                _drawColor,
+                                0,
+                                new Vector2(0, 0),
+                                1,
+                                SpriteEffects.FlipHorizontally,
+                                0);
+                        }
+                        else
+                        {
+                            sb.Draw(
+                                _sprite,
+                                new Vector2(
+                                graphics.PreferredBackBufferWidth / 2
+                                - _width / 2,
+                                graphics.PreferredBackBufferHeight / 2
+                                - _height / 2),
+                                new Rectangle(0, _height, _width, _height), // will print the bottom-right sprite in the sheet
+                                _drawColor,
+                                0,
+                                new Vector2(0, 0),
+                                1,
+                                SpriteEffects.FlipHorizontally,
+                                0);
+                        }
+                        break;
+                }
+            }
+            
         }
 
         /// <summary>
@@ -387,9 +406,7 @@ namespace ShotgunBoomerang
         /// <param name="prevKb"> The keyboard state last frame</param>
         /// <param name="ms">The mouse state this frame</param>
         /// <param name="prevMs">The mouse state last frame</param>
-        /// <param name="tileMap">The current level's tiles</param>
-        /// <param name="enemies">The current level's enemies</param>
-        /// <param name="projectiles">The projectiles currently in play</param>
+        /// <param name="currentLevel">The currently loaded level</param>
         /// <param name="graphics">Contains info about the screen</param>
         public void Update(
             KeyboardState kb,
@@ -470,6 +487,9 @@ namespace ShotgunBoomerang
                     break;
 
                 case PlayerState.Run:
+                    // apply ground friction
+                    _velocity *= runFriction;
+
                     // if the player presses the spacebar or w jump
                     if (kb.IsKeyDown(Keys.Space) &&
                         prevKb.IsKeyUp(Keys.Space))
@@ -503,9 +523,6 @@ namespace ShotgunBoomerang
                         _velocity.X += _acceleration.X;
                     }
 
-                    // apply ground friction
-                    _velocity *= runFriction;
-
                     // player reloads if they run out or press R
                     // (and they are not currently reloading or at full ammo)
                     if (_reloadTimer <= 0 &&
@@ -522,7 +539,7 @@ namespace ShotgunBoomerang
                         _currentState = PlayerState.Airborne;
                     }
 
-                    // Transition to Slide when CTRL is pressed
+                    // Transition to Slide when SHIFT is pressed
                     if(kb.IsKeyDown(Keys.LeftShift))
                     {
                         
@@ -539,6 +556,9 @@ namespace ShotgunBoomerang
                         break;
 
                 case PlayerState.Airborne:
+                    // apply air friction to velocity (more friction on x)
+                    _velocity *= airFriction;
+
                     // if the player left clicks (only once), perform a shotgun attack
                     if (ms.LeftButton == ButtonState.Pressed &&
                         prevMs.LeftButton == ButtonState.Released)
@@ -568,10 +588,6 @@ namespace ShotgunBoomerang
                         // apply greater friction to x movement when moving
                         _velocity.X *= runFriction;
                     }
-
-                    // apply air friction to velocity (more friction on x)
-                    _velocity *= airFriction;
-             
 
                     // this state ends once the player hits the ground
                     if(_isCollidingWithGround)
@@ -636,6 +652,9 @@ namespace ShotgunBoomerang
                     break;
 
                 case PlayerState.Skid:
+                    // apply friction to the player's velocity
+                    _velocity *= skidFriction;
+
                     // if the player presses the spacebar or W (only once), jump
                     if (kb.IsKeyDown(Keys.Space) &&
                         prevKb.IsKeyUp(Keys.Space))
@@ -657,9 +676,6 @@ namespace ShotgunBoomerang
                     {
                         BoomerangAttack(ms, graphics, currentLevel.CurrentProjectiles);
                     }
-
-                    // apply friction to the player's velocity
-                    _velocity *= skidFriction;
 
                     // once the player reaches 0.01 velocity it should become 0
                     if(MathF.Abs(_velocity.X) < 0.1) 
@@ -694,23 +710,26 @@ namespace ShotgunBoomerang
                     }
                     break;
 
-                case PlayerState.Damaged:
-                    dmgTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+                case PlayerState.Incapacitated:
+                    //_damageTimer -= gameTime.ElapsedGameTime.TotalSeconds;
 
                     _drawColor = Color.Red;
 
                     _velocity *= 0.99f;
 
+                    /*
                     if (ms.LeftButton == ButtonState.Pressed &&
                        prevMs.LeftButton == ButtonState.Released)
                     {
                         ShotgunAttack(ms, graphics, currentLevel.CurrentEnemies, currentLevel.CurrentProjectiles, gameTime);
                     }
+                    */
 
-                    if (dmgTimer <= 0)
+                    // player should only be incapacitated
+                    // for the first .5 second of i frames
+                    if (_iFrameTimer <= 0.75)
                     {
                         _drawColor = Color.White;
-                        dmgTimer = .5;
                         _currentState = PlayerState.Idle;
                     }
                     break;
@@ -728,6 +747,18 @@ namespace ShotgunBoomerang
                     //_reloadTimer = 1;
                     Ammo = 2;
                     MediaPlayer.Play(_playerSounds[3]);
+                }
+            }
+
+            // the player will have i frames for
+            // 1.5 seconds after being damaged
+            if(_hasIFrames)
+            {
+                _iFrameTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+
+                if(_iFrameTimer <= 0)
+                {
+                    _hasIFrames = false;
                 }
             }
 
@@ -969,7 +1000,7 @@ namespace ShotgunBoomerang
         public void TakeHit(GameObject attacker, float damage)
         {
             // the player should not take damage if they are already in the damaged state
-            if (_currentState != PlayerState.Damaged)
+            if (!_hasIFrames)
             {
                 // get the normalized vector between the player's centerpoint and the enemy's centerpoint
                 Vector2 attackerNormal = Vector2.Normalize(CenterPoint - attacker.CenterPoint);
@@ -978,7 +1009,9 @@ namespace ShotgunBoomerang
                 _velocity += attackerNormal * (damage);
 
                 _health -= damage;
-                _currentState = PlayerState.Damaged;
+                _currentState = PlayerState.Incapacitated;
+                _iFrameTimer = _iFrameTime;
+                _hasIFrames = true;
             }
         }
     }
